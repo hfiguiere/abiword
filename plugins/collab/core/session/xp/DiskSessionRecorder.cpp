@@ -34,7 +34,7 @@ DiskSessionRecorder::DiskSessionRecorder(AbiCollab* pSession)
 #ifndef WIN32
 	pidStr = str(boost::format( "%1%" ) % int(getpid()) );
 #endif
-	gchar *s = g_build_filename( getTargetDirectory(), (std::string(getPrefix())+pSession->getSessionId().utf8_str()).c_str(), NULL );
+	gchar *s = g_build_filename( getTargetDirectory(), (std::string(getPrefix())+pSession->getSessionId()).c_str(), NULL );
 	std::string fn = (char*)s;
 	fn += ".";
 	fn += pidStr;

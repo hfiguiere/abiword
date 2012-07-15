@@ -5161,11 +5161,11 @@ UT_Error FV_View::cmdInsertGraphic(FG_Graphic* pFG)
 	*/
 	UT_UUID *uuid = m_pDoc->getNewUUID();
 	UT_return_val_if_fail(uuid != NULL, UT_ERROR);
-	UT_UTF8String s;
+	std::string s;
 	uuid->toString(s);
 	DELETEP(uuid);
-		
-	UT_Error errorCode = _insertGraphic(pFG, s.utf8_str());
+
+	UT_Error errorCode = _insertGraphic(pFG, s.c_str());
 	if(m_FrameEdit.isActive())
 	{
 		m_FrameEdit.setMode(FV_FrameEdit_NOT_ACTIVE);
@@ -5214,7 +5214,7 @@ UT_Error FV_View::cmdInsertPositionedGraphic(FG_Graphic* pFG,UT_sint32 mouseX, U
 	*/
 	UT_UUID *uuid = m_pDoc->getNewUUID();
 	UT_return_val_if_fail(uuid != NULL, UT_ERROR);
-	UT_UTF8String s;
+	std::string s;
 	uuid->toString(s);
 	//
 	// Find a document position close to the requested position
@@ -5276,7 +5276,7 @@ UT_Error FV_View::cmdInsertPositionedGraphic(FG_Graphic* pFG,UT_sint32 mouseX, U
 // Create a dataid for the object
 //
 
-	const char * dataID = pFG->createDataItem(m_pDoc,s.utf8_str());
+	const char * dataID = pFG->createDataItem(m_pDoc,s.c_str());
 	std::string sFrameProps;
 	std::string sProp;
 	std::string sVal;
@@ -5428,7 +5428,7 @@ bool FV_View::cmdInsertLatexMath(UT_UTF8String & sLatex,
 	*/
 	UT_UUID *uuid = m_pDoc->getNewUUID();
 	UT_return_val_if_fail(uuid != NULL, false);
-	UT_UTF8String s;
+	std::string s;
 	uuid->toString(s);
 	sMathName += s;
 	sLatexName += s;
@@ -5829,13 +5829,13 @@ UT_Error FV_View::cmdInsertGraphicAtStrux(FG_Graphic* pFG, PT_DocPosition iPos, 
 	*/
 	UT_UUID *uuid = m_pDoc->getNewUUID();
 	UT_return_val_if_fail(uuid != NULL, UT_ERROR);
-	UT_UTF8String s;
+	std::string s;
 	uuid->toString(s);
 
-	UT_Error errorCode = pFG->insertAtStrux(m_pDoc, 
+	UT_Error errorCode = pFG->insertAtStrux(m_pDoc,
 											m_pG->getDeviceResolution(),
 											iPos,
-											iStruxType, s.utf8_str());
+											iStruxType, s.c_str());
 
 	_restorePieceTableState();
 

@@ -34,9 +34,9 @@
 
 #include "ut_uuid.h"
 #include "ut_assert.h"
-#include "ut_string_class.h"
 #include "ut_rand.h"
 #include "ut_misc.h"
+#include "ut_std_string.h"
 
 #include "xap_App.h"
 #include "xap_Prefs.h"
@@ -64,9 +64,9 @@ UT_UUID::UT_UUID ()
     The following two constructors instantiate the class from
     existing UUIDs for further processing
 */
-UT_UUID::UT_UUID(const UT_UTF8String &s)
+UT_UUID::UT_UUID(const std::string &s)
 {
-	m_bIsValid = _parse(s.utf8_str(), m_uuid);
+	m_bIsValid = _parse(s.c_str(), m_uuid);
 
 	// if the UUID was not valid, we will generate a new one
 	if(!m_bIsValid)
@@ -150,13 +150,13 @@ bool  UT_UUID::_parse(const char * in, struct uuid &uuid) const
 /*!
     convert internal UUID struct to a string
 */
-bool UT_UUID::_toString(const uuid &uu, UT_UTF8String & s) const
+bool UT_UUID::_toString(const uuid &uu, std::string & s) const
 {
-    UT_UTF8String_sprintf(s,"%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
-        uu.time_low, uu.time_mid, uu.time_high_and_version,
-        uu.clock_seq >> 8, uu.clock_seq & 0xFF,
-        uu.node[0], uu.node[1], uu.node[2],
-        uu.node[3], uu.node[4], uu.node[5]);
+	s = UT_std_string_sprintf("%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
+				  uu.time_low, uu.time_mid, uu.time_high_and_version,
+				  uu.clock_seq >> 8, uu.clock_seq & 0xFF,
+				  uu.node[0], uu.node[1], uu.node[2],
+				  uu.node[3], uu.node[4], uu.node[5]);
 
 	return true;
 }
@@ -164,19 +164,11 @@ bool UT_UUID::_toString(const uuid &uu, UT_UTF8String & s) const
 /*!
     convert internal state to string
 */
-bool UT_UUID::toString(UT_UTF8String & s) const
+bool
+UT_UUID::toString( std::string& s ) const
 {
-	UT_return_val_if_fail(m_bIsValid, false);
-	return _toString(m_uuid, s);
-}
-
-std::string&
-UT_UUID::toString( std::string& to ) const
-{
-    UT_UTF8String x;
-    toString( x );
-    to = x.utf8_str();
-    return to;
+    UT_return_val_if_fail(m_bIsValid, false);
+    return _toString(m_uuid, s);
 }
 
 
@@ -211,9 +203,9 @@ bool UT_UUID::toBinary(struct uuid &u) const
 /*!
     Set internal state to the given value represented by string
 */
-bool UT_UUID::setUUID(const UT_UTF8String &s)
+bool UT_UUID::setUUID(const std::string &s)
 {
-	if(_parse(s.utf8_str(), m_uuid))
+	if(_parse(s.c_str(), m_uuid))
 	{
 		m_bIsValid = true;
 		return true;
@@ -253,7 +245,7 @@ bool UT_UUID::makeUUID()
 /*!
     generate new UUID into provided string
 */
-bool UT_UUID::makeUUID(UT_UTF8String & s)
+bool UT_UUID::makeUUID(std::string & s)
 {
 	struct uuid uuid;
 	bool bRet = _makeUUID(uuid);
