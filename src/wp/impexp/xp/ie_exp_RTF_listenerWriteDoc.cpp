@@ -33,6 +33,7 @@
 #include "ut_locale.h"
 #include "ut_debugmsg.h"
 #include "ut_string.h"
+#include "ut_std_string.h"
 #include "ut_units.h"
 #include "ut_png.h"
 #include "ut_jpeg.h"
@@ -232,8 +233,8 @@ void s_RTF_ListenerWriteDoc::_writeSPNumProp(const char * prop, UT_sint32 val)
 	m_pie->_rtf_close_brace();
 	m_pie->_rtf_open_brace();
 	m_pie->_rtf_keyword("sv ");
-	UT_UTF8String sTmp = UT_UTF8String_sprintf("%d",val);
-	m_pie->write(sTmp.utf8_str());
+	std::string sTmp = UT_std_string_sprintf("%d",val);
+	m_pie->write(sTmp.c_str());
 	m_pie->_rtf_close_brace();
 	m_pie->_rtf_close_brace();
 }
@@ -2592,9 +2593,9 @@ void	 s_RTF_ListenerWriteDoc::_openTag(const char * szPrefix, const char * szSuf
 		 m_pie->_rtf_open_brace();
 		 m_pie->_rtf_keyword("*");
 		 m_pie->_rtf_keyword("abimathml ");
-		 UT_UTF8String sAllProps;
-		 UT_UTF8String sPropName;
-		 UT_UTF8String sPropVal;
+		 std::string sAllProps;
+		 std::string sPropName;
+		 std::string sPropVal;
 		 UT_sint32 i = 0;
 		 const gchar * szProp = NULL;
 		 const gchar * szVal = NULL;
@@ -2604,10 +2605,10 @@ void	 s_RTF_ListenerWriteDoc::_openTag(const char * szPrefix, const char * szSuf
 		       szVal = NULL;
 		       pSpanAP->getNthProperty(i,szProp,szVal);
 		       if((szProp != NULL) && (szVal != NULL))
-		       { 
-			   sPropName = szProp;
-			   sPropVal = szVal;
-			   UT_UTF8String_setProperty(sAllProps,sPropName,sPropVal);
+		       {
+				   sPropName = szProp;
+				   sPropVal = szVal;
+				   UT_std_string_setProperty(sAllProps, sPropName, sPropVal);
 		       }
 		       else
 		       {
@@ -2615,15 +2616,15 @@ void	 s_RTF_ListenerWriteDoc::_openTag(const char * szPrefix, const char * szSuf
 		       }
 		 }
 		 sPropName = "dataid";
-		 sPropVal =pszDataId;
-		 UT_UTF8String_setProperty(sAllProps,sPropName,sPropVal);
+		 sPropVal = pszDataId;
+		 UT_std_string_setProperty(sAllProps, sPropName, sPropVal);
 		 if(pszLatexId)
 		 {
 		       sPropName = "latexid";
-		       sPropVal =pszLatexId;
-		       UT_UTF8String_setProperty(sAllProps,sPropName,sPropVal);
+		       sPropVal = pszLatexId;
+		       UT_std_string_setProperty(sAllProps, sPropName, sPropVal);
 		 }
-		 m_pie->write(sAllProps.utf8_str());
+		 m_pie->write(sAllProps.c_str());
 		 m_pie->_rtf_close_brace();
 	 }
 	 else if(strcmp(szPrefix,"embed") == 0)
@@ -2690,9 +2691,9 @@ void	 s_RTF_ListenerWriteDoc::_openTag(const char * szPrefix, const char * szSuf
 		 m_pie->_rtf_open_brace();
 		 m_pie->_rtf_keyword("*");
 		 m_pie->_rtf_keyword("abiembed ");
-		 UT_UTF8String sAllProps;
-		 UT_UTF8String sPropName;
-		 UT_UTF8String sPropVal;
+		 std::string sAllProps;
+		 std::string sPropName;
+		 std::string sPropVal;
 		 UT_sint32 i = 0;
 		 const gchar * szProp = NULL;
 		 const gchar * szVal = NULL;
@@ -2700,12 +2701,12 @@ void	 s_RTF_ListenerWriteDoc::_openTag(const char * szPrefix, const char * szSuf
 		 {
 		   szProp = NULL;
 		   szVal = NULL;
-		   pSpanAP->getNthProperty(i,szProp,szVal);
+		   pSpanAP->getNthProperty(i, szProp, szVal);
 		   if((szProp != NULL) && (szVal != NULL))
-		   { 
+		   {
 		     sPropName = szProp;
 		     sPropVal = szVal;
-		     UT_UTF8String_setProperty(sAllProps,sPropName,sPropVal);
+		     UT_std_string_setProperty(sAllProps, sPropName, sPropVal);
 		   }
 		   else
 		   {
@@ -2713,9 +2714,9 @@ void	 s_RTF_ListenerWriteDoc::_openTag(const char * szPrefix, const char * szSuf
 		   }
 		 }
 		 sPropName = "dataid";
-		 sPropVal =pszDataId;
-		 UT_UTF8String_setProperty(sAllProps,sPropName,sPropVal);
-		 m_pie->write(sAllProps.utf8_str());
+		 sPropVal = pszDataId;
+		 UT_std_string_setProperty(sAllProps, sPropName, sPropVal);
+		 m_pie->write(sAllProps.c_str());
 		 m_pie->_rtf_close_brace();
 	 }
 
@@ -2756,36 +2757,36 @@ void s_RTF_ListenerWriteDoc::_export_AbiWord_Cell_props(PT_AttrPropIndex api, bo
 // Export abiword table properties as an extension
 // Use these for cutting and pasting within abiword.
 //
-	UT_String sCellProps;
+	std::string sCellProps;
 	sCellProps.clear();
 	_fillCellProps(api, sCellProps);
-	UT_String sTopAttach = "top-attach";
-	UT_String sTop = UT_String_getPropVal(sCellProps,sTopAttach);
-	UT_String sBotAttach = "bot-attach";
-	UT_String sBot = UT_String_getPropVal(sCellProps,sBotAttach);
+	std::string sTopAttach = "top-attach";
+	std::string sTop = UT_std_string_getPropVal(sCellProps,sTopAttach);
+	std::string sBotAttach = "bot-attach";
+	std::string sBot = UT_std_string_getPropVal(sCellProps,sBotAttach);
 	if(bFill)
 	{
-		UT_String sLeftAttach = "left-attach";
+		std::string sLeftAttach = "left-attach";
 		m_iFirstTop = atoi(sTop.c_str());
-		UT_String sLeft = UT_String_getPropVal(sCellProps,sLeftAttach);
+		std::string sLeft = UT_std_string_getPropVal(sCellProps,sLeftAttach);
 		UT_sint32 iFirstLeft = atoi(sLeft.c_str());
 //
 // Export cells to the left of the current cell.
 //
 		UT_sint32 i = 0;
-		UT_String sRightAttach = "right-attach";
-		UT_String sTempProps;
-		UT_String sTTop = "0";
-		UT_String sTBot = "1";
+		std::string sRightAttach = "right-attach";
+		std::string sTempProps;
+		std::string sTTop = "0";
+		std::string sTBot = "1";
 		for(i=0;i< iFirstLeft;i++)
 		{
 			sTempProps.clear();
-			UT_String_setProperty(sTempProps,sLeftAttach,
-								  UT_String_sprintf("%d",i));
-			UT_String_setProperty(sTempProps,sRightAttach,
-								  UT_String_sprintf("%d",i+1));
-			UT_String_setProperty(sTempProps,sTopAttach,sTTop);
-			UT_String_setProperty(sTempProps,sBotAttach,sTBot);
+			UT_std_string_setProperty(sTempProps,sLeftAttach,
+								  UT_std_string_sprintf("%d",i));
+			UT_std_string_setProperty(sTempProps,sRightAttach,
+								  UT_std_string_sprintf("%d",i+1));
+			UT_std_string_setProperty(sTempProps,sTopAttach,sTTop);
+			UT_std_string_setProperty(sTempProps,sBotAttach,sTBot);
 //
 // Export an open and close cell extension. The Abi importer will place 
 // a paragraph in for us
@@ -2807,11 +2808,11 @@ void s_RTF_ListenerWriteDoc::_export_AbiWord_Cell_props(PT_AttrPropIndex api, bo
 	if(m_iFirstTop > 0)
 	{
 		UT_sint32 iTop = atoi(sTop.c_str()) - m_iFirstTop;
-		sTop = UT_String_sprintf("%d",iTop);
-		UT_String_setProperty(sCellProps,sTopAttach,sTop);
+		sTop = UT_std_string_sprintf("%d",iTop);
+		UT_std_string_setProperty(sCellProps,sTopAttach,sTop);
 		UT_sint32 iBot = atoi(sBot.c_str()) - m_iFirstTop;
-		sBot = UT_String_sprintf("%d",iBot);
-		UT_String_setProperty(sCellProps,sBotAttach,sBot);
+		sBot = UT_std_string_sprintf("%d",iBot);
+		UT_std_string_setProperty(sCellProps,sBotAttach,sBot);
 	}
 	xxx_UT_DEBUGMSG(("Cell props are %s \n",sCellProps.c_str()));
 	m_pie->_rtf_open_brace();
@@ -2824,11 +2825,11 @@ void s_RTF_ListenerWriteDoc::_export_AbiWord_Cell_props(PT_AttrPropIndex api, bo
  * Convience function to lookup a property via const char * string.
  * If the property is not present sVal is returned with zero size.
  */
-void s_RTF_ListenerWriteDoc::_getPropString(const UT_String sPropString, const char * szProp, UT_String & sVal)
+void s_RTF_ListenerWriteDoc::_getPropString(const std::string& sPropString, const char * szProp, std::string & sVal)
 {
 	sVal.clear();
-	const UT_String sProp(szProp);
-	sVal = UT_String_getPropVal(sPropString,sProp);
+	const std::string sProp(szProp);
+	sVal = UT_std_string_getPropVal(sPropString, sProp);
 }
 
 /*!
@@ -2837,10 +2838,10 @@ void s_RTF_ListenerWriteDoc::_getPropString(const UT_String sPropString, const c
  * sTableProps is the UT_String containing all the Table Properties defined
  * for the table. 
  */
-void s_RTF_ListenerWriteDoc::_exportCellProps(PT_AttrPropIndex  api, UT_String & sTableProps)
+void s_RTF_ListenerWriteDoc::_exportCellProps(PT_AttrPropIndex  api, std::string & sTableProps)
 {
-	UT_String sCellProps;
-	UT_String sWork;
+	std::string sCellProps;
+	std::string sWork;
 	UT_sint32 iThick =1;
 	UT_sint32 iColor =0;
 	bool bDrawBorder = true;
@@ -2949,7 +2950,7 @@ void s_RTF_ListenerWriteDoc::_exportCellProps(PT_AttrPropIndex  api, UT_String &
 			}
 		}
 	}
-	m_pie->write(" ");											
+	m_pie->write(" ");
 
 //
 //write out the background colour of the cell
@@ -3255,14 +3256,14 @@ void s_RTF_ListenerWriteDoc::_exportCellProps(PT_AttrPropIndex  api, UT_String &
 /*!
  * Fill the supplied UT_String with all the properties defined for a cell
  */
-void s_RTF_ListenerWriteDoc::_fillCellProps(PT_AttrPropIndex api, UT_String & sCellProps)
+void s_RTF_ListenerWriteDoc::_fillCellProps(PT_AttrPropIndex api, std::string & sCellProps)
 {
 	const PP_AttrProp* pSectionAP = NULL;
 	m_pDocument->getAttrProp(api, &pSectionAP);
 	const gchar* pszHomogeneous = NULL;
 	pSectionAP->getProperty("homogeneous", pszHomogeneous);
-	UT_String sPropVal;
-	UT_String sProp;
+	std::string sPropVal;
+	std::string sProp;
 	const gchar* pszLeftOffset = NULL;
 	const gchar* pszTopOffset = NULL;
 	const gchar* pszRightOffset = NULL;
@@ -3276,28 +3277,28 @@ void s_RTF_ListenerWriteDoc::_fillCellProps(PT_AttrPropIndex api, UT_String & sC
 	{
 		sProp = "cell-margin-left";
 		sPropVal= pszLeftOffset;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 
 	if(pszTopOffset && pszTopOffset[0])
 	{
 		sProp = "cell-margin-top";
 		sPropVal= pszTopOffset;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 
 	if(pszRightOffset && pszRightOffset[0])
 	{
 		sProp = "cell-margin-right";
 		sPropVal= pszRightOffset;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 
 	if(pszBottomOffset && pszBottomOffset[0])
 	{
 		sProp = "cell-margin-bottom";
 		sPropVal= pszBottomOffset;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 	const gchar* pszLeftAttach = NULL;
 	const gchar* pszRightAttach = NULL;
@@ -3312,25 +3313,25 @@ void s_RTF_ListenerWriteDoc::_fillCellProps(PT_AttrPropIndex api, UT_String & sC
 	{
 		sProp = "left-attach";
 		sPropVal= pszLeftAttach;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 	if(pszRightAttach && pszRightAttach[0])
 	{
 		sProp = "right-attach";
 		sPropVal= pszRightAttach;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 	if(pszTopAttach && pszTopAttach[0])
 	{
 		sProp = "top-attach";
 		sPropVal= pszTopAttach;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 	if(pszBottomAttach && pszBottomAttach[0])
 	{
 		sProp = "bot-attach";
 		sPropVal= pszBottomAttach;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 
 	/* cell-border properties:
@@ -3341,7 +3342,7 @@ void s_RTF_ListenerWriteDoc::_fillCellProps(PT_AttrPropIndex api, UT_String & sC
 	{
 		sProp = "color";
 		sPropVal= pszColor;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 	const gchar * pszBorderColor = NULL;
 	const gchar * pszBorderStyle = NULL;
@@ -3352,14 +3353,14 @@ void s_RTF_ListenerWriteDoc::_fillCellProps(PT_AttrPropIndex api, UT_String & sC
 	{
 		sProp = "bot-color";
 		sPropVal= pszBorderColor;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 	pSectionAP->getProperty ("bot-style",       pszBorderStyle);
 	if (pszBorderStyle && *pszBorderStyle)
 	{
 		sProp = "bot-style";
 		sPropVal= pszBorderStyle;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 
 	pSectionAP->getProperty ("bot-thickness",   pszBorderWidth);
@@ -3367,7 +3368,7 @@ void s_RTF_ListenerWriteDoc::_fillCellProps(PT_AttrPropIndex api, UT_String & sC
 	{
 		sProp = "bot-thickness";
 		sPropVal= pszBorderWidth;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 	pszBorderColor = NULL;
 	pszBorderStyle = NULL;
@@ -3381,19 +3382,19 @@ void s_RTF_ListenerWriteDoc::_fillCellProps(PT_AttrPropIndex api, UT_String & sC
 	{
 		sProp = "left-color";
 		sPropVal= pszBorderColor;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 	if (pszBorderStyle && *pszBorderStyle)
 	{
 		sProp = "left-style";
 		sPropVal= pszBorderStyle;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 	if (pszBorderWidth && *pszBorderWidth)
 	{
 		sProp = "left-thickness";
 		sPropVal= pszBorderWidth;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 
 	pszBorderColor = NULL;
@@ -3408,19 +3409,19 @@ void s_RTF_ListenerWriteDoc::_fillCellProps(PT_AttrPropIndex api, UT_String & sC
 	{
 		sProp = "right-color";
 		sPropVal= pszBorderColor;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 	if (pszBorderStyle && *pszBorderStyle)
 	{
 		sProp = "right-style";
 		sPropVal= pszBorderStyle;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 	if (pszBorderWidth && *pszBorderWidth)
 	{
 		sProp = "right-thickness";
 		sPropVal= pszBorderWidth;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 
 	pszBorderColor = NULL;
@@ -3434,19 +3435,19 @@ void s_RTF_ListenerWriteDoc::_fillCellProps(PT_AttrPropIndex api, UT_String & sC
 	{
 		sProp = "top-color";
 		sPropVal= pszBorderColor;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 	if (pszBorderStyle && *pszBorderStyle)
 	{
 		sProp = "top-style";
 		sPropVal= pszBorderStyle;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 	if (pszBorderWidth && *pszBorderWidth)
 	{
 		sProp = "top-thickness";
 		sPropVal= pszBorderWidth;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 
 	/* cell fill
@@ -3460,21 +3461,21 @@ void s_RTF_ListenerWriteDoc::_fillCellProps(PT_AttrPropIndex api, UT_String & sC
 	{
 		sProp = "bg-style";
 		sPropVal= pszBgStyle;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 	pSectionAP->getProperty ("bgcolor",          pszBgColor);
 	if (pszBgColor && *pszBgColor)
 	{
 		sProp = "bgcolor";
 		sPropVal= pszBgColor;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 	pSectionAP->getProperty ("background-color", pszBackgroundColor);
 	if (pszBackgroundColor && *pszBackgroundColor)
 	{
 		sProp = "background-color";
 		sPropVal= pszBackgroundColor;
-		UT_String_setProperty(sCellProps,sProp,sPropVal);
+		UT_std_string_setProperty(sCellProps, sProp, sPropVal);
 	}
 }
 
@@ -3783,10 +3784,10 @@ void s_RTF_ListenerWriteDoc::_newRow(void)
 	colwidth = (_getColumnWidthInches() - dColSpace*0.5)/dcells;
 
 	UT_sint32 iNext = 1;
-	UT_String sTableProps;
+	std::string sTableProps;
 	PT_AttrPropIndex tableAPI = m_Table.getTableAPI();
 	_fillTableProps(tableAPI,sTableProps);
-	
+
 	for(i=0; i < m_Table.getNumCols(); i = iNext)
 	{
 		m_Table.setCellRowCol(row,i);
@@ -3963,7 +3964,7 @@ void s_RTF_ListenerWriteDoc::_export_AbiWord_Table_props(PT_AttrPropIndex api)
 //
 	m_pie->_rtf_open_brace();
 	m_pie->_rtf_keyword("*");
-	UT_String sTableProps;
+	std::string sTableProps;
 	sTableProps.clear();
 	_fillTableProps(api,sTableProps);
 	xxx_UT_DEBUGMSG(("Table props are %s \n",sTableProps.c_str()));
@@ -3975,21 +3976,21 @@ void s_RTF_ListenerWriteDoc::_export_AbiWord_Table_props(PT_AttrPropIndex api)
  * This method fills the suppiled string with all the properties of the 
  * table given by api
  */
-void s_RTF_ListenerWriteDoc::_fillTableProps(PT_AttrPropIndex api, UT_String & sTableProps)
+void s_RTF_ListenerWriteDoc::_fillTableProps(PT_AttrPropIndex api, std::string & sTableProps)
 {
 	const PP_AttrProp* pSectionAP = NULL;
 	m_pDocument->getAttrProp(api, &pSectionAP);
 	const gchar* pszHomogeneous = NULL;
 	pSectionAP->getProperty("homogeneous", pszHomogeneous);
-	UT_String sPropVal;
-	UT_String sProp;
+	std::string sPropVal;
+	std::string sProp;
 	if (pszHomogeneous && pszHomogeneous[0])
 	{
 		if(atoi(pszHomogeneous) == 1)
 		{
 			sProp = "homogeneous";
 			sPropVal= "1";
-			UT_String_setProperty(sTableProps,sProp,sPropVal);
+			UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 		}
 	}
 	const gchar* pszLeftOffset = NULL;
@@ -4005,28 +4006,28 @@ void s_RTF_ListenerWriteDoc::_fillTableProps(PT_AttrPropIndex api, UT_String & s
 	{
 		sProp = "table-margin-left";
 		sPropVal= pszLeftOffset;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 
 	if(pszTopOffset && pszTopOffset[0])
 	{
 		sProp = "table-margin-top";
 		sPropVal= pszTopOffset;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 
 	if(pszRightOffset && pszRightOffset[0])
 	{
 		sProp = "table-margin-right";
 		sPropVal= pszRightOffset;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 
 	if(pszBottomOffset && pszBottomOffset[0])
 	{
 		sProp = "table-margin-bottom";
 		sPropVal= pszBottomOffset;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 
 	const gchar * pszLineThick = NULL;
@@ -4035,7 +4036,7 @@ void s_RTF_ListenerWriteDoc::_fillTableProps(PT_AttrPropIndex api, UT_String & s
 	{
 		sProp = "table-line-thickness";
 		sPropVal= pszLineThick;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 
 	const gchar * pszTableColSpacing = NULL;
@@ -4046,13 +4047,13 @@ void s_RTF_ListenerWriteDoc::_fillTableProps(PT_AttrPropIndex api, UT_String & s
 	{
 		sProp = "table-col-spacing";
 		sPropVal= pszTableColSpacing;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	if(pszTableRowSpacing && *pszTableRowSpacing)
 	{
 		sProp = "table-row-spacing";
 		sPropVal= pszTableRowSpacing;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	const gchar * pszLeftColPos = NULL;
 	const gchar * pszColumnProps = NULL;
@@ -4062,13 +4063,13 @@ void s_RTF_ListenerWriteDoc::_fillTableProps(PT_AttrPropIndex api, UT_String & s
 	{
 		sProp = "table-column-leftpos";
 		sPropVal= pszLeftColPos;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	if(pszColumnProps && *pszColumnProps)
 	{
 		sProp = "table-column-props";
 		sPropVal= pszColumnProps;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 //
 // global row height type
@@ -4080,14 +4081,14 @@ void s_RTF_ListenerWriteDoc::_fillTableProps(PT_AttrPropIndex api, UT_String & s
 	{
 		sProp = "table-row-height-type";
 		sPropVal= pszRowHeightType;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	pSectionAP->getProperty("table-row-height", pszRowHeight);
 	if(pszRowHeight && *pszRowHeight)
 	{
 		sProp = "table-row-height";
 		sPropVal= pszRowHeight;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 //
 // Positioned row controls
@@ -4098,7 +4099,7 @@ void s_RTF_ListenerWriteDoc::_fillTableProps(PT_AttrPropIndex api, UT_String & s
 	{
 		sProp = "table-row-heights";
 		sPropVal= pszRowHeights;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 
 	/* table-border properties:
@@ -4109,7 +4110,7 @@ void s_RTF_ListenerWriteDoc::_fillTableProps(PT_AttrPropIndex api, UT_String & s
 	{
 		sProp = "color";
 		sPropVal= pszColor;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	const gchar * pszBorderColor = NULL;
 	const gchar * pszBorderStyle = NULL;
@@ -4120,14 +4121,14 @@ void s_RTF_ListenerWriteDoc::_fillTableProps(PT_AttrPropIndex api, UT_String & s
 	{
 		sProp = "bot-color";
 		sPropVal= pszBorderColor;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	pSectionAP->getProperty ("bot-style",       pszBorderStyle);
 	if (pszBorderStyle && *pszBorderStyle)
 	{
 		sProp = "bot-style";
 		sPropVal= pszBorderStyle;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 
 	pSectionAP->getProperty ("bot-thickness",   pszBorderWidth);
@@ -4135,7 +4136,7 @@ void s_RTF_ListenerWriteDoc::_fillTableProps(PT_AttrPropIndex api, UT_String & s
 	{
 		sProp = "bot-thickness";
 		sPropVal= pszBorderStyle;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	pszBorderColor = NULL;
 	pszBorderStyle = NULL;
@@ -4149,19 +4150,19 @@ void s_RTF_ListenerWriteDoc::_fillTableProps(PT_AttrPropIndex api, UT_String & s
 	{
 		sProp = "left-color";
 		sPropVal= pszBorderColor;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	if (pszBorderStyle && *pszBorderStyle)
 	{
 		sProp = "left-style";
 		sPropVal= pszBorderStyle;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	if (pszBorderWidth && *pszBorderWidth)
 	{
 		sProp = "left-thickness";
 		sPropVal= pszBorderStyle;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 
 	pszBorderColor = NULL;
@@ -4176,19 +4177,19 @@ void s_RTF_ListenerWriteDoc::_fillTableProps(PT_AttrPropIndex api, UT_String & s
 	{
 		sProp = "right-color";
 		sPropVal= pszBorderColor;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	if (pszBorderStyle && *pszBorderStyle)
 	{
 		sProp = "right-style";
 		sPropVal= pszBorderStyle;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	if (pszBorderWidth && *pszBorderWidth)
 	{
 		sProp = "right-thickness";
 		sPropVal= pszBorderStyle;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 
 	pszBorderColor = NULL;
@@ -4202,19 +4203,19 @@ void s_RTF_ListenerWriteDoc::_fillTableProps(PT_AttrPropIndex api, UT_String & s
 	{
 		sProp = "top-color";
 		sPropVal= pszBorderColor;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	if (pszBorderStyle && *pszBorderStyle)
 	{
 		sProp = "top-style";
 		sPropVal= pszBorderStyle;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	if (pszBorderWidth && *pszBorderWidth)
 	{
 		sProp = "top-thickness";
 		sPropVal= pszBorderStyle;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 
 	/* table fill
@@ -4228,25 +4229,25 @@ void s_RTF_ListenerWriteDoc::_fillTableProps(PT_AttrPropIndex api, UT_String & s
 	{
 		sProp = "bg-style";
 		sPropVal= pszBgStyle;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	pSectionAP->getProperty ("bgcolor",          pszBgColor);
 	if (pszBgColor && *pszBgColor)
 	{
 		sProp = "bgcolor";
 		sPropVal= pszBgColor;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	pSectionAP->getProperty ("background-color", pszBackgroundColor);
 	if (pszBackgroundColor && *pszBackgroundColor)
 	{
 		sProp = "background-color";
 		sPropVal= pszBackgroundColor;
-		UT_String_setProperty(sTableProps,sProp,sPropVal);
+		UT_std_string_setProperty(sTableProps, sProp, sPropVal);
 	}
 	sProp = "table-sdh";
-	UT_String_sprintf(sPropVal,"%p",m_Table.getTableSDH());
-	UT_String_setProperty(sTableProps,sProp,sPropVal);
+	sPropVal = UT_std_string_sprintf("%p",m_Table.getTableSDH());
+	UT_std_string_setProperty(sTableProps,sProp,sPropVal);
 	if(sTableProps.size() == 0)
 	{
 		sTableProps += " ";
