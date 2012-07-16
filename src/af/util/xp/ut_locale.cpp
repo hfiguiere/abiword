@@ -1,3 +1,4 @@
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
 /* AbiSource Program Utilities
  * Copyright (C) 2002 Dom Lachowicz
  *
@@ -42,16 +43,15 @@
  * SEE ALSO: man setlocale
  */
 UT_LocaleTransactor::UT_LocaleTransactor (int category, const char * locale)
-  : mCategory (category), mOldLocale (0)
+  : mCategory (category)
 {
-	mOldLocale = g_strdup(setlocale(category, NULL));
+	mOldLocale = setlocale(category, NULL);
 	setlocale (category, locale);
 }
 
 UT_LocaleTransactor::~UT_LocaleTransactor ()
 {
-	setlocale (mCategory, mOldLocale);
-	FREEP(mOldLocale);
+	setlocale (mCategory, mOldLocale.c_str());
 }
 
 /********************************************/
@@ -143,49 +143,49 @@ const std::string& UT_LocaleInfo::getEncoding () const
 
 void UT_LocaleInfo::init (const std::string & locale)
 {
-  if (locale.size () == 0)
-    return;
+	if (locale.empty())
+		return;
 
-  size_t dot    = 0;
-  size_t hyphen = 0;
+	std::string::size_type dot    = 0;
+	std::string::size_type hyphen = 0;
 
-  // take both hyphen types into account
-  hyphen = UT_String_findCh (locale, '_');
-  if (hyphen == (size_t)-1)
-    hyphen = UT_String_findCh (locale, '-');
+	// take both hyphen types into account
+	hyphen = locale.find('_');
+	if (hyphen == std::string::npos)
+		hyphen = locale.find('-');
 
-  dot = UT_String_findCh (locale, '.');
+	dot = locale.find('.');
 
-  if (hyphen == (size_t)-1 && dot == (size_t)-1)
-    {
-      mLanguage = locale.c_str();
-      return;
-    }
-
-  if (hyphen != (size_t)-1 && dot != (size_t)-1)
-    {
-      if (hyphen < dot)
+	if (hyphen == std::string::npos && dot == std::string::npos)
 	{
-	  mLanguage  = locale.substr (0, hyphen).c_str();
-	  mTerritory = locale.substr (hyphen+1, dot-(hyphen+1)).c_str();
-	  mEncoding  = locale.substr (dot+1, locale.size ()-(dot+1)).c_str();
+		mLanguage = locale;
+		return;
 	}
-      else
+
+	if (hyphen != std::string::npos && dot != std::string::npos)
 	{
-	  mLanguage = locale.substr (0, dot).c_str();
-	  mEncoding = locale.substr (dot+1, locale.size ()-(dot+1)).c_str();
+		if (hyphen < dot)
+		{
+			mLanguage  = locale.substr (0, hyphen);
+			mTerritory = locale.substr (hyphen+1, dot-(hyphen+1));
+			mEncoding  = locale.substr (dot+1, locale.size ()-(dot+1));
+		}
+		else
+		{
+			mLanguage = locale.substr (0, dot);
+			mEncoding = locale.substr (dot+1, locale.size ()-(dot+1));
+		}
 	}
-    }
-  else if (dot != (size_t)-1)
-    {
-      mLanguage = locale.substr (0, dot).c_str();
-      mEncoding = locale.substr (dot+1, locale.size ()-(dot+1)).c_str();
-    }
-  else if (hyphen != (size_t)-1)
-    {
-      mLanguage = locale.substr (0, hyphen).c_str();
-      mEncoding = locale.substr (hyphen+1, locale.size ()-(hyphen+1)).c_str();
-    }
+	else if (dot != std::string::npos)
+	{
+		mLanguage = locale.substr (0, dot);
+		mEncoding = locale.substr (dot+1, locale.size ()-(dot+1));
+	}
+	else if (hyphen != std::string::npos)
+	{
+		mLanguage = locale.substr (0, hyphen);
+		mEncoding = locale.substr (hyphen+1, locale.size ()-(hyphen+1));
+	}
 }
 
 /**
@@ -213,11 +213,9 @@ std::string UT_LocaleInfo::toString () const
 
 bool UT_LocaleInfo::operator==(const UT_LocaleInfo & rhs) const
 {
-  if ((this->mLanguage  == rhs.mLanguage) && 
-      (this->mTerritory == rhs.mTerritory) &&
-      (this->mEncoding  == rhs.mEncoding))
-    return true;
-  return false;
+  return ((this->mLanguage  == rhs.mLanguage) && 
+		  (this->mTerritory == rhs.mTerritory) &&
+		  (this->mEncoding  == rhs.mEncoding));
 }
 
 bool UT_LocaleInfo::operator!=(const UT_LocaleInfo & rhs) const
@@ -225,45 +223,44 @@ bool UT_LocaleInfo::operator!=(const UT_LocaleInfo & rhs) const
   return (!(*this == rhs));
 }
 
-/*	
+/*
 	We build the default Abiword user's locale in the form ISO3166-ISO639 pair
-	(e.g. es-MX) from Windows locale information. For example, If the user's selected 
-	country and language are Argentina and Spanish we will build AR-ES. Unfortunally, 
+	(e.g. es-MX) from Windows locale information. For example, If the user's selected
+	country and language are Argentina and Spanish we will build AR-ES. Unfortunally,
 	it's likely that we do not have a string set for this variant of Spanish (there are
 	more than 19). What we do is we provide a fallback locale for this situation.
-	26/01/2003 Jordi 
-		
+	26/01/2003 Jordi
+
 	See bug 4174 for additional details
 */
 const char* UT_getFallBackStringSetLocale(const char* pLocale)
-{	
-	char	szLanguage[3];	
+{
+	char	szLanguage[3];
 	strncpy (szLanguage, pLocale,2);
 	szLanguage[2]='\0';
-	
+
 	// please keep these in alphabetical order
-	
+
 	if (g_ascii_strcasecmp(szLanguage,"ca")==0)
 		return "ca-ES";
 
 	if (g_ascii_strcasecmp(szLanguage,"de")==0)
 		return "de-DE";
-	
+
 	if (g_ascii_strcasecmp(szLanguage,"en")==0)
-		return "en-US";		 	
-	
+		return "en-US";
+
 	if (g_ascii_strcasecmp(szLanguage,"es")==0)
 		return "es-ES";
-	
+
 	if (g_ascii_strcasecmp(szLanguage,"fr")==0)
-		return "fr-FR";		 
-	
-	if (g_ascii_strcasecmp(szLanguage,"nl")==0) 	
+		return "fr-FR";
+
+	if (g_ascii_strcasecmp(szLanguage,"nl")==0)
 		return "nl-NL";
 
-	if (g_ascii_strcasecmp(szLanguage,"ru")==0) 
+	if (g_ascii_strcasecmp(szLanguage,"ru")==0)
 		return "ru-RU";
-
 
 	return NULL;
 }
