@@ -290,7 +290,7 @@ bool UT_validXML(char * pString)
 	int bytesInSequence = 0;
 	int bytesExpectedInSequence = 0;
 
-	UT_String s;
+	std::string s;
 	s.reserve(len);
 
 	for (UT_uint32 k=0; k<len; k++)

@@ -26,13 +26,14 @@
 #include <windows.h>
 #endif
 
+#include <string>
+
 #include "ut_assert.h"
 #include "ut_debugmsg.h"
 #include "ut_string.h"
 #include "ut_xml.h"
 
 #include "ut_misc.h"
-#include "ut_string_class.h"
 
 DefaultReader::DefaultReader () :
   in(0)
@@ -373,39 +374,39 @@ public:
 	{
 		mKey = UT_getAttribute ( "k", atts ) ;
 	}
-	
+
 	virtual void endElement (const gchar * /*name*/)
 	{
 	}
-	
+
 	virtual void charData (const gchar * /*buffer*/, int /*length*/)
 	{
 	}
-	
-	const UT_String & getKey () const { return mKey ; }
-	
+
+	const std::string & getKey () const { return mKey ; }
+
 private:
-	UT_String mKey ;
-} ;
+	std::string mKey;
+};
 
 char * UT_XML_Decode ( const char * inKey )
 {
 	UT_XML parser ;
 
 	UT_XML_Decoder decoder ;
-	
+
 	parser.setListener ( &decoder ) ;
 
-	UT_String toDecode ;
+	std::string toDecode ;
 
 	toDecode = "<?xml version=\"1.0\"?>\n" ;
 	toDecode += "<d k=\"";
-	toDecode += inKey ;
-	toDecode += "\"/>" ;
-	
+	toDecode += inKey;
+	toDecode += "\"/>";
+
 	parser.parse ( toDecode.c_str(), toDecode.size () ) ;
 
-	char * to_return = g_strdup(decoder.getKey ().c_str());
+	char * to_return = g_strdup(decoder.getKey().c_str());
 	xxx_UT_DEBUGMSG(("DOM: returning %s from %s\n", to_return, inKey));	
 	return to_return ;
 }
