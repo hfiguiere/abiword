@@ -167,7 +167,7 @@ void AP_UnixDialog_Stylist::setStyleInGUI(void)
 	gboolean itering;
 	gchar *entry;
 	std::string sLocCurStyle;
-	UT_UTF8String sCurStyle = *getCurStyle();
+	std::string sCurStyle = getCurStyle();
 
 	if((getStyleTree() == NULL) || (sCurStyle.size() == 0))
 		updateDialog();
@@ -178,7 +178,7 @@ void AP_UnixDialog_Stylist::setStyleInGUI(void)
 	if(isStyleTreeChanged())
 		_fillTree();
 
-	pt_PieceTable::s_getLocalisedStyleName(sCurStyle.utf8_str(), sLocCurStyle);
+	pt_PieceTable::s_getLocalisedStyleName(sCurStyle.c_str(), sLocCurStyle);
 
 	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(m_wStyleList));
 	itering = gtk_tree_model_get_iter_first(model, &parent);
@@ -242,7 +242,7 @@ void AP_UnixDialog_Stylist::notifyActiveFrame(XAP_Frame * /*pFrame*/)
  */
 void AP_UnixDialog_Stylist::styleClicked(UT_sint32 row, UT_sint32 col)
 {
-	UT_UTF8String sStyle;
+	std::string sStyle;
 	UT_DEBUGMSG(("row %d col %d clicked \n",row,col));
 
 	if((col == 0) && (getStyleTree()->getNumCols(row) == 1))
@@ -252,7 +252,7 @@ void AP_UnixDialog_Stylist::styleClicked(UT_sint32 row, UT_sint32 col)
 	else
 		getStyleTree()->getStyleAtRowCol(sStyle,row,col-1);
 
-	UT_DEBUGMSG(("StyleClicked row %d col %d style %s \n",row,col,sStyle.utf8_str()));
+	UT_DEBUGMSG(("StyleClicked row %d col %d style %s \n",row,col,sStyle.c_str()));
 	setCurStyle(sStyle);
 }
 
@@ -379,7 +379,7 @@ void  AP_UnixDialog_Stylist::_fillTree(void)
 			for(col =0 ; col < pStyleTree->getNumCols(row); col++)
 			{
 				gtk_tree_store_append (m_wModel, &child_iter, &iter);
-				UT_UTF8String style;
+				std::string style;
 				if(!pStyleTree->getStyleAtRowCol(style,row,col))
 				{
 					UT_ASSERT(UT_SHOULD_NOT_HAPPEN);
