@@ -29,7 +29,6 @@
 #ifndef UT_TYPES_H
 #include "ut_types.h"
 #endif
-#include "ut_string_class.h"
 #include "ut_vector.h"
 #include "time.h"
 
@@ -38,6 +37,7 @@ class XAP_ResourceManager;
 class UT_UUID;
 class XAP_Frame;
 class AV_View;
+class UT_ByteBuf;
 
 // a helper class for history tracking
 class ABI_EXPORT AD_VersionData
@@ -311,8 +311,8 @@ private:
 	XAP_ResourceManager *	m_pResourceManager;
 
 	int				m_iRefCount;
-	std::string		m_szFilename;
-	UT_String		m_szEncodingName;
+	std::string	    m_szFilename;
+	std::string		m_szEncodingName;
 
 	bool			m_bPieceTableChanging;
 	time_t          m_lastSavedTime;
