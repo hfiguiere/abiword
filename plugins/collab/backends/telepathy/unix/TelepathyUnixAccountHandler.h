@@ -22,6 +22,7 @@
 #define __TELEPATHY_ACCOUNT_HANDLERr__
 
 #include <vector>
+#include <string>
 
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
@@ -102,7 +103,7 @@ private:
 	void									_inviteBuddies(TelepathyChatroomPtr pChatroom, const std::vector<std::string>& /*vAcl*/);
 	std::vector<TelepathyBuddyPtr>			_getBuddies(const std::vector<std::string>& vAcl);
 	TelepathyBuddyPtr						_getBuddy(TelepathyBuddyPtr pBuddy);
-	TelepathyChatroomPtr					_getChatroom(const UT_UTF8String& sSessionId);
+	TelepathyChatroomPtr					_getChatroom(const std::string& sSessionId);
 
 	GtkWidget*								table;
 	GtkWidget*								conference_entry;

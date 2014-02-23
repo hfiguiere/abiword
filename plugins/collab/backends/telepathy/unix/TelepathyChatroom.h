@@ -21,6 +21,7 @@
 
 #include <map>
 #include <vector>
+#include <string>
 
 #include <telepathy-glib/telepathy-glib.h>
 #include <boost/shared_ptr.hpp>
@@ -40,7 +41,7 @@ class TelepathyChatroom : public boost::enable_shared_from_this<TelepathyChatroo
 {
 public:
 	TelepathyChatroom(TelepathyAccountHandler* pHandler, TpChannel* pChannel,
-			PD_Document* pDoc, const UT_UTF8String& sSessionId);
+			  PD_Document* pDoc, const std::string& sSessionId);
 
 	bool running()
 		{ return m_pChannel != NULL; }
@@ -74,10 +75,10 @@ public:
 	DBusConnection* getTube()
 		{ return m_pTube; }
 
-	const UT_UTF8String& getSessionId()
+	const std::string& getSessionId()
 		{ return m_sSessionId; }
 
-	void setSessionId(const UT_UTF8String& sSessionId)
+	void setSessionId(const std::string& sSessionId)
 		{ m_sSessionId = sSessionId; }
 
 	std::string getDocName();
@@ -101,7 +102,7 @@ private:
 	TpChannel*					m_pChannel;
 	PD_Document* 				m_pDoc;
 	DBusConnection*				m_pTube;
-	UT_UTF8String				m_sSessionId;
+	std::string				m_sSessionId;
 	std::vector<DTubeBuddyPtr>	m_buddies;
 	std::vector<TelepathyBuddyPtr> m_pending_invitees;
 	std::map<std::string, std::vector<std::string> > m_packet_queue;
