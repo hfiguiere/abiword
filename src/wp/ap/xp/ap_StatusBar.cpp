@@ -217,7 +217,7 @@ class ABI_EXPORT ap_sbf_WordCount : public AP_StatusBarField_TextInfo
 {
 public:
     ap_sbf_WordCount(AP_StatusBar * pSB);
-	
+
     virtual void        notify(AV_View * pView, const AV_ChangeMask mask);
 
 private:
@@ -235,13 +235,12 @@ ap_sbf_WordCount::ap_sbf_WordCount(AP_StatusBar *pSB)
     m_fillMethod = REPRESENTATIVE_STRING;
     m_alignmentMethod = CENTER;
     m_sRepresentativeString = AP_STATUSBAR_WORDCOUNT_REP_STRING;
-    
 }
 
 void ap_sbf_WordCount::notify(AV_View * pavView, const AV_ChangeMask mask)
 {
-	if(AV_CHG_TYPING)
-	{	
+	if(mask & AV_CHG_TYPING)
+	{
 		FV_View *pview = static_cast<FV_View *>(pavView);
 	        if(!pview->isLayoutFilling())
 	        {
@@ -251,7 +250,6 @@ void ap_sbf_WordCount::notify(AV_View * pavView, const AV_ChangeMask mask)
 	}
 	if (getListener())
 	    getListener()->notify();
-    	
 }
 /////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
