@@ -1,21 +1,21 @@
-/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t -*- */
 /* AbiWord
  * Copyright (C) 2004-2006 Tomas Frydrych <dr.tomas@yahoo.co.uk>
- * Copyright (C) 2009 Hubert Figuiere
- * 
+ * Copyright (C) 2009-2016 Hubert Figuiere
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA.
  */
 
@@ -148,35 +148,23 @@ void GR_UnixCairoGraphics::initWidget(GtkWidget* widget)
 #define SQUARE(A) (A)*(A)
 void GR_UnixCairoGraphics::init3dColors(GtkWidget* /*w*/)
 {
-	GtkStyleContext* pCtxt = gtk_style_context_new();
+	m_styleContext = gtk_style_context_new();
 	GtkWidgetPath *path = gtk_widget_path_new();
 	gtk_widget_path_append_type(path, GTK_TYPE_TEXT_VIEW);
-	gtk_style_context_set_path(pCtxt, path);
+	gtk_style_context_set_path(m_styleContext, path);
 	gtk_widget_path_free(path);
 
 	GdkRGBA rgba1, rgba2, rgba_;
-	bool bUseThemeColors = true;
 
-	gtk_style_context_save(pCtxt);
-	gtk_style_context_add_class(pCtxt, GTK_STYLE_CLASS_BUTTON);
+	gtk_style_context_save(m_styleContext);
+	gtk_style_context_add_class(m_styleContext, GTK_STYLE_CLASS_BUTTON);
 
-	gtk_style_context_get_color (pCtxt, GTK_STATE_FLAG_NORMAL, &rgba1);
-	gtk_style_context_get_background_color (pCtxt, GTK_STATE_FLAG_NORMAL, &rgba2);
-	if ((SQUARE(rgba1.red-rgba2.red) + SQUARE(rgba1.green-rgba2.green) + SQUARE(rgba1.blue - rgba2.blue)) < 0.01)
-	{
-		// There is very little contrast between the bg and fg colors
-		// Use default values (black for fg and white for bg)
-		// This happens for unknown reasons with some themes
-		UT_DEBUGMSG(("No contrast between the theme foreground and background colors! Use black and white instead.\n"));
-		bUseThemeColors = false;
-		rgba1.red = 0.;
-		rgba1.green = 0.;
-		rgba1.blue = 0.;
-		rgba2.red = 1.;
-		rgba2.green = 1.;
-		rgba2.blue = 1.;
-	}
-	m_3dColors[CLR3D_Foreground] = _convertGdkRGBA(rgba1);
+	gtk_style_context_get_color (m_styleContext, GTK_STATE_FLAG_NORMAL, &rgba1);
+	printf("GDKCOLOR: (get_color NORMAL) %f %f %f %f\n", rgba1.red, rgba1.green, rgba1.blue, rgba1.alpha);
+	gtk_style_context_get_background_color (m_styleContext, GTK_STATE_FLAG_NORMAL, &rgba2);
+	printf("GDKCOLOR: (get_bg_color NORMAL) %f %f %f %f\n", rgba2.red, rgba2.green, rgba2.blue, rgba2.alpha);
+
+	m_3dColors[CLR3D_Highlight] = _convertGdkRGBA(rgba1);
 	m_3dColors[CLR3D_Background] = _convertGdkRGBA(rgba2);
 	rgba_.alpha = 1.;   // we don't really care, abiword does not use transparency
 	rgba_.red = rgba1.red*COLOR_MIX + rgba2.red*(1.-COLOR_MIX);
@@ -189,15 +177,10 @@ void GR_UnixCairoGraphics::init3dColors(GtkWidget* /*w*/)
 	rgba_.blue = rgba1.blue*(1.-COLOR_MIX) + rgba2.blue*COLOR_MIX;
 	m_3dColors[CLR3D_BevelDown]  = _convertGdkRGBA(rgba_);
 
-	if (bUseThemeColors)
-	{
-		gtk_style_context_get_background_color (pCtxt, GTK_STATE_FLAG_PRELIGHT, &rgba2);
-	}
-	gtk_style_context_restore(pCtxt);
-	m_3dColors[CLR3D_Highlight]	= _convertGdkRGBA(rgba2);
+	gtk_style_context_get_background_color (m_styleContext, GTK_STATE_FLAG_PRELIGHT, &rgba2);
+	gtk_style_context_restore(m_styleContext);
+	m_3dColors[CLR3D_Foreground]	= _convertGdkRGBA(rgba2);
 	m_bHave3DColors = true;
-
-	g_object_unref(pCtxt);
 }
 #undef COLOR_MIX
 #undef SQUARE
@@ -514,3 +497,33 @@ bool GR_UnixCairoGraphics::queryProperties(GR_Graphics::Properties gp) const
 	}
 }
 
+/**
+ * This is an override that will use the GtkStyle code to actually render
+ * directly.
+ */
+void GR_UnixCairoGraphics::fillRect(GR_Color3D c, UT_sint32 x, UT_sint32 y,
+                                    UT_sint32 w, UT_sint32 h)
+{
+    switch(c) {
+    case GR_Graphics::CLR3D_Background:
+    {
+        if (m_cr == NULL) {
+            return;
+        }
+        _setProps();
+        cairo_save (m_cr);
+
+        GtkStateFlags state = GTK_STATE_FLAG_NORMAL;
+        GtkStateFlags oldstate = gtk_style_context_get_state(m_styleContext);
+        gtk_style_context_set_state(m_styleContext, state);
+        gtk_render_background (m_styleContext,
+                               m_cr, tdu(x), tdu(y), tdu(w), tdu(h));
+        gtk_style_context_set_state(m_styleContext, oldstate);
+        cairo_restore (m_cr);
+        break;
+    }
+    default:
+        GR_CairoGraphics::fillRect(c, x, y, w, h);
+        return;
+    }
+}
