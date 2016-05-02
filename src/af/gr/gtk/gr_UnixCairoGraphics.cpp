@@ -28,6 +28,7 @@
 
 #include "xap_App.h"
 #include "xap_EncodingManager.h"
+#include "xap_GtkStyle.h"
 
 GR_UnixCairoGraphicsBase::~GR_UnixCairoGraphicsBase()
 {
@@ -148,24 +149,19 @@ void GR_UnixCairoGraphics::initWidget(GtkWidget* widget)
 #define SQUARE(A) (A)*(A)
 void GR_UnixCairoGraphics::init3dColors(GtkWidget* /*w*/)
 {
-	m_styleContext = gtk_style_context_new();
-	GtkWidgetPath *path = gtk_widget_path_new();
-	gtk_widget_path_append_type(path, GTK_TYPE_TEXT_VIEW);
-	gtk_style_context_set_path(m_styleContext, path);
-	gtk_widget_path_free(path);
-
-	GdkRGBA rgba1, rgba2, rgba_;
-
-	gtk_style_context_save(m_styleContext);
-	gtk_style_context_add_class(m_styleContext, GTK_STYLE_CLASS_BUTTON);
-
-	gtk_style_context_get_color (m_styleContext, GTK_STATE_FLAG_NORMAL, &rgba1);
-	printf("GDKCOLOR: (get_color NORMAL) %f %f %f %f\n", rgba1.red, rgba1.green, rgba1.blue, rgba1.alpha);
-	gtk_style_context_get_background_color (m_styleContext, GTK_STATE_FLAG_NORMAL, &rgba2);
+	GdkRGBA rgba2;
+	// XXX this is gonna leak.
+	m_styleBg = XAP_GtkStyle_get_style(nullptr, "button");
+	gtk_style_context_get_background_color (m_styleBg, GTK_STATE_FLAG_NORMAL, &rgba2);
 	printf("GDKCOLOR: (get_bg_color NORMAL) %f %f %f %f\n", rgba2.red, rgba2.green, rgba2.blue, rgba2.alpha);
-
-	m_3dColors[CLR3D_Highlight] = _convertGdkRGBA(rgba1);
 	m_3dColors[CLR3D_Background] = _convertGdkRGBA(rgba2);
+
+	GdkRGBA rgba1, rgba_;
+	m_styleHighlight = XAP_GtkStyle_get_style(nullptr, "textview.view");
+	gtk_style_context_get_color (m_styleHighlight, GTK_STATE_FLAG_NORMAL, &rgba1);
+	printf("GDKCOLOR: (get_color NORMAL) %f %f %f %f\n", rgba1.red, rgba1.green, rgba1.blue, rgba1.alpha);
+	m_3dColors[CLR3D_Highlight] = _convertGdkRGBA(rgba1);
+
 	rgba_.alpha = 1.;   // we don't really care, abiword does not use transparency
 	rgba_.red = rgba1.red*COLOR_MIX + rgba2.red*(1.-COLOR_MIX);
 	rgba_.green = rgba1.green*COLOR_MIX + rgba2.green*(1.-COLOR_MIX);
@@ -177,9 +173,12 @@ void GR_UnixCairoGraphics::init3dColors(GtkWidget* /*w*/)
 	rgba_.blue = rgba1.blue*(1.-COLOR_MIX) + rgba2.blue*COLOR_MIX;
 	m_3dColors[CLR3D_BevelDown]  = _convertGdkRGBA(rgba_);
 
-	gtk_style_context_get_background_color (m_styleContext, GTK_STATE_FLAG_PRELIGHT, &rgba2);
-	gtk_style_context_restore(m_styleContext);
+
+	GtkStyleContext *text_style = XAP_GtkStyle_get_style(NULL, "label.view");
+	gtk_style_context_get_color (text_style, GTK_STATE_FLAG_NORMAL, &rgba2);
 	m_3dColors[CLR3D_Foreground]	= _convertGdkRGBA(rgba2);
+	g_object_unref(text_style);
+
 	m_bHave3DColors = true;
 }
 #undef COLOR_MIX
@@ -506,6 +505,7 @@ void GR_UnixCairoGraphics::fillRect(GR_Color3D c, UT_sint32 x, UT_sint32 y,
 {
     switch(c) {
     case GR_Graphics::CLR3D_Background:
+    case GR_Graphics::CLR3D_Highlight:
     {
         if (m_cr == NULL) {
             return;
@@ -513,12 +513,19 @@ void GR_UnixCairoGraphics::fillRect(GR_Color3D c, UT_sint32 x, UT_sint32 y,
         _setProps();
         cairo_save (m_cr);
 
-        GtkStateFlags state = GTK_STATE_FLAG_NORMAL;
-        GtkStateFlags oldstate = gtk_style_context_get_state(m_styleContext);
-        gtk_style_context_set_state(m_styleContext, state);
-        gtk_render_background (m_styleContext,
-                               m_cr, tdu(x), tdu(y), tdu(w), tdu(h));
-        gtk_style_context_set_state(m_styleContext, oldstate);
+		GtkStyleContext *context = nullptr;
+		switch(c) {
+		case GR_Graphics::CLR3D_Background:
+			context = m_styleBg;
+			break;
+		case GR_Graphics::CLR3D_Highlight:
+			context = m_styleHighlight;
+			break;
+		default:
+			UT_ASSERT(0);
+			return;
+		}
+        gtk_render_background (context, m_cr, tdu(x), tdu(y), tdu(w), tdu(h));
         cairo_restore (m_cr);
         break;
     }

@@ -16,6 +16,8 @@ libgtk_la_SOURCES = \
 	xap_GtkSignalBlocker.h \
 	xap_GtkComboBoxHelpers.h \
 	xap_GtkComboBoxHelpers.cpp \
+	xap_GtkStyle.h \
+	xap_GtkStyle.cpp \
 	xap_EmbeddedFeatures.h \
 	xap_UnixApp.cpp \
 	xap_UnixApp.h \
@@ -42,7 +44,7 @@ libgtk_la_SOURCES = \
 	xap_UnixDlg_FileOpenSaveAs.h \
 	xap_UnixDlg_FontChooser.cpp \
 	xap_UnixDlg_FontChooser.h \
-    xap_UnixDlg_History.cpp \
+	xap_UnixDlg_History.cpp \
 	xap_UnixDlg_History.h \
 	xap_UnixDlg_HTMLOptions.cpp \
 	xap_UnixDlg_HTMLOptions.h \

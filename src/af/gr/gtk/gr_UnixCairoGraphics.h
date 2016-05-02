@@ -117,7 +117,8 @@ private:
 	bool m_Painting;
 	gulong m_Signal, m_DestroySignal;
 	GtkWidget *m_Widget;
-	GtkStyleContext* m_styleContext;
+	GtkStyleContext* m_styleBg;
+	GtkStyleContext* m_styleHighlight;
 };
 
 
