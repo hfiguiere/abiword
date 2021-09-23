@@ -98,21 +98,22 @@ ABI_EXPORT std::vector<std::string> UT_simpleSplit(const std::string & str,
  */
 ABI_EXPORT std::string UT_ellipsisPath(const std::string & path, size_t maxlen, size_t cut);
 
-/*!
- * Some functions to add/subtract and extract std::string properties from a std::string of properties.
- */
-ABI_EXPORT std::string UT_std_string_getPropVal(const std::string & sPropertyString, const std::string & sProp);
-ABI_EXPORT void UT_std_string_removeProperty(std::string & sPropertyString, const std::string & sProp);
-ABI_EXPORT void UT_std_string_setProperty(std::string & sPropertyString, const std::string &sProp, const std::string & sVal);
-
-ABI_EXPORT void UT_std_string_addPropertyString(std::string & sPropertyString, const std::string &sNewProp);
-
 
 ABI_EXPORT const std::string StreamToString( std::istream& iss );
 ABI_EXPORT std::string toTimeString( time_t TT );
 ABI_EXPORT time_t toTime( struct tm *tm );
 ABI_EXPORT time_t parseTimeString( const std::string& stddatestr );
 
+// std::string associated functions
+
+/*!
+ * Some functions to add/subtract and extract std::string properties from a std::string of properties.
+ */
+ABI_EXPORT std::string UT_std_string_getPropVal(const std::string & sPropertyString, const std::string & sProp);
+ABI_EXPORT void UT_std_string_removeProperty(std::string & sPropertyString, const std::string & sProp);
+ABI_EXPORT void UT_std_string_addPropertyString(std::string & sPropertyString, const std::string &sNewProp);
+
+ABI_EXPORT void UT_std_string_setProperty(std::string & sPropertyString, const std::string& sProp, const std::string & sVal);
 
 
 

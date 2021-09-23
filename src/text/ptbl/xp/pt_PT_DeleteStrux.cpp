@@ -549,56 +549,56 @@ bool pt_PieceTable::_deleteHdrFtrsFromSectionStruxIfPresent(pf_Frag_Strux_Sectio
 	UT_String FooterV,FooterEvenV,FooterLastV,FooterFirstV;
 	vecHdrFtr.clear();
 	const gchar * szHeaderV = NULL;
-	bool bres = pAP->getAttribute("header",szHeaderV);
+	bool bres = pAP->getAttribute(_PN("header"), szHeaderV);
 	if(szHeaderV && *szHeaderV && (strcmp(szHeaderV,"0") != 0))
 	{
 		HeaderV = szHeaderV;
 		vecHdrFtr.addItem((void *) HeaderV.c_str());
 	}
 	szHeaderV =  NULL;
-	bres = pAP->getAttribute("header-even",szHeaderV);
+	bres = pAP->getAttribute(_PN("header-even"), szHeaderV);
 	if(szHeaderV && *szHeaderV && (strcmp(szHeaderV,"0") != 0))
 	{
 		HeaderEvenV = szHeaderV;
 		vecHdrFtr.addItem((void *) HeaderEvenV.c_str());
 	}
 	szHeaderV =  NULL;
-	bres = pAP->getAttribute("header-last",szHeaderV);
+	bres = pAP->getAttribute(_PN("header-last"), szHeaderV);
 	if(szHeaderV && *szHeaderV && (strcmp(szHeaderV,"0") != 0))
 	{
 		HeaderLastV = szHeaderV;
 		vecHdrFtr.addItem((void *) HeaderLastV.c_str());
 	}
 	szHeaderV =  NULL;
-	bres = pAP->getAttribute("header-first",szHeaderV);
+	bres = pAP->getAttribute(_PN("header-first"), szHeaderV);
 	if(szHeaderV && *szHeaderV && (strcmp(szHeaderV,"0") != 0))
 	{
 		HeaderFirstV = szHeaderV;
 		vecHdrFtr.addItem((void *) HeaderFirstV.c_str());
 	}
 	szHeaderV =  NULL;
-	bres = pAP->getAttribute("footer",szHeaderV);
+	bres = pAP->getAttribute(_PN("footer"), szHeaderV);
 	if(szHeaderV && *szHeaderV && (strcmp(szHeaderV,"0") != 0))
 	{
 		FooterV = szHeaderV;
 		vecHdrFtr.addItem((void *) FooterV.c_str());
 	}
 	szHeaderV =  NULL;
-	bres = pAP->getAttribute("footer-even",szHeaderV);
+	bres = pAP->getAttribute(_PN("footer-even"), szHeaderV);
 	if(szHeaderV && *szHeaderV && (strcmp(szHeaderV,"0") != 0))
 	{
 		FooterEvenV = szHeaderV;
 		vecHdrFtr.addItem((void *) FooterEvenV.c_str());
 	}
 	szHeaderV =  NULL;
-	bres = pAP->getAttribute("footer-last",szHeaderV);
+	bres = pAP->getAttribute(_PN("footer-last"), szHeaderV);
 	if(szHeaderV && *szHeaderV && (strcmp(szHeaderV,"0") != 0))
 	{
 		FooterLastV = szHeaderV;
 		vecHdrFtr.addItem((void *) FooterLastV.c_str());
 	}
 	szHeaderV =  NULL;
-	bres = pAP->getAttribute("footer-first",szHeaderV);
+	bres = pAP->getAttribute(_PN("footer-first"), szHeaderV);
 	if(szHeaderV && *szHeaderV && (strcmp(szHeaderV,"0") != 0))
 	{
 		FooterFirstV = szHeaderV;
@@ -638,7 +638,7 @@ bool pt_PieceTable::_deleteHdrFtrsFromSectionStruxIfPresent(pf_Frag_Strux_Sectio
 					const PP_AttrProp * pAPHdr = NULL;
 					getAttrProp(indexAPHdr, &pAPHdr);
 					const gchar * szID = NULL;
-					bres = pAPHdr->getAttribute("id",szID);
+					bres = pAPHdr->getAttribute(_PN("id"), szID);
 					UT_DEBUGMSG(("SEVIOR: Found candidate id = %s \n",szID));
 					if(bres && (szID != NULL))
 					{

@@ -436,7 +436,7 @@ void fp_Run::lookupProperties(GR_Graphics * pG)
 	
 	//evaluate the "display" property and superimpose it over anything
 	//we got as the result of revisions
-	const gchar *pszDisplay = PP_evalProperty("display",pSpanAP,pBlockAP,
+	const gchar *pszDisplay = PP_evalProperty(_PN("display"),pSpanAP,pBlockAP,
 												 pSectionAP, pDoc, true);
 
 	if(pszDisplay && !strcmp(pszDisplay,"none"))
@@ -450,7 +450,7 @@ void fp_Run::lookupProperties(GR_Graphics * pG)
 	// here we handle background colour -- we parse the property into
 	// m_pColorHL and then call updateHighlightColor() to overlay any
 	// colour from higher layout elements
-	const char * pszBGcolor = PP_evalProperty("bgcolor",pSpanAP,pBlockAP,pSectionAP, pDoc, true);
+	const char * pszBGcolor = PP_evalProperty(_PN("bgcolor"),pSpanAP,pBlockAP,pSectionAP, pDoc, true);
 	_setColorHL(pszBGcolor);
 	//	m_FillType.setColor(pszBGcolor); // we should clear with screen color
 	// and draw with background color
@@ -1858,7 +1858,7 @@ text so we can keep the original code.
 	
 	getSpanAP(pSpanAP);
 	getBlockAP(pBlockAP);
-	UT_parseColor(PP_evalProperty("color",pSpanAP,pBlockAP, pSectionAP, pDoc, true), clrFG);
+	UT_parseColor(PP_evalProperty(_PN("color"),pSpanAP,pBlockAP, pSectionAP, pDoc, true), clrFG);
 
 	// This gives the baseline of the selection.
 	// need to clear full height of line, in case we had a selection
@@ -2027,7 +2027,7 @@ void fp_TabRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 		pG = getGraphics();
 	}
 	UT_RGBColor clrFG;
-	UT_parseColor(PP_evalProperty("color",pSpanAP,pBlockAP,pSectionAP, getBlock()->getDocument(), true), clrFG);
+	UT_parseColor(PP_evalProperty(_PN("color"),pSpanAP,pBlockAP,pSectionAP, getBlock()->getDocument(), true), clrFG);
 	bChanged |= (clrFG != _getColorFG());
 	_setColorFG(clrFG);
 
@@ -2053,7 +2053,7 @@ void fp_TabRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 //
 // Lookup Decoration properties for this run
 //
-	const gchar *pszDecor = PP_evalProperty("text-decoration",pSpanAP,pBlockAP,pSectionAP,  getBlock()->getDocument(), true);
+	const gchar *pszDecor = PP_evalProperty(_PN("text-decoration"),pSpanAP,pBlockAP,pSectionAP,  getBlock()->getDocument(), true);
 	_setLineWidth(getToplineThickness());
 
 	UT_uint32 oldDecors = _getDecorations();
@@ -2370,7 +2370,7 @@ void fp_TabRun::_draw(dg_DrawArgs* pDA)
 	getSpanAP(pSpanAP);
 	getBlockAP(pBlockAP);
 	
-	UT_parseColor(PP_evalProperty("color",pSpanAP,pBlockAP, pSectionAP, pDoc, true), clrFG);
+	UT_parseColor(PP_evalProperty(_PN("color"),pSpanAP,pBlockAP, pSectionAP, pDoc, true), clrFG);
 	
 	GR_Painter painter(pG);
 
@@ -3058,7 +3058,7 @@ fp_HyperlinkRun::fp_HyperlinkRun( fl_BlockLayout* pBL,
 	_setDirection(UT_BIDI_WS);
 
 	_setTargetFromAPAttribute( "xlink:href");
-	_setTitleFromAPAttribute( "xlink:title");
+	_setTitleFromAPAttribute(_PN("xlink:title"));
 }
 
 
@@ -3130,13 +3130,13 @@ void fp_HyperlinkRun::_setTargetFromAPAttribute( const gchar* pAttrName )
 	getSpanAP(pAP);
 	
 	const gchar * pTarget;
-	const gchar * pName;
+    PP_PropName pName;
 	bool bFound = false;
 	UT_uint32 k = 0;
 
 	while(pAP->getNthAttribute(k++, pName, pTarget))
 	{
-		bFound = (0 == g_ascii_strncasecmp(pName,pAttrName,strlen(pAttrName)));
+		bFound = (pName == pAttrName);
 		if(bFound)
 			break;
 	}
@@ -3160,7 +3160,7 @@ void fp_HyperlinkRun::_setTargetFromAPAttribute( const gchar* pAttrName )
 	}
 }
 
-void fp_HyperlinkRun::_setTitleFromAPAttribute( const gchar* pAttrName )
+void fp_HyperlinkRun::_setTitleFromAPAttribute(PP_PropName pAttrName )
 {
 	const PP_AttrProp * pAP = NULL;
 	getSpanAP(pAP);
@@ -3225,7 +3225,7 @@ void fp_EndOfParagraphRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 	xxx_UT_DEBUGMSG(("After Inherit props Height is %d \n",getHeight()));
 	const gchar* pRevision = NULL;
 
-	if(pBlockAP && pBlockAP->getAttribute("revision", pRevision))
+	if(pBlockAP && pBlockAP->getAttribute(_PN("revision"), pRevision))
 	{
 		_setRevisions(std::unique_ptr<PP_RevisionAttr>(new PP_RevisionAttr(pRevision)));
 	}
@@ -3534,13 +3534,13 @@ void fp_ImageRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 	getBlock()->getField(getBlockOffset(), fd);
 	_setField(fd);
 	const gchar * szWidth = NULL;
-	pSpanAP->getProperty("width", szWidth);
+	pSpanAP->getProperty(_PN("width"), szWidth);
 	if(szWidth == NULL)
 	{
 		szWidth = "0in";
 	}
 	const gchar * szHeight = NULL;
-	pSpanAP->getProperty("height", szHeight);
+	pSpanAP->getProperty(_PN("height"), szHeight);
 	if(pG == NULL)
 	{
 		pG = getGraphics();
@@ -3619,8 +3619,8 @@ void fp_ImageRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 		m_sCachedWidthProp = UT_formatDimensionString(DIM_IN,static_cast<double>(maxW)/UT_LAYOUT_RESOLUTION);
 		m_sCachedHeightProp = UT_formatDimensionString(DIM_IN,static_cast<double>(maxH)/UT_LAYOUT_RESOLUTION);
 		PP_PropertyVector props = {
-			"width", m_sCachedWidthProp.c_str(),
-			"height", m_sCachedHeightProp.c_str()
+			{"width", m_sCachedWidthProp.c_str()},
+			{"height", m_sCachedHeightProp.c_str()}
 		};
 		if(!pG->queryProperties(GR_Graphics::DGP_PAPER))
 		{
@@ -4097,14 +4097,14 @@ void fp_FieldRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 	FL_DocLayout * pLayout = getBlock()->getDocLayout();
 
 	UT_RGBColor clrFG;
-	UT_parseColor(PP_evalProperty("color",pSpanAP,pBlockAP,pSectionAP, getBlock()->getDocument(), true), clrFG);
+	UT_parseColor(PP_evalProperty(_PN("color"),pSpanAP,pBlockAP,pSectionAP, getBlock()->getDocument(), true), clrFG);
 	_setColorFG(clrFG);
 
 	const char * pszFieldColor = NULL;
-	pszFieldColor = PP_evalProperty("field-color",pSpanAP,pBlockAP,pSectionAP, getBlock()->getDocument(), true);
+	pszFieldColor = PP_evalProperty(_PN("field-color"),pSpanAP,pBlockAP,pSectionAP, getBlock()->getDocument(), true);
 
 	const char * pszBGColor = NULL;
-	pszBGColor = PP_evalProperty("bgcolor",pSpanAP,pBlockAP,pSectionAP, getBlock()->getDocument(), true);
+	pszBGColor = PP_evalProperty(_PN("bgcolor"),pSpanAP,pBlockAP,pSectionAP, getBlock()->getDocument(), true);
 
 //
 // FIXME: The "ffffff" is for backwards compatibility. If we don't exclude this
@@ -4131,13 +4131,13 @@ void fp_FieldRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 
 	if(pSpanAP)
 	{
-		pSpanAP->getAttribute("type", pszType);
-		pSpanAP->getAttribute("param", pszParam);
+		pSpanAP->getAttribute(_PN("type"), pszType);
+		pSpanAP->getAttribute(_PN("param"), pszParam);
 	}
 	else
 	{
-		pBlockAP->getAttribute("type",pszType);
-		pBlockAP->getAttribute("param", pszParam);
+		pBlockAP->getAttribute(_PN("type"), pszType);
+		pBlockAP->getAttribute(_PN("param"), pszParam);
 	}
 
 	if(pszParam)
@@ -4179,7 +4179,7 @@ void fp_FieldRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 	_setDescent(pG->getFontDescent(_getFont()));
 	_setHeight(pG->getFontHeight(_getFont()));
 
-	const gchar * pszPosition = PP_evalProperty("text-position",pSpanAP,pBlockAP,pSectionAP, pDoc, true);
+	const gchar * pszPosition = PP_evalProperty(_PN("text-position"),pSpanAP,pBlockAP,pSectionAP, pDoc, true);
 
 	if (0 == strcmp(pszPosition, "superscript"))
 	{
@@ -4196,7 +4196,7 @@ void fp_FieldRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 //
 // Lookup Decoration properties for this run
 //
-	const gchar *pszDecor = PP_evalProperty("text-decoration",pSpanAP,pBlockAP,pSectionAP,  getBlock()->getDocument(), true);
+	const gchar *pszDecor = PP_evalProperty(_PN("text-decoration"),pSpanAP,pBlockAP,pSectionAP,  getBlock()->getDocument(), true);
 	_setLineWidth(getToplineThickness());
 	_setDecorations(0);
 	gchar* p;
@@ -4996,7 +4996,7 @@ fp_FieldFootnoteRefRun::fp_FieldFootnoteRefRun(fl_BlockLayout* pBL, UT_uint32 iO
 	UT_return_if_fail(pp);
 
 	const gchar * footid;
-	bool bRes = pp->getAttribute("footnote-id", footid);
+	bool bRes = pp->getAttribute(_PN("footnote-id"), footid);
 
 	if(!bRes || !footid)
 	{
@@ -5018,7 +5018,7 @@ bool fp_FieldFootnoteRefRun::calculateValue(void)
 		return false;
 	}
 	const gchar * footid = NULL;
-	bool bRes = pp->getAttribute("footnote-id", footid);
+	bool bRes = pp->getAttribute(_PN("footnote-id"), footid);
         
 	if(!bRes || !footid)
 	{
@@ -5028,7 +5028,7 @@ bool fp_FieldFootnoteRefRun::calculateValue(void)
 	FV_View * pView = _getView();
 	UT_uint32 iPID = atoi(footid);
         const gchar *szCitation = NULL;
-        bool bHaveCitation = pp->getAttribute("text:note-citation", szCitation);
+        bool bHaveCitation = pp->getAttribute(_PN("text:note-citation"), szCitation);
 	UT_sint32 footnoteNo = bHaveCitation ? 
             atoi(szCitation) : pView->getLayout()->getFootnoteVal(iPID);
 
@@ -5054,7 +5054,7 @@ fp_FieldFootnoteAnchorRun::fp_FieldFootnoteAnchorRun(fl_BlockLayout* pBL, UT_uin
 	UT_return_if_fail(pp);
 
 	const gchar * footid = NULL;
-	bool bRes = pp->getAttribute("footnote-id", footid);
+	bool bRes = pp->getAttribute(_PN("footnote-id"), footid);
 
 	if(!bRes || !footid)
 	{
@@ -5074,7 +5074,7 @@ bool fp_FieldFootnoteAnchorRun::calculateValue(void)
 	UT_return_val_if_fail(pp, false);
 
 	const gchar * footid = NULL;
-	bool bRes = pp->getAttribute("footnote-id", footid);
+	bool bRes = pp->getAttribute(_PN("footnote-id"), footid);
 
 	if(!bRes || !footid)
 	{
@@ -5084,7 +5084,7 @@ bool fp_FieldFootnoteAnchorRun::calculateValue(void)
 	UT_uint32 iPID = atoi(footid);
 	FV_View * pView = _getView();
         const gchar *szCitation = NULL;
-        bool bHaveCitation = pp->getAttribute("text:note-citation", szCitation);
+        bool bHaveCitation = pp->getAttribute(_PN("text:note-citation"), szCitation);
 	UT_sint32 footnoteNo = bHaveCitation ? 
             atoi(szCitation) : pView->getLayout()->getFootnoteVal(iPID);
 
@@ -5107,7 +5107,7 @@ fp_FieldEndnoteAnchorRun::fp_FieldEndnoteAnchorRun(fl_BlockLayout* pBL, UT_uint3
 	UT_return_if_fail(pp);
 
 	const gchar * footid = NULL;
-	bool bRes = pp->getAttribute("endnote-id", footid);
+	bool bRes = pp->getAttribute(_PN("endnote-id"), footid);
 
 	if(!bRes || !footid)
 	{
@@ -5127,7 +5127,7 @@ bool fp_FieldEndnoteAnchorRun::calculateValue(void)
 	UT_return_val_if_fail(pp, false);
 
 	const gchar * footid = NULL;
-	bool bRes = pp->getAttribute("endnote-id", footid);
+	bool bRes = pp->getAttribute(_PN("endnote-id"), footid);
 
 	if(!bRes || !footid)
 	{
@@ -5157,7 +5157,7 @@ fp_FieldEndnoteRefRun::fp_FieldEndnoteRefRun(fl_BlockLayout* pBL,UT_uint32 iOffs
 	UT_return_if_fail(pp);
 
 	const gchar * footid;
-	bool bRes = pp->getAttribute("endnote-id", footid);
+	bool bRes = pp->getAttribute(_PN("endnote-id"), footid);
 
 	if(!bRes || !footid)
 	{
@@ -5177,7 +5177,7 @@ bool fp_FieldEndnoteRefRun::calculateValue(void)
 	UT_return_val_if_fail(pp, false);
 
 	const gchar * footid = NULL;
-	bool bRes = pp->getAttribute("endnote-id", footid);
+	bool bRes = pp->getAttribute(_PN("endnote-id"), footid);
 
 	if(!bRes || !footid)
 	{
@@ -5508,7 +5508,7 @@ bool fp_FieldMailMergeRun::calculateValue(void)
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
 
-fp_FieldMetaRun::fp_FieldMetaRun(fl_BlockLayout* pBL, UT_uint32 iOffsetFirst, UT_uint32 iLen, const char * which)
+fp_FieldMetaRun::fp_FieldMetaRun(fl_BlockLayout* pBL, UT_uint32 iOffsetFirst, UT_uint32 iLen, PP_PropName which)
   : fp_FieldRun(pBL, iOffsetFirst, iLen), m_which(which)
 {
 }

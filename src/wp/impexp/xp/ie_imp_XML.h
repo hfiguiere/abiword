@@ -165,7 +165,7 @@ protected:
 
 	const char *	m_szFileName;
 
-	std::string		m_currentMetaDataName;
+	PP_PropName		m_currentMetaDataName;
 	UT_uint32       m_currentRevisionId;
 	time_t          m_currentRevisionTime;
 	UT_uint32       m_currentRevisionVersion;

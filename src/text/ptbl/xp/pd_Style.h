@@ -44,11 +44,11 @@ public:
 	inline PT_AttrPropIndex		getIndexAP(void) const	{ return m_indexAP; };
 	bool						setIndexAP(PT_AttrPropIndex indexAP);
 
-	bool					getProperty(const gchar * szName, const gchar *& szValue) const;
-	std::unique_ptr<PP_PropertyType>	getPropertyType(const gchar * szName, tProperty_type Type) const;
-	bool					getAttribute(const gchar * szName, const gchar *& szValue) const;
-	bool					getPropertyExpand(const gchar * szName, const gchar *& szValue) const;
-	bool					getAttributeExpand(const gchar * szName, const gchar *& szValue) const;
+	bool					getProperty(PP_PropName szName, const gchar *& szValue) const;
+	std::unique_ptr<PP_PropertyType>	getPropertyType(PP_PropName szName, tProperty_type Type) const;
+	bool					getAttribute(PP_PropName szName, const gchar *& szValue) const;
+	bool					getPropertyExpand(PP_PropName szName, const gchar *& szValue) const;
+	bool					getAttributeExpand(PP_PropName szName, const gchar *& szValue) const;
 
 	PD_Style *				getBasedOn(void) const;
 	PD_Style *				getFollowedBy(void) const;
@@ -68,16 +68,14 @@ public:
 	bool                    getAllAttributes(PP_PropertyVector & vAttribs, UT_sint32 depth) const;
 	size_t getPropertyCount(void) const;
 	size_t getAttributeCount(void) const;
-	bool getNthProperty (int ndx, const gchar *&szName,
-			     const gchar *&szValue) const;
-	bool getNthAttribute (int ndx, const gchar *&szName,
-			     const gchar *&szValue) const;
+	bool getNthProperty (int ndx, PP_PropName &name, const gchar *&szValue) const;
+	bool getNthAttribute (int ndx, PP_PropName &name, const gchar *&szValue) const;
 
 	inline const char * getName (void) const {return m_szName;}
 
 protected:
-	bool					_getPropertyExpand(const gchar * szName, const gchar *& szValue, UT_sint32 iDepth) const;
-	bool					_getAttributeExpand(const gchar * szName, const gchar *& szValue, UT_sint32 iDepth) const;
+	bool _getPropertyExpand(PP_PropName name, const gchar *& szValue, UT_sint32 iDepth) const;
+	bool _getAttributeExpand(PP_PropName name, const gchar *& szValue, UT_sint32 iDepth) const;
 
 	pt_PieceTable *			m_pPT;
 	PT_AttrPropIndex		m_indexAP;

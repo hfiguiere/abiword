@@ -70,6 +70,8 @@ libxp_la_SOURCES = \
 	ut_Script.h \
 	ut_stack.cpp \
 	ut_stack.h \
+	ut_static_string.h \
+	ut_static_string.cpp \
 	ut_std_algo.h \
 	ut_std_map.h \
 	ut_std_string.h \

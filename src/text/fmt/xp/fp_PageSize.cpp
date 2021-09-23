@@ -238,25 +238,21 @@ bool fp_PageSize::Set(const PP_PropertyVector & attributes)
 	double scale = 1.0;
 	UT_Dimension u = DIM_IN;
 
-	ASSERT_PV_SIZE(attributes);
-	for (auto iter = attributes.cbegin(); iter != attributes.cend();
-             iter += 2)	{
-		auto & prop = *iter;
-                auto & value = *(iter + 1);
-		UT_DEBUGMSG(("PageSize	-prop %s value %s \n", prop.c_str(),
-                             value.c_str()));
-		if (prop == "pagetype")
-			szPageSize = value;
-		else if (prop == "orientation")
-			szOrientation = value;
-		else if (prop == "width")
-			szWidth = value;
-		else if (prop == "height")
-			szHeight = value;
-		else if (prop == "units")
-			szUnits = value;
-		else if (prop == "page-scale")
-			szPageScale = value;
+	for (auto elem : attributes) {
+		UT_DEBUGMSG(("PageSize	-prop %s value %s \n", elem.name.c_str(),
+                             elem.value.c_str()));
+		if (elem.name == "pagetype")
+			szPageSize = elem.value;
+		else if (elem.name == "orientation")
+			szOrientation = elem.value;
+		else if (elem.name == "width")
+			szWidth = elem.value;
+		else if (elem.name == "height")
+			szHeight = elem.value;
+		else if (elem.name == "units")
+			szUnits = elem.value;
+		else if (elem.name == "page-scale")
+			szPageScale = elem.value;
 	}
 	if (szPageSize.empty() || szOrientation.empty())
 		return false;

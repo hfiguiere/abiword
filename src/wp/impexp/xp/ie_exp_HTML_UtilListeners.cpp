@@ -91,7 +91,7 @@ bool IE_Exp_HTML_HeaderFooterListener::populateStrux(pf_Frag_Strux* sdh,
             return true;
 
         const gchar * szType = nullptr;
-        pAP->getAttribute("type", szType);
+        pAP->getAttribute(_PN("type"), szType);
         /* // */
 
         PT_DocPosition m_iHdrFtrStartPos = m_pDocument->getStruxPosition(sdh) + 1;

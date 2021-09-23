@@ -29,6 +29,7 @@
 #include <vector>
 
 #include "ut_types.h"
+#include "ut_static_string.h"
 #include "ut_bytebuf.h"
 #include "ut_uuid.h"
 #include "time.h"
@@ -190,8 +191,8 @@ public:
 
 	bool			isPieceTableChanging(void) const;
 
-	virtual void setMetaDataProp (const std::string & key, const std::string & value) = 0;
-	virtual bool getMetaDataProp (const std::string & key, std::string & outProp) const = 0;
+	virtual void setMetaDataProp (UT_StaticString key, const std::string & value) = 0;
+	virtual bool getMetaDataProp (UT_StaticString key, std::string & outProp) const = 0;
 
 	// RIVERA TODO not working and may not be needed
 	virtual void setAnnotationProp (const std::string & key, const std::string & value) = 0;

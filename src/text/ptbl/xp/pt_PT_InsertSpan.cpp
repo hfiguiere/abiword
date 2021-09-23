@@ -81,9 +81,9 @@ bool pt_PieceTable::insertSpan(PT_DocPosition dpos,
 		// that the text does not get inserted with a leftover
 		// revision attribute (e.g., if we are inserting it next to
 		// revisioned text
-		const char* name = "revision";
+		PP_PropName name("revision");
 		PP_PropertyVector ppRevAttrib = {
-			name, "",
+			{ name, "" },
 		};
 
 		const gchar * pRevision = NULL;
@@ -107,8 +107,7 @@ bool pt_PieceTable::insertSpan(PT_DocPosition dpos,
 			}
 			if(szStyleNameVal != NULL)
 			{
-				ppRevAttrib.push_back(PT_STYLE_ATTRIBUTE_NAME);
-				ppRevAttrib.push_back(szStyleNameVal);
+				ppRevAttrib.push_back({ PT_STYLE_ATTRIBUTE_NAME, szStyleNameVal });
 			}
 			//if(!_realChangeSpanFmt(PTC_RemoveFmt, dpos, dpos+length, ppRevAttrib,NULL))
 			//	return false;
@@ -507,10 +506,10 @@ bool pt_PieceTable::_realInsertSpan(PT_DocPosition dpos,
 			// PLAM: This is the list of field attrs that should not inherit
 			// PLAM: to the span following a field.
 			PP_PropertyVector pFieldAttrs = {
-				"type", "",
-				"param", "",
-				"name", "",
-				"endnote-id", ""
+				{ "type", "" },
+				{ "param", "" },
+				{ "name", "" },
+				{ "endnote-id", "" }
 			};
 
 			const PP_AttrProp * pAP = NULL;
@@ -521,8 +520,7 @@ bool pt_PieceTable::_realInsertSpan(PT_DocPosition dpos,
 			if (pAP->areAnyOfTheseNamesPresent(pFieldAttrs, PP_NOPROPS))
 			{
 				// We do not want to inherit a char style from a field.
-				pFieldAttrs.push_back("style");
-				pFieldAttrs.push_back("");
+				pFieldAttrs.push_back({ "style", "" });
 				PP_AttrProp * pAPNew = pAP->cloneWithElimination(pFieldAttrs, PP_NOPROPS);
 				if (!pAPNew)
 					return false;

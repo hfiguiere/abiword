@@ -240,12 +240,11 @@ bool IE_Imp_RTF::InsertImage (const FG_ConstGraphicPtr& pFG, const char * image_
 			UT_DEBUGMSG (("props are %s\n", propBuffer.c_str()));
 		}
 
-		PP_PropertyVector propsArray(resize1 ? 4 : 2);
-		propsArray[0] = "dataid";
-		propsArray[1] = image_name;
+		PP_PropertyVector propsArray = {
+			{ "dataid", image_name }
+		};
 		if (resize1) {
-			propsArray[2] = "props";
-			propsArray[3] = propBuffer;
+			propsArray.push_back({ "props", propBuffer });
 		}
 		if(!isStruxImage())
 		{
@@ -358,12 +357,11 @@ bool IE_Imp_RTF::InsertImage (const FG_ConstGraphicPtr& pFG, const char * image_
 			UT_DEBUGMSG (("props are %s\n", propBuffer.c_str()));
 		}
 
-		PP_PropertyVector propsArray(resize ? 4 : 2);
-		propsArray[0] = "dataid";
-		propsArray[1] = szName;
+		PP_PropertyVector propsArray = {
+			{ "dataid", szName }
+		};
 		if (resize)	{
-			propsArray[2] = "props";
-			propsArray[3] = propBuffer;
+			propsArray.push_back({ "props", propBuffer });
 		}
 		m_sImageName = szName.c_str();
 		if(!isStruxImage())
@@ -1137,12 +1135,11 @@ void IE_Imp_RTF::addFrame(RTFProps_FrameProps & frame)
 // OK Assemble the attributes/properties for the Frame
 
 	PP_PropertyVector attribs = {
-		"props", ""
+		{ "props", "" }
 	};
 	if(isStruxImage())
 	{
-		attribs.push_back(PT_STRUX_IMAGE_DATAID);
-		attribs.push_back(m_sImageName.utf8_str());
+		attribs.push_back({ PT_STRUX_IMAGE_DATAID, m_sImageName.utf8_str() });
 	}
 
 	std::string sPropString;
@@ -1276,7 +1273,7 @@ void IE_Imp_RTF::addFrame(RTFProps_FrameProps & frame)
 	{
 		sPropString = frame.m_abiProps;
 	}
-	attribs[1] = sPropString;
+	attribs[0].value = sPropString;
 
 	UT_DEBUGMSG(("Start Frame\n"));
 	if(!bUseInsertNotAppend())

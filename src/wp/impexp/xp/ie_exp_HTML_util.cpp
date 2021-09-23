@@ -250,9 +250,9 @@ UT_UTF8String ConvertToClean(const UT_UTF8String & str)
     return result;
 }
 
-bool getPropertySize(const PP_AttrProp * pAP, const gchar* szWidthProp, 
-	const gchar* szHeightProp, const gchar** szWidth, double& widthPercentage, 
-	const gchar** szHeight, double dPageWidthInches, double dSecLeftMarginInches, 
+bool getPropertySize(const PP_AttrProp * pAP, PP_PropName szWidthProp,
+	PP_PropName szHeightProp, const gchar** szWidth, double& widthPercentage,
+	const gchar** szHeight, double dPageWidthInches, double dSecLeftMarginInches,
 	double dSecRightMarginInches, double dCellWidthInches,
 	ie_Table &tableHelper)
 {
@@ -263,11 +263,11 @@ bool getPropertySize(const PP_AttrProp * pAP, const gchar* szWidthProp,
 	// get the object width as displayed in AbiWord
 	*szWidth = NULL;
 	pAP->getProperty (szWidthProp, *szWidth);
-	
+
 	// get the object height as displayed in AbiWord
 	*szHeight = NULL;
 	pAP->getProperty (szHeightProp, *szHeight);
-	
+
 	// determine the total width of this object, so we can calculate the object's
 	// width as a percentage of that
 	widthPercentage = 100;
@@ -288,7 +288,7 @@ bool getPropertySize(const PP_AttrProp * pAP, const gchar* szWidthProp,
 		if (widthPercentage > 100.)
 			widthPercentage = 100.0;
 	}
-		
+
 	return true;
 }
 

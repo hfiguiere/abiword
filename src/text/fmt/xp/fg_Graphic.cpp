@@ -40,7 +40,7 @@ FG_GraphicPtr FG_Graphic::createFromChangeRecord(const fl_ContainerLayout* pFL,
 	if (pSpanAP)
 	{
 		const gchar *pszDataID;
-		bool bFoundDataID = pSpanAP->getAttribute("dataid", pszDataID);
+		bool bFoundDataID = pSpanAP->getAttribute(_PN("dataid"), pszDataID);
 
 		if (bFoundDataID && pszDataID)
 		{
@@ -72,7 +72,7 @@ FG_GraphicPtr FG_Graphic::createFromStrux(const fl_ContainerLayout* pFL)
 	if (pSpanAP)
 	{
 		const gchar *pszDataID;
-		bool bFoundDataID = pSpanAP->getAttribute("strux-image-dataid", pszDataID);
+		bool bFoundDataID = pSpanAP->getAttribute(_PN("strux-image-dataid"), pszDataID);
       
 		if (bFoundDataID && pszDataID)
 		{

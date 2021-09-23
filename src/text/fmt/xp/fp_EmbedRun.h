@@ -67,7 +67,7 @@ protected:
 	virtual void			_clearScreen(bool bFullLineHeightRect) override;
 	virtual bool			_letPointPass(void) const override;
 	void                    _drawResizeBox(UT_Rect box);
-	UT_sint32               _getLayoutPropFromObject(const char * szProp) const;
+	UT_sint32               _getLayoutPropFromObject(PP_PropName szProp) const;
     bool                    _updatePropValuesIfNeeded(void);
 	virtual	bool		    _recalcWidth(void) override;
 

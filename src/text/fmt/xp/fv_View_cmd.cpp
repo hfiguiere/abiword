@@ -267,7 +267,7 @@ bool FV_View::cmdSplitCells(AP_CellSplitType iSplitType)
 	// with property table-wait-index incremented by 1 so that it is set to a value different from 0.
 	//
 	PP_PropertyVector tableProps = {
-		"table-wait-index",	UT_std_string_sprintf("%d",pTL->getTableWaitIndex() + 1)
+		{"table-wait-index", UT_std_string_sprintf("%d",pTL->getTableWaitIndex() + 1)}
 	};
 	m_pDoc->changeStruxFmt(PTC_AddFmt, posTable, posTable, PP_NOPROPS, tableProps, PTX_SectionTable);
 
@@ -509,10 +509,10 @@ bool FV_View::cmdSplitCells(AP_CellSplitType iSplitType)
 //
 // OK build the table properties
 //
-	std::string sRowTop = "top-attach";
-	std::string sRowBot = "bot-attach";
-	std::string sColLeft = "left-attach";
-	std::string sColRight = "right-attach";
+	std::string sRowTop("top-attach");
+	std::string sRowBot("bot-attach");
+	std::string sColLeft("left-attach");
+	std::string sColRight("right-attach");
 	std::string sTop = UT_std_string_sprintf("%d", splitTop);
 	std::string sBot = UT_std_string_sprintf("%d", splitBot);
 	std::string sLeft = UT_std_string_sprintf("%d", splitLeft);
@@ -526,9 +526,8 @@ bool FV_View::cmdSplitCells(AP_CellSplitType iSplitType)
 // Insert the cell
 //
 	PP_PropertyVector atts = {
-		"props", ""
+		{"props", sCellProps}
 	};
-	atts[1] = sCellProps;
 	bRes = m_pDoc->insertStrux(posCell, PTX_SectionCell, atts, PP_NOPROPS);
 	bRes = m_pDoc->insertStrux(posCell+1,PTX_Block,pAP->getAttributes(),pAP->getProperties());
 	posFirstInsert = posCell + 2;
@@ -550,7 +549,7 @@ bool FV_View::cmdSplitCells(AP_CellSplitType iSplitType)
 	UT_std_string_setProperty(sCellProps, sColRight, sRight);
 	posCell = m_pDoc->getStruxPosition(cellSDH)+1;
 	UT_DEBUGMSG(("New Cells props for old cell:\n  %s \n",sCellProps.c_str()));
-	atts[1] = sCellProps;
+	atts[0].value = sCellProps;
 	UT_DebugOnly<bool> bres = m_pDoc->changeStruxFmt(PTC_AddFmt, posCell, posCell, atts, PP_NOPROPS, PTX_SectionCell);
 	UT_ASSERT(bres);
 	m_pDoc->getStruxOfTypeFromPosition(posCell, PTX_SectionCell, &prevCellSDH2);
@@ -605,7 +604,7 @@ bool FV_View::cmdSplitCells(AP_CellSplitType iSplitType)
 					UT_std_string_setProperty(sCellProps, sRowBot, sBot);
 					UT_std_string_setProperty(sCellProps, sColLeft, sLeft);
 					UT_std_string_setProperty(sCellProps, sColRight, sRight);
-					atts[1] = sCellProps;
+					atts[0].value = sCellProps;
 					m_pDoc->changeStruxFmt(PTC_AddFmt, posCell, posCell, atts, PP_NOPROPS, PTX_SectionCell);
 				}
 			}
@@ -671,7 +670,7 @@ bool FV_View::cmdSplitCells(AP_CellSplitType iSplitType)
 					UT_std_string_setProperty(sCellProps, sRowBot, sBot);
 					UT_std_string_setProperty(sCellProps, sColLeft, sLeft);
 					UT_std_string_setProperty(sCellProps, sColRight, sRight);
-					atts[1] = sCellProps;
+					atts[0].value = sCellProps;
 					m_pDoc->changeStruxFmt(PTC_AddFmt, posCell, posCell, atts, PP_NOPROPS, PTX_SectionCell);
 				}
 			}
@@ -699,7 +698,7 @@ bool FV_View::cmdSplitCells(AP_CellSplitType iSplitType)
 	}
 	else
 	{
-		tableProps[1] =	UT_std_string_sprintf("%d", pTL->getTableWaitIndex() - 1);
+		tableProps[0].value = UT_std_string_sprintf("%d", pTL->getTableWaitIndex() - 1);
 		m_pDoc->changeStruxFmt(PTC_AddFmt, posTable, posTable, PP_NOPROPS, tableProps, PTX_SectionTable);
 	}
 //
@@ -1523,20 +1522,20 @@ bool FV_View::cmdTextToTable(UT_uint32 iDelim)
 // stuff for cell insertion.
 //
 	const PP_PropertyVector attrs = {
-		"style", "Normal"
+		{"style", "Normal"}
 	};
 	PP_PropertyVector props = {
-		"top-attach", "",
-		"bot-attach", "",
-		"left-attach", "",
-		"right-attach", ""
+		{"top-attach", ""},
+		{"bot-attach", ""},
+		{"left-attach", ""},
+		{"right-attach", ""}
 	};
 	for(UT_uint32 i = 0; i < numRows; i++) {
-		props[1] = UT_std_string_sprintf("%d", i);
-		props[3] = UT_std_string_sprintf("%d", i + 1);
+		props[0].value = UT_std_string_sprintf("%d", i);
+		props[1].value = UT_std_string_sprintf("%d", i + 1);
 		for(UT_uint32 j = 0; j < numCols; j++) {
-			props[5] = UT_std_string_sprintf("%d", j);
-			props[7] = UT_std_string_sprintf("%d", j + 1);
+			props[2].value = UT_std_string_sprintf("%d", j);
+			props[3].value = UT_std_string_sprintf("%d", j + 1);
 			e |= static_cast<UT_sint32>(m_pDoc->insertStrux(getPoint(), PTX_SectionCell, PP_NOPROPS, props));
 			pointBreak = getPoint();
 			e |= static_cast<UT_sint32>(m_pDoc->insertStrux(getPoint(), PTX_Block, attrs, PP_NOPROPS));
@@ -1655,10 +1654,10 @@ bool FV_View::cmdAutoSizeCols(void)
 	m_pDoc->disableListUpdates();
 	m_pDoc->beginUserAtomicGlob();
 	PP_PropertyVector tableProps = {
-		"table-column-props", "1"
+		{"table-column-props", "1"}
 	};
 	m_pDoc->changeStruxFmt(PTC_RemoveFmt, getPoint(), getPoint(), PP_NOPROPS, tableProps, PTX_SectionTable);
-	tableProps[0] = "table-column-leftpos";
+	tableProps[0].name = _PN("table-column-leftpos");
 	m_pDoc->changeStruxFmt(PTC_RemoveFmt, getPoint(), getPoint(), PP_NOPROPS, tableProps, PTX_SectionTable);
 	m_pDoc->setDontImmediatelyLayout(false);
 
@@ -1696,10 +1695,10 @@ bool FV_View::cmdAutoSizeRows(void)
 	m_pDoc->disableListUpdates();
 	m_pDoc->beginUserAtomicGlob();
 	PP_PropertyVector tableProps = {
-		"table-row-heights", "1"
+		{"table-row-heights", "1"}
 	};
 	m_pDoc->changeStruxFmt(PTC_RemoveFmt, getPoint(), getPoint(), PP_NOPROPS, tableProps, PTX_SectionTable);
-	tableProps[0] = "table-column-leftpos";
+	tableProps[0].name = _PN("table-column-leftpos");
 	m_pDoc->changeStruxFmt(PTC_RemoveFmt, getPoint(), getPoint(), PP_NOPROPS, tableProps, PTX_SectionTable);
 	m_pDoc->setDontImmediatelyLayout(false);
 
@@ -1737,16 +1736,15 @@ bool FV_View::cmdAutoFitTable(void)
 	m_pDoc->disableListUpdates();
 	m_pDoc->beginUserAtomicGlob();
 	PP_PropertyVector tableProps = {
-		"table-row-heights", "1",
-		"table-column-leftpos", "1",
-		"table-column-props", "1"
+		{"table-row-heights", "1"},
+		{"table-column-leftpos", "1"},
+		{"table-column-props", "1"}
 	};
 
 	m_pDoc->changeStruxFmt(PTC_RemoveFmt, getPoint(), getPoint(), PP_NOPROPS, tableProps, PTX_SectionTable);
 
-	tableProps.resize(2);
-	tableProps[0] = "homogeneous";
-	tableProps[1] = "1";
+	tableProps.clear();
+	tableProps.push_back({"homogeneous", "1"});
 
 	m_pDoc->changeStruxFmt(PTC_AddFmt, getPoint(), getPoint(), PP_NOPROPS, tableProps, PTX_SectionTable);
 	m_pDoc->setDontImmediatelyLayout(false);
@@ -1825,7 +1823,7 @@ bool FV_View::cmdInsertCol(PT_DocPosition posCol, bool bBefore)
 	// with property table-wait-index incremented by 1 so that it is set to a value different from 0.
 	//
 	PP_PropertyVector tableProps = {
-		"table-wait-index", UT_std_string_sprintf("%d", pTL->getTableWaitIndex() + 1)
+		{"table-wait-index", UT_std_string_sprintf("%d", pTL->getTableWaitIndex() + 1)}
 	};
 	m_pDoc->changeStruxFmt(PTC_AddFmt, posTable, posTable, PP_NOPROPS, tableProps, PTX_SectionTable);
 
@@ -1915,7 +1913,7 @@ bool FV_View::cmdInsertCol(PT_DocPosition posCol, bool bBefore)
 	}
 	else
 	{
-		tableProps[1] = UT_std_string_sprintf("%d", pTL->getTableWaitIndex() - 1);
+		tableProps[0].value = UT_std_string_sprintf("%d", pTL->getTableWaitIndex() - 1);
 		m_pDoc->changeStruxFmt(PTC_AddFmt, posTable, posTable, PP_NOPROPS, tableProps, PTX_SectionTable);
 	}
 	//
@@ -2066,7 +2064,7 @@ bool FV_View::cmdInsertRow(PT_DocPosition posRow, bool bBefore)
 	// with property table-wait-index incremented by 1 so that it is set to a value different from 0.
 	//
 	PP_PropertyVector tableProps = {
-		"table-wait-index", UT_std_string_sprintf("%d", pTL->getTableWaitIndex() + 1)
+		{"table-wait-index", UT_std_string_sprintf("%d", pTL->getTableWaitIndex() + 1)}
 	};
 	m_pDoc->changeStruxFmt(PTC_AddFmt, posTable, posTable, PP_NOPROPS, tableProps, PTX_SectionTable);
 
@@ -2148,7 +2146,7 @@ bool FV_View::cmdInsertRow(PT_DocPosition posRow, bool bBefore)
 	}
 	else
 	{
-		tableProps[1] = UT_std_string_sprintf("%d", pTL->getTableWaitIndex() - 1);
+		tableProps[0].value = UT_std_string_sprintf("%d", pTL->getTableWaitIndex() - 1);
 		m_pDoc->changeStruxFmt(PTC_AddFmt, posTable, posTable, PP_NOPROPS, tableProps, PTX_SectionTable);
 	}
 
@@ -2252,7 +2250,7 @@ bool FV_View::cmdDeleteCol(PT_DocPosition posCol)
 	// with property table-wait-index incremented by 1 so that it is set to a value different from 0.
 	//
 	PP_PropertyVector tableProps = {
-		"table-wait-index",	UT_std_string_sprintf("%d", pTL->getTableWaitIndex() + 1)
+		{"table-wait-index",	UT_std_string_sprintf("%d", pTL->getTableWaitIndex() + 1)}
 	};
 	m_pDoc->changeStruxFmt(PTC_AddFmt, posTable, posTable, PP_NOPROPS, tableProps, PTX_SectionTable);
 //
@@ -2318,11 +2316,11 @@ bool FV_View::cmdDeleteCol(PT_DocPosition posCol)
 		if(bChange)
 		{
 			UT_DEBUGMSG(("SEVIOR: changing cell to left %d right %d top %d bot %d \n",iNewLeft,iNewRight,iCurTop,iCurBot));
-			PP_PropertyVector props = {
-				"left-attach", UT_std_string_sprintf("%d", iNewLeft),
-				"right-attach",	UT_std_string_sprintf("%d", iNewRight),
-				"top-attach", UT_std_string_sprintf("%d", iCurTop),
-				"bot-attach", UT_std_string_sprintf("%d",iCurBot)
+			const PP_PropertyVector props = {
+				{"left-attach", UT_std_string_sprintf("%d", iNewLeft)},
+				{"right-attach",	UT_std_string_sprintf("%d", iNewRight)},
+				{"top-attach", UT_std_string_sprintf("%d", iCurTop)},
+				{"bot-attach", UT_std_string_sprintf("%d",iCurBot)}
 			};
 			bRes = m_pDoc->changeStruxFmt(PTC_AddFmt, posCell2 + 1, posCell2 + 1, PP_NOPROPS, props, PTX_SectionCell);
 		}
@@ -2343,7 +2341,7 @@ bool FV_View::cmdDeleteCol(PT_DocPosition posCol)
 	}
 	else
 	{
-		tableProps[1] = UT_std_string_sprintf("%d", pTL->getTableWaitIndex() - 1);
+		tableProps[0].value = UT_std_string_sprintf("%d", pTL->getTableWaitIndex() - 1);
 		m_pDoc->changeStruxFmt(PTC_AddFmt, posTable, posTable, PP_NOPROPS, tableProps, PTX_SectionTable);
 	}
 //
@@ -2511,7 +2509,7 @@ bool FV_View::cmdDeleteRow(PT_DocPosition posRow)
 	// with property table-wait-index incremented by 1 so that it is set to a value different from 0.
 	//
 	PP_PropertyVector tableProps = {
-		"table-wait-index", UT_std_string_sprintf("%d", pTL->getTableWaitIndex() + 1)
+		{"table-wait-index", UT_std_string_sprintf("%d", pTL->getTableWaitIndex() + 1)}
 	};
 	m_pDoc->changeStruxFmt(PTC_AddFmt, posTable, posTable, PP_NOPROPS, tableProps, PTX_SectionTable);
 //
@@ -2587,11 +2585,11 @@ bool FV_View::cmdDeleteRow(PT_DocPosition posRow)
 		if(bChange)
 		{
 			UT_DEBUGMSG(("SEVIOR: changing cell to left %d right %d top %d bot %d \n",iCurLeft,iCurRight,iNewTop,iNewBot));
-			PP_PropertyVector props = {
-				"left-attach", UT_std_string_sprintf("%d", iCurLeft),
-				"right-attach", UT_std_string_sprintf("%d", iCurRight),
-				"top-attach", UT_std_string_sprintf("%d", iNewTop),
-				"bot-attach", UT_std_string_sprintf("%d", iNewBot),
+			const PP_PropertyVector props = {
+				{"left-attach", UT_std_string_sprintf("%d", iCurLeft)},
+				{"right-attach", UT_std_string_sprintf("%d", iCurRight)},
+				{"top-attach", UT_std_string_sprintf("%d", iNewTop)},
+				{"bot-attach", UT_std_string_sprintf("%d", iNewBot)},
 			};
 			bRes = m_pDoc->changeStruxFmt(PTC_AddFmt, posCell2 + 1, posCell2 + 1, PP_NOPROPS, props, PTX_SectionCell);
 		}
@@ -2612,7 +2610,7 @@ bool FV_View::cmdDeleteRow(PT_DocPosition posRow)
 	}
 	else
 	{
-		tableProps[1] =	UT_std_string_sprintf("%d", pTL->getTableWaitIndex() - 1);
+		tableProps[0].value = UT_std_string_sprintf("%d", pTL->getTableWaitIndex() - 1);
 		m_pDoc->changeStruxFmt(PTC_AddFmt, posTable, posTable, PP_NOPROPS, tableProps, PTX_SectionTable);
 	}
 //
@@ -2883,11 +2881,13 @@ UT_Error FV_View::cmdInsertTable(UT_sint32 numRows, UT_sint32 numCols, const PP_
 	// This is a ugly hack. We will only copy 2 fonts properties, font-family and font-size.
 	PP_PropertyVector props_in;
 	const char* normalStyleName = "Normal";
-	PP_PropertyVector attrsBlock = {
-		"style", normalStyleName
+	const PP_PropertyVector attrsBlock = {
+		{"style", normalStyleName}
 	};
-	const gchar * propFamily = "font-family";
-	const gchar * propSize = "font-size";
+
+	PP_PropName propFamily("font-family");
+	PP_PropName propSize("font-size");
+
 	std::string szFamily;
 	std::string szSize;
 	const gchar * szNormalFamily = NULL;
@@ -2906,13 +2906,11 @@ UT_Error FV_View::cmdInsertTable(UT_sint32 numRows, UT_sint32 numCols, const PP_
 	PP_PropertyVector propsBlock;
 	if (bFamily)
 	{
-		propsBlock.push_back(propFamily);
-		propsBlock.push_back(szFamily);
+		propsBlock.push_back({propFamily, szFamily});
 	}
 	if (bSize)
 	{
-		propsBlock.push_back(propSize);
-		propsBlock.push_back(szSize);
+		propsBlock.push_back({propSize, szSize});
 	}
 
 	e |= static_cast<UT_sint32>(m_pDoc->insertStrux(getPoint(), PTX_SectionTable, PP_NOPROPS, pPropsArray));
@@ -2921,19 +2919,19 @@ UT_Error FV_View::cmdInsertTable(UT_sint32 numRows, UT_sint32 numCols, const PP_
 //
 	UT_sint32 i,j;
 	PP_PropertyVector props = {
-		"top-attach", "",
-		"bot-attach", "",
-		"left-attach", "",
-		"right-attach", ""
+		{"top-attach", ""},
+		{"bot-attach", ""},
+		{"left-attach", ""},
+		{"right-attach", ""}
 	};
 	for(i = 0; i < numRows; i++)
 	{
-		props[1] = UT_std_string_sprintf("%d", i);
-		props[3] = UT_std_string_sprintf("%d", i + 1);
+		props[0].value = UT_std_string_sprintf("%d", i);
+		props[1].value = UT_std_string_sprintf("%d", i + 1);
 		for(j = 0; j < numCols; j++)
 		{
-			props[5] = UT_std_string_sprintf("%d", j);
-			props[7] = UT_std_string_sprintf("%d", j + 1);
+			props[2].value = UT_std_string_sprintf("%d", j);
+			props[3].value = UT_std_string_sprintf("%d", j + 1);
 			e |= static_cast<UT_sint32>(m_pDoc->insertStrux(getPoint(), PTX_SectionCell, PP_NOPROPS, props));
 			pointBreak = getPoint();
 			e |= static_cast<UT_sint32>(m_pDoc->insertStrux(getPoint(), PTX_Block, attrsBlock, propsBlock));
@@ -3276,7 +3274,7 @@ void FV_View::cmdCharDelete(bool bForward, UT_uint32 count)
 					const gchar * pszYPos = NULL;
 					double ypos = 0.;
 					pFL->getAP(pAP);
-					if(!pAP || !pAP->getProperty("ypos",pszYPos))
+					if(!pAP || !pAP->getProperty(_PN("ypos"), pszYPos))
 					{
 						pszYPos = "0.0in";
 					}
@@ -3288,7 +3286,7 @@ void FV_View::cmdCharDelete(bool bForward, UT_uint32 count)
 					ypos = UT_convertToInches(pszYPos) + double(extraHeight)/double(UT_LAYOUT_RESOLUTION);
 					UT_String sValY = UT_formatDimensionString(DIM_IN,ypos);
 					const PP_PropertyVector frameProperties = {
-						"ypos", sValY.c_str()
+						{ "ypos", sValY.c_str() }
 					};
 					PT_DocPosition posStart = pFL->getPosition(true)+1;
 					PT_DocPosition posEnd = posStart;
@@ -3481,7 +3479,7 @@ void FV_View::cmdCharDelete(bool bForward, UT_uint32 count)
 		PP_PropertyVector props_in;
 		getCharFormat(props_in);
 		const PP_PropertyVector properties = {
-			"font-family", PP_getAttribute("font-family", props_in)
+			{ "font-family", PP_getAttribute(_PN("font-family"), props_in) }
 		};
 		xxx_UT_DEBUGMSG(("deleteSpan - 1: Inital pos %d count %d \n",getPoint(),count));
 
@@ -4707,12 +4705,11 @@ UT_Error FV_View::cmdInsertHyperlink(const char * szName, const char * szTitle)
 	}
 
 	PP_PropertyVector pAttr = {
-		"xlink:href", target
+		{"xlink:href", target}
 	};
 	if (szTitle && *szTitle)
 	{
-		pAttr.push_back("xlink:title");
-		pAttr.push_back(szTitle);
+		pAttr.push_back({"xlink:title", szTitle});
 	}
 
 	UT_DEBUGMSG(("fv_View::cmdInsertHyperlink: target \"%s\"\n", target.c_str()));
@@ -4858,8 +4855,8 @@ UT_Error FV_View::cmdInsertBookmark(const char * szName)
 	name[BOOKMARK_NAME_SIZE] = 0;
 
 	PP_PropertyVector pAttr = {
-		"name",	name,
-		"type",	"start"
+		{"name", name},
+		{"type", "start"}
 	};
 
 	UT_DEBUGMSG(("fv_View::cmdInsertBookmark: szName \"%s\"\n", szName));
@@ -4869,7 +4866,7 @@ UT_Error FV_View::cmdInsertBookmark(const char * szName)
 	if(bRet)
 	{
 		// override the type to mark the end.
-		pAttr [3] = "end";
+		pAttr[1].value = "end";
 		bRet = m_pDoc->insertObject(posEnd, PTO_Bookmark, pAttr, PP_NOPROPS);
 	}
 
@@ -4943,9 +4940,9 @@ FV_View::cmdInsertXMLID( const std::string& xmlid )
 	}
 
 	PP_PropertyVector pa = {
-		PT_XMLID, xmlid,
+		{PT_XMLID, xmlid},
 		// sanity check
-		"this-is-an-rdf-anchor", "yes"
+		{"this-is-an-rdf-anchor", "yes"}
 	};
 
 	UT_DEBUGMSG(("fv_View::cmdInsertXMLID: inserting xmlid:%s at posStart:%d posEnd:%d\n",
@@ -4953,8 +4950,7 @@ FV_View::cmdInsertXMLID( const std::string& xmlid )
 
 	bool bRet = m_pDoc->insertObject(posStart, PTO_RDFAnchor, pa, PP_NOPROPS);
 	if(bRet) {
-		pa.push_back(PT_RDF_END);
-		pa.push_back("yes");
+		pa.push_back({PT_RDF_END, "yes"});
 		bRet = m_pDoc->insertObject(posEnd, PTO_RDFAnchor, pa, PP_NOPROPS);
 	}
 
@@ -5275,38 +5271,29 @@ UT_Error FV_View::cmdInsertPositionedGraphic(const FG_ConstGraphicPtr& pFG, UT_s
 
 	const char * dataID = pFG->createDataItem(m_pDoc, s.c_str());
 	std::string sFrameProps;
-	std::string sProp;
 	std::string sVal;
-	sProp = "frame-type";
 	sVal = "image";
-	UT_std_string_setProperty(sFrameProps, sProp, sVal);
+	UT_std_string_setProperty(sFrameProps, "frame-type", sVal);
 //
 // Turn off the borders.
 //
-	sProp = "top-style";
 	sVal = "none";
-	UT_std_string_setProperty(sFrameProps, sProp, sVal);
-	sProp = "right-style";
-	UT_std_string_setProperty(sFrameProps, sProp, sVal);
-	sProp = "left-style";
-	UT_std_string_setProperty(sFrameProps, sProp, sVal);
-	sProp = "bot-style";
-	UT_std_string_setProperty(sFrameProps, sProp, sVal);
+	UT_std_string_setProperty(sFrameProps, "top-style", sVal);
+	UT_std_string_setProperty(sFrameProps, "right-style", sVal);
+	UT_std_string_setProperty(sFrameProps, "left-style", sVal);
+	UT_std_string_setProperty(sFrameProps, "bot-style", sVal);
 //
 // Set width/Height
 //
-	sProp = "frame-width";
 	sVal = sWidth;
-	UT_std_string_setProperty(sFrameProps, sProp, sVal);
-	sProp = "frame-height";
+	UT_std_string_setProperty(sFrameProps, "frame-width", sVal);
 	sVal = sHeight;
-	UT_std_string_setProperty(sFrameProps, sProp, sVal);
+	UT_std_string_setProperty(sFrameProps, "frame-height", sVal);
 	double xpos = 0.0;
 	double ypos= 0.0;
 
-	sProp = "position-to";
 	sVal = "column-above-text";
-	UT_std_string_setProperty(sFrameProps, sProp, sVal);
+	UT_std_string_setProperty(sFrameProps, "position-to", sVal);
 	if(isInHdrFtr(pos))
 	{
 		clearHdrFtrEdit();
@@ -5324,12 +5311,11 @@ UT_Error FV_View::cmdInsertPositionedGraphic(const FG_ConstGraphicPtr& pFG, UT_s
 	iHeight = static_cast<UT_sint32>(dh*UT_LAYOUT_RESOLUTION);
 	UT_sint32 iposy = mouseY - iyoff - iHeight/2;
 	ypos = static_cast<double>(iposy)/static_cast<double>(UT_LAYOUT_RESOLUTION);
-	sProp = "frame-col-ypos";
+
 	sVal = UT_formatDimensionedValue(ypos,"in", NULL);
-	UT_std_string_setProperty(sFrameProps, sProp, sVal);
-	sProp = "wrap-mode";
+	UT_std_string_setProperty(sFrameProps, "frame-col-ypos", sVal);
 	sVal = "wrapped-both";
-	UT_std_string_setProperty(sFrameProps, sProp, sVal);
+	UT_std_string_setProperty(sFrameProps, "wrap-mode", sVal);
 	UT_sint32 iWidth = static_cast<UT_sint32>(dw * UT_LAYOUT_RESOLUTION);
 	UT_sint32 iposx = mouseX - ixoff - iWidth/2;
 	UT_sint32 iColW = static_cast<UT_sint32>(maxW*2.*UT_LAYOUT_RESOLUTION);
@@ -5345,22 +5331,20 @@ UT_Error FV_View::cmdInsertPositionedGraphic(const FG_ConstGraphicPtr& pFG, UT_s
 	UT_DEBUGMSG(("iposx %d pCol->getX() %d \n",iposx,pCol->getX()));
 	xpos =  static_cast<double>(iposx)/static_cast<double>(UT_LAYOUT_RESOLUTION);
 
-	sProp = "frame-col-xpos";
 	sVal = UT_formatDimensionedValue(xpos, "in", nullptr);
-	UT_DEBUGMSG((" %s %s \n", sProp.c_str(), sVal.c_str()));
-	UT_std_string_setProperty(sFrameProps, sProp, sVal);
+	UT_DEBUGMSG((" %s %s \n", "frame-col-xpos", sVal.c_str()));
+	UT_std_string_setProperty(sFrameProps, "frame-col-xpos", sVal);
 //
 // Wrapped Mode
 //
-	sProp = "wrap-mode";
 	sVal = "wrapped-both";
-	UT_std_string_setProperty(sFrameProps, sProp, sVal);
+	UT_std_string_setProperty(sFrameProps, "wrap-mode", sVal);
 //
 // Now define the Frame attributes strux
 //
 	PP_PropertyVector attributes = {
-		PT_STRUX_IMAGE_DATAID, dataID,
-		"props", sFrameProps
+		{ PT_STRUX_IMAGE_DATAID, dataID },
+		{ "props", sFrameProps }
 	};
 //
 // This should place the the frame strux immediately after the block containing
@@ -5445,17 +5429,16 @@ bool FV_View::cmdInsertLatexMath(UT_UTF8String & sLatex,
 
 	// OK Insert the MathML Object
 	PP_PropertyVector atts = {
-		"dataid", sMathName.utf8_str(),
-		"latexid", sLatexName.utf8_str(),
-		"props", ""
+		{"dataid", sMathName.utf8_str()},
+		{"latexid", sLatexName.utf8_str()},
+		{"props", ""}
 	};
 
 	const gchar *cur_style = NULL;
 	getStyle(&cur_style);
 	if((cur_style != NULL) && (*cur_style) && (strcmp(cur_style,"None") != 0))
 	{
-		atts.push_back(PT_STYLE_ATTRIBUTE_NAME);
-		atts.push_back(cur_style);
+		atts.push_back({PT_STYLE_ATTRIBUTE_NAME, cur_style});
 	}
 
 	bool bDidGlob = false;
@@ -5478,13 +5461,12 @@ bool FV_View::cmdInsertLatexMath(UT_UTF8String & sLatex,
 	pos = getPoint();
 
 	std::string sNewProps;
-	ASSERT_PV_SIZE(props);
-	for(auto iter = props.cbegin(); iter != props.cend(); iter += 2) {
-		UT_std_string_setProperty(sNewProps, *iter, *(iter + 1));
+	for (auto elem : props) {
+		UT_std_string_setProperty(sNewProps, elem.name.c_str(), elem.value);
 	}
 
 	UT_std_string_setProperty(sNewProps, "display", compact ? "inline": "block");
-	atts[5] = sNewProps;
+	atts[2].value = sNewProps;
 	m_pDoc->insertObject(pos, PTO_Math, atts, PP_NOPROPS);
 
 	if (bDidGlob)
@@ -5507,14 +5489,13 @@ bool FV_View::cmdInsertMathML(const char * szUID,PT_DocPosition pos)
 	UT_DEBUGMSG(("Insert Math Object at %d name %s \n",(PT_DocPosition)posDebug,szUID));
 
 	PP_PropertyVector atts = {
-		"dataid", szUID
+		{"dataid", szUID}
 	};
 	const gchar *cur_style = NULL;
 	getStyle(&cur_style);
 	if((cur_style != NULL) && (*cur_style) && (strcmp(cur_style,"None") != 0))
 	{
-		atts.push_back(PT_STYLE_ATTRIBUTE_NAME);
-		atts.push_back(cur_style);
+		atts.push_back({PT_STYLE_ATTRIBUTE_NAME, cur_style});
 	}
 	bool bDidGlob = false;
 
@@ -5563,8 +5544,8 @@ bool FV_View::cmdInsertEmbed(const UT_ConstByteBufPtr & pBuf, PT_DocPosition pos
 	}
 
 	PP_PropertyVector atts = {
-		"dataid", sUID,
-		"props", ""
+		{"dataid", sUID},
+		{"props", ""}
 	};
 	const gchar *cur_style = NULL;
 	UT_String sBuf(reinterpret_cast<const char *>(pBuf->getPointer(0)),pBuf->getLength());
@@ -5577,8 +5558,7 @@ bool FV_View::cmdInsertEmbed(const UT_ConstByteBufPtr & pBuf, PT_DocPosition pos
 	getStyle(&cur_style);
 	if((cur_style != NULL) && (*cur_style) && (strcmp(cur_style,"None") != 0))
 	{
-		atts.push_back(PT_STYLE_ATTRIBUTE_NAME);
-		atts.push_back(cur_style);
+		atts.push_back({PT_STYLE_ATTRIBUTE_NAME, cur_style});
 	}
 	bool bDidGlob = false;
 	PP_PropertyVector props;
@@ -5597,14 +5577,14 @@ bool FV_View::cmdInsertEmbed(const UT_ConstByteBufPtr & pBuf, PT_DocPosition pos
 	getCharFormat(props, false, pos);
 
 	std::string sFullProps;
-	for(auto iter = props.cbegin(); iter != props.cend(); iter += 2) {
-		UT_std_string_setProperty(sFullProps, *iter, *(iter + 1));
+	for (auto elem : props) {
+		UT_std_string_setProperty(sFullProps, elem.name.c_str(), elem.value);
 	}
 
 	UT_DEBUGMSG(("Supplied props %s \n", szProps));
 	UT_std_string_addPropertyString(sFullProps, szProps);
 	UT_DEBUGMSG(("Property String at Update Object is %s \n", sFullProps.c_str()));
-	atts[3] = sFullProps;
+	atts[1].value = sFullProps;
 	m_pDoc->insertObject(pos, PTO_Embed, atts, PP_NOPROPS);
 	if (bDidGlob)
 		m_pDoc->endUserAtomicGlob();
@@ -5673,8 +5653,8 @@ bool FV_View::cmdUpdateEmbed(const UT_ConstByteBufPtr & pBuf, const char * szMim
 		sUID += result.unwrap();
 	}
 	PP_PropertyVector atts = {
-		"dataid", sUID,
-		"props", ""
+		{"dataid", sUID},
+		{"props", ""}
 	};
 
 	bool bres = m_pDoc->createDataItem(sUID.c_str(),false,pBuf, szMime, NULL);
@@ -5684,8 +5664,7 @@ bool FV_View::cmdUpdateEmbed(const UT_ConstByteBufPtr & pBuf, const char * szMim
 	getStyle(&cur_style);
 	if((cur_style != NULL) && (*cur_style) && (strcmp(cur_style,"None") != 0))
 	{
-		atts.push_back(PT_STYLE_ATTRIBUTE_NAME);
-		atts.push_back(cur_style);
+		atts.push_back({PT_STYLE_ATTRIBUTE_NAME, cur_style});
 	}
 	PP_PropertyVector props;
 
@@ -5695,16 +5674,14 @@ bool FV_View::cmdUpdateEmbed(const UT_ConstByteBufPtr & pBuf, const char * szMim
 	getCharFormat(props, false, pos1);
 	std::string sFullProps;
 
-	ASSERT_PV_SIZE(props);
-
-	for (auto iter = props.cbegin(); iter != props.cend(); iter += 2) {
-		xxx_UT_DEBUGMSG(("Update Embed Prop %s val %s \n", props[i], props[i+1]));
-	    UT_std_string_setProperty(sFullProps, *iter, *(iter + 1));
+	for (auto elem : props) {
+		xxx_UT_DEBUGMSG(("Update Embed Prop %s val %s \n", elem.name, elem,value));
+	    UT_std_string_setProperty(sFullProps, elem.name.c_str(), elem.value);
 	}
 
 	UT_DEBUGMSG(("Supplied props %s \n", szProps));
 	UT_std_string_addPropertyString(sFullProps, szProps);
-	atts[3] = sFullProps;
+	atts[1].value = sFullProps;
 	UT_DEBUGMSG(("Property String at Update Object is %s \n", sFullProps.c_str()));
 	_deleteSelection();
 	m_pDoc->insertObject(pos1, PTO_Embed, atts, PP_NOPROPS);
@@ -5745,8 +5722,8 @@ bool FV_View::cmdUpdateEmbed(fp_Run * pRun, const UT_ConstByteBufPtr & pBuf, con
 	}
 
 	PP_PropertyVector atts = {
-		"dataid", sUID,
-		"props", ""
+		{"dataid", sUID},
+		{"props", ""}
 	};
 	bool bres = m_pDoc->createDataItem(sUID.c_str(), false, pBuf, szMime, NULL);
 	UT_return_val_if_fail(bres, false)
@@ -5754,8 +5731,7 @@ bool FV_View::cmdUpdateEmbed(fp_Run * pRun, const UT_ConstByteBufPtr & pBuf, con
 	getStyle(&cur_style);
 	if((cur_style != NULL) && (*cur_style) && (strcmp(cur_style,"None") != 0))
 	{
-		atts.push_back(PT_STYLE_ATTRIBUTE_NAME);
-		atts.push_back(cur_style);
+		atts.push_back({PT_STYLE_ATTRIBUTE_NAME, cur_style});
 	}
 
 	PP_PropertyVector props;
@@ -5766,22 +5742,21 @@ bool FV_View::cmdUpdateEmbed(fp_Run * pRun, const UT_ConstByteBufPtr & pBuf, con
 	getCharFormat(props, false, pos);
 
 	std::string sFullProps;
-	ASSERT_PV_SIZE(props);
-	for(auto iter = props.cbegin(); iter != props.cend(); iter += 2) {
+
+	for(auto elem : props) {
 
 		bool remove = false;
-		const std::string & prop = *iter;
 		// Filter out size properties
-		if (prop == "width" || prop == "height" ||
-			prop == "descent" || prop == "ascent") {
+		if (elem.name == "width" || elem.name == "height" ||
+			elem.name == "descent" || elem.name == "ascent") {
 			remove = true;
 		}
-	    xxx_UT_DEBUGMSG(("Update Embed Prop %s val %s \n",props[i],props[i+1]));
-	    UT_std_string_setProperty(sFullProps, prop, remove ? "" : *(iter + 1));
+	    xxx_UT_DEBUGMSG(("Update Embed Prop %s val %s \n", elem.name, elem.value));
+	    UT_std_string_setProperty(sFullProps, elem.name.c_str(), remove ? "" : elem.value);
 	}
 	UT_DEBUGMSG(("Supplied props %s \n", szProps));
 	UT_std_string_addPropertyString(sFullProps, szProps);
-	atts[3] = sFullProps;
+	atts[1].value = sFullProps;
 	UT_DEBUGMSG(("Property String at Update Object is %s \n", sFullProps.c_str()));
 	m_pDoc->changeSpanFmt(PTC_AddFmt, pos, pos + 1, atts, PP_NOPROPS);
 	m_pDoc->endUserAtomicGlob();

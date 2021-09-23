@@ -34,9 +34,9 @@
 #include "ut_types.h"
 #include "ut_vector.h"
 #include "ut_hash.h"
+#include "pt_Types.h"
 #include "xad_Document.h"
 #include "ut_xml.h"
-#include "pt_Types.h"
 #include "pl_Listener.h"
 #include "pf_Frag.h"
 #include "ie_FileInfo.h"
@@ -108,63 +108,63 @@ enum
 /////////////////////////////////////////////////////////
 
 // A formal name given to the resource
-#define PD_META_KEY_TITLE        "dc.title"
+#define PD_META_KEY_TITLE        _PN("dc.title")
 
 // An entity primarily responsible for making the content of the resource
 // typically a person, organization, or service
-#define PD_META_KEY_CREATOR      "dc.creator"
+#define PD_META_KEY_CREATOR      _PN("dc.creator")
 
 // The topic of the content of the resource, *typically* including keywords
-#define PD_META_KEY_SUBJECT      "dc.subject"
+#define PD_META_KEY_SUBJECT      _PN("dc.subject")
 
 // An account of the content of the resource
-#define PD_META_KEY_DESCRIPTION  "dc.description"
+#define PD_META_KEY_DESCRIPTION  _PN("dc.description")
 
 // An entity responsible for making the resource available
-#define PD_META_KEY_PUBLISHER    "dc.publisher"
+#define PD_META_KEY_PUBLISHER    _PN("dc.publisher")
 
 // An entity responsible for making contributions to the content of the resource
-#define PD_META_KEY_CONTRIBUTOR  "dc.contributor"
+#define PD_META_KEY_CONTRIBUTOR  _PN("dc.contributor")
 
 // A date associated with an event in the life cycle of the resource
-#define PD_META_KEY_DATE         "dc.date"
+#define PD_META_KEY_DATE         _PN("dc.date")
 
 // The nature or genre of the content of the resource
 // See http://dublincore.org/documents/dcmi-type-vocabulary/
-#define PD_META_KEY_TYPE         "dc.type"
+#define PD_META_KEY_TYPE         _PN("dc.type")
 
 // The physical or digital manifestation of the resource. mime-type-ish
 // always application/x-abiword
-#define PD_META_KEY_FORMAT       "dc.format"
+#define PD_META_KEY_FORMAT       _PN("dc.format")
 
 // A Reference to a resource from which the present resource is derived
-#define PD_META_KEY_SOURCE       "dc.source"
+#define PD_META_KEY_SOURCE       _PN("dc.source")
 
 // A language of the intellectual content of the resource
-#define PD_META_KEY_LANGUAGE     "dc.language"
+#define PD_META_KEY_LANGUAGE     _PN("dc.language")
 
 // A reference to a related resource (see-also)
-#define PD_META_KEY_RELATION     "dc.relation"
+#define PD_META_KEY_RELATION     _PN("dc.relation")
 
 // The extent or scope of the content of the resource
 // spatial location, temporal period, or jurisdiction
-#define PD_META_KEY_COVERAGE     "dc.coverage"
+#define PD_META_KEY_COVERAGE     _PN("dc.coverage")
 
 // Information about rights held in and over the resource
-#define PD_META_KEY_RIGHTS       "dc.rights"
+#define PD_META_KEY_RIGHTS       _PN("dc.rights")
 
 /////////////////////////////////////////////////////////
 // abiword extensions to the dublin core element set
 /////////////////////////////////////////////////////////
 
 // searchable, indexable keywords
-#define PD_META_KEY_KEYWORDS          "abiword.keywords"
+#define PD_META_KEY_KEYWORDS          _PN("abiword.keywords")
 
 // the last time this document was saved
-#define PD_META_KEY_DATE_LAST_CHANGED "abiword.date_last_changed"
+#define PD_META_KEY_DATE_LAST_CHANGED _PN("abiword.date_last_changed")
 
 // the creator (product) of this document. AbiWord, KWord, etc...
-#define PD_META_KEY_GENERATOR         "abiword.generator"
+#define PD_META_KEY_GENERATOR         _PN("abiword.generator")
 
 class ABI_EXPORT  ImagePage
 {
@@ -516,10 +516,9 @@ PT_AttrPropIndex            getAPIFromSOH(pf_Frag_Object* odh);
 	// functions below to retrieve props and attrs correctly reflecting revisions settings
 	PT_AttrPropIndex        getAPIFromSDH(pf_Frag_Strux* sdh);
     bool                    getAttributeFromSDH(pf_Frag_Strux* sdh, bool bShowRevisions, UT_uint32 iRevisionLevel,
-												const char * szAttribute, const char ** pszValue);
-
+												PP_PropName szAttribute, const char ** pszValue);
     bool                    getPropertyFromSDH(const pf_Frag_Strux* sdh, bool bShowRevisions, UT_uint32 iRevisionLevel,
-											   const char * szProperty, const char ** pszValue) const;
+											   PP_PropName szProperty, const char ** pszValue) const;
 	// styles
 	void                    getAllUsedStyles(UT_GenericVector<PD_Style*> * pVecStyles);
 	fl_ContainerLayout*       getNthFmtHandle(pf_Frag_Strux* sdh, UT_uint32 n);
@@ -531,7 +530,7 @@ PT_AttrPropIndex            getAPIFromSOH(pf_Frag_Object* odh);
 	bool					enumStyles(UT_uint32 k,
 									   const char ** pszName, const PD_Style ** ppStyle) const;
 	bool                    enumStyles(UT_GenericVector<PD_Style*> * & pStyles) const;
-	bool					getStyleProperty(const gchar * szStyleName, const gchar * szPropertyName, const gchar *& szPropertyValue);
+	bool					getStyleProperty(const gchar * szStyleName, PP_PropName szPropertyName, const gchar *& szPropertyValue);
 	bool					addStyleProperty(const gchar * szStyleName, const gchar * szPropertyName, const gchar * szPropertyValue);
 	bool					addStyleProperties(const gchar * szStyleName, const PP_PropertyVector & pProperties);
 	bool	                setAllStyleAttributes(const gchar * szStyleName, const PP_PropertyVector & pAttribs);
@@ -674,14 +673,14 @@ PT_AttrPropIndex            getAPIFromSOH(pf_Frag_Object* odh);
 	inline bool areStylesLocked () const { return m_bLockedStyles; }    // See also lockStyles
 	void lockStyles(bool b);
 
-	virtual void setMetaDataProp (const std::string & key, const std::string & value) override;
-	virtual bool getMetaDataProp (const std::string & key, std::string & outProp) const override;
+	virtual void setMetaDataProp (PP_PropName key, const std::string & value) override;
+	virtual bool getMetaDataProp (PP_PropName key, std::string & outProp) const override;
 
 	// RIVERA TODO not working and may not be needed
 	virtual void setAnnotationProp (const std::string & key, const std::string & value) override;
 	virtual bool getAnnotationProp (const std::string & key, std::string & outProp) const override;
 
-	const std::map<std::string,std::string> & getMetaData () const
+	const std::map<PP_PropName, std::string> & getMetaData () const
 	{
 		return m_metaDataMap ;
 	}
@@ -830,7 +829,7 @@ protected:
 						 bool bIsImportFile, const char* impProps);
 
 	bool     _removeRepeatedHdrFtr(pf_Frag_Strux * pfs ,UT_GenericVector<pf_Frag_Strux *> * vecHdrFtrs, UT_sint32 i);
-	bool     _pruneSectionAPI(pf_Frag_Strux * pfs,const char * szHType, UT_GenericVector<pf_Frag_Strux *> *vecHdrFtrs);
+	bool     _pruneSectionAPI(pf_Frag_Strux * pfs, PP_PropName szHType, UT_GenericVector<pf_Frag_Strux *> *vecHdrFtrs);
 	bool     _matchSection(pf_Frag_Strux * pfs, UT_GenericVector<pf_Frag_Strux *> *vecSections);
 	bool     _removeHdrFtr(pf_Frag_Strux * pfs);
 	bool     _checkAndFixTable(pf_Frag_Strux * pfs);
@@ -868,7 +867,7 @@ private:
 	bool                    m_bLoading;
 	std::vector<std::string> m_vBookmarkNames;
 	bool                    m_bLockedStyles;
-	std::map<std::string, std::string> m_metaDataMap;
+	std::map<PP_PropName, std::string> m_metaDataMap;
 	PT_AttrPropIndex        m_indexAP;
 	bool                    m_bDontImmediatelyLayout;
 

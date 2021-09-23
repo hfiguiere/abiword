@@ -91,27 +91,21 @@ void  IE_Exp_DocRangeListener::assembleAtts(const PP_PropertyVector & inAtts,
                                             const PP_PropertyVector & inProps,
                                             PP_PropertyVector & sAtts)
 {
-  UT_sint32 i= 0;
   std::string sAllProps;
-  std::string sProp;
-  std::string sVal;
   bool bHasProps = false;
-  bHasProps = PP_hasAttribute("props", inAtts);
+  bHasProps = PP_hasAttribute(_PN("props"), inAtts);
 
   // XXX what is this for?
-  UT_sint32 attsCount = i;
+  UT_sint32 attsCount = 0;
   // XXX and this?
   UT_sint32 propsCount = 0;
   if(!bHasProps)
   {
-    i= 0;
-    ASSERT_PV_SIZE(inProps);
-    for (auto iter = inProps.cbegin();
-         iter != inProps.cend(); iter += 2, i += 2) {
-        xxx_UT_DEBUGMSG((" Prip %d prop %s val %s \n",i,inProps[i],inProps[i+1]));
-	sProp = *iter;
-	sVal = *(iter + 1);
-	UT_std_string_setProperty(sAllProps,sProp,sVal);
+    UT_sint32 i = 0;
+    for (auto entry : inProps) {
+      xxx_UT_DEBUGMSG((" Prip %d prop %s val %s \n", i, entry.name.c_str(), entry.value.c_str()));
+      UT_std_string_setProperty(sAllProps, entry.name.c_str(), entry.value);
+      i++;
     }
     propsCount = i;
   }
@@ -124,8 +118,7 @@ void  IE_Exp_DocRangeListener::assembleAtts(const PP_PropertyVector & inAtts,
 
   //UT_DEBUGMSG(("iSpace count %d \n",iSpace));
   sAtts = inAtts;
-  sAtts.push_back("props");
-  sAtts.push_back(sAllProps);
+  sAtts.push_back({ "props", sAllProps });
 }
 
 bool  IE_Exp_DocRangeListener::populate(fl_ContainerLayout* /* sfh */,

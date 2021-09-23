@@ -613,7 +613,7 @@ bool pt_PieceTable::_makeStrux(PTStruxType pts, const PP_PropertyVector & attrib
 	//
 	if((pts == PTX_Section) && (!attributes.empty()))
 	{
-		const std::string & struxType = PP_getAttribute("type", attributes);
+		const std::string & struxType = PP_getAttribute(_PN("type"), attributes);
 		if(!struxType.empty())
 		{
 			if(struxType == "header" ||

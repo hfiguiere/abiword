@@ -95,16 +95,10 @@ void AP_Dialog_Styles::fillVecFromCurrentPoint(void)
 //
 	m_vecAllProps.clear();
 
-	for (auto iter = paraProps.cbegin(); iter != paraProps.cend(); ++iter) {
-		const std::string & szName = *iter;
-		++iter;
-		if (iter == paraProps.cend()) {
-			break;
-		}
-		const std::string & szValue = *iter;
-		if(szName.find("toc-") == std::string::npos) {
-			m_vecAllProps.push_back(szName);
-			m_vecAllProps.push_back(szValue);
+	for (auto entry : paraProps) {
+		const std::string& szName = entry.name.c_str();
+		if (szName.find("toc-") == std::string::npos) {
+			m_vecAllProps.push_back(entry);
 		}
 	}
 	m_vecAllProps.insert(m_vecAllProps.end(), charProps.cbegin(), charProps.cend());
@@ -126,17 +120,32 @@ void AP_Dialog_Styles::fillVecWithProps(const gchar * szStyle, bool bReplaceAttr
 		return;
 	}
 
-	const static gchar * paraFields[] = {"text-align", "text-indent", "margin-left", "margin-right", "margin-top", "margin-bottom", "line-height","tabstops","start-value","list-delim", "list-style","list-decimal","field-font","field-color", "keep-together","keep-with-next","orphans","widows","dom-dir"};
+	const static PP_PropName paraFields[] = {
+		_PN("text-align"), _PN("text-indent"),
+		_PN("margin-left"), _PN("margin-right"),
+		_PN("margin-top"), _PN("margin-bottom"),
+		_PN("line-height"), _PN("tabstops"),
+		_PN("start-value"), _PN("list-delim"),
+		_PN("list-style"), _PN("list-decimal"),
+		_PN("field-font"), _PN("field-color"),
+		_PN("keep-together"), _PN("keep-with-next"),
+		_PN("orphans"), _PN("widows"),
+		_PN("dom-dir")
+	};
 
 	const size_t nParaFlds = sizeof(paraFields)/sizeof(paraFields[0]);
 
-	const static gchar * charFields[] =
-	{"bgcolor","color","font-family","font-size","font-stretch","font-style",
-	 "font-variant", "font-weight","text-decoration","lang"};
+	const static PP_PropName charFields[] = {
+		_PN("bgcolor"), _PN("color"),
+		_PN("font-family"), _PN("font-size"),
+		_PN("font-stretch"), _PN("font-style"),
+		_PN("font-variant"), _PN("font-weight"),
+		_PN("text-decoration"), _PN("lang")
+	};
 
 	const size_t nCharFlds = sizeof(charFields)/sizeof(charFields[0]);
 
-	const static gchar * attribs[] =
+	const static PP_PropName  attribs[] =
 	{PT_FOLLOWEDBY_ATTRIBUTE_NAME,PT_BASEDON_ATTRIBUTE_NAME,PT_LISTID_ATTRIBUTE_NAME,PT_PARENTID_ATTRIBUTE_NAME,PT_LEVEL_ATTRIBUTE_NAME,PT_NAME_ATTRIBUTE_NAME,PT_STYLE_ATTRIBUTE_NAME,PT_TYPE_ATTRIBUTE_NAME};
 
 	const size_t nattribs = sizeof(attribs)/sizeof(attribs[0]);
@@ -147,7 +156,7 @@ void AP_Dialog_Styles::fillVecWithProps(const gchar * szStyle, bool bReplaceAttr
 //
 	for(i = 0; i < nParaFlds; i++)
 	{
-		const gchar * szName = paraFields[i];
+		const PP_PropName szName = paraFields[i];
 		const gchar * szValue = NULL;
 		pStyle->getProperty(szName,szValue);
 		if(szValue) {
@@ -159,7 +168,7 @@ void AP_Dialog_Styles::fillVecWithProps(const gchar * szStyle, bool bReplaceAttr
 //
 	for(i = 0; i < nCharFlds; i++)
 	{
-		const gchar * szName = charFields[i];
+		const PP_PropName szName = charFields[i];
 		const gchar * szValue = NULL;
 		pStyle->getProperty(szName,szValue);
 		if(szValue)
@@ -176,7 +185,7 @@ void AP_Dialog_Styles::fillVecWithProps(const gchar * szStyle, bool bReplaceAttr
 	{
 		for(i = 0; i < nattribs; i++)
 		{
-			const gchar * szName = attribs[i];
+			const PP_PropName szName = attribs[i];
 			const gchar * szValue = NULL;
 			pStyle->getAttributeExpand(szName,szValue);
 			if(szValue) {
@@ -237,7 +246,7 @@ void AP_Dialog_Styles::ModifyLang(void)
 	PP_PropertyVector props_in;
 	if (getView()->getCharFormat(props_in))
 	{
-		pDialog->setLanguageProperty(PP_getAttribute("lang", props_in).c_str());
+		pDialog->setLanguageProperty(PP_getAttribute(_PN("lang"), props_in).c_str());
 	}
 
 	pDialog->runModal(getFrame());
@@ -249,7 +258,7 @@ void AP_Dialog_Styles::ModifyLang(void)
 		const gchar * s;
 
 		pDialog->getChangedLangProperty(&s);
-		PP_addOrSetAttribute("lang", s, m_vecAllProps);
+		PP_addOrSetAttribute(_PN("lang"), s, m_vecAllProps);
 	}
 
 	pDialogFactory->releaseDialog(pDialog);
@@ -287,12 +296,12 @@ void AP_Dialog_Styles::ModifyFont(void)
 	// which change across the selection, we ask the dialog not
 	// to set the field (by passing "").
 
-	const std::string & sFontFamily = PP_getAttribute("font-family", m_vecAllProps);
-	const std::string & sFontSize = PP_getAttribute("font-size", m_vecAllProps);
-	const std::string & sFontWeight = PP_getAttribute("font-weight", m_vecAllProps);
-	const std::string & sFontStyle = PP_getAttribute("font-style", m_vecAllProps);
-	const std::string & sColor = PP_getAttribute("color", m_vecAllProps);
-	const std::string & sBGColor = PP_getAttribute("bgcolor", m_vecAllProps);
+	const std::string & sFontFamily = PP_getAttribute(_PN("font-family"), m_vecAllProps);
+	const std::string & sFontSize = PP_getAttribute(_PN("font-size"), m_vecAllProps);
+	const std::string & sFontWeight = PP_getAttribute(_PN("font-weight"), m_vecAllProps);
+	const std::string & sFontStyle = PP_getAttribute(_PN("font-style"), m_vecAllProps);
+	const std::string & sColor = PP_getAttribute(_PN("color"), m_vecAllProps);
+	const std::string & sBGColor = PP_getAttribute(_PN("bgcolor"), m_vecAllProps);
 
 	pDialog->setFontFamily(sFontFamily);
 	pDialog->setFontSize(sFontSize);
@@ -319,7 +328,7 @@ void AP_Dialog_Styles::ModifyFont(void)
 	bool bStrikeOut2 = false;
 	bool bTopline2 = false;
 	bool bBottomline2 = false;
-	const std::string & sDecoration = PP_getAttribute("text-decoration", m_vecAllProps);
+	const std::string & sDecoration = PP_getAttribute(_PN("text-decoration"), m_vecAllProps);
 	if (!sDecoration.empty())
 	{
 		bUnderline2 = (strstr(sDecoration.c_str(), "underline") != NULL);
@@ -353,32 +362,32 @@ void AP_Dialog_Styles::ModifyFont(void)
 
 		if (pDialog->getChangedFontFamily(s1))
 		{
-			PP_addOrSetAttribute("font-family", s1, m_vecAllProps);
+			PP_addOrSetAttribute(_PN("font-family"), s1, m_vecAllProps);
 		}
 
 		if (pDialog->getChangedFontSize(s1))
 		{
-			PP_addOrSetAttribute("font-size", s1, m_vecAllProps);
+			PP_addOrSetAttribute(_PN("font-size"), s1, m_vecAllProps);
 		}
 
 		if (pDialog->getChangedFontWeight(s1))
 		{
-			PP_addOrSetAttribute("font-weight", s1, m_vecAllProps);
+			PP_addOrSetAttribute(_PN("font-weight"), s1, m_vecAllProps);
 		}
 
 		if (pDialog->getChangedFontStyle(s1))
 		{
-			PP_addOrSetAttribute("font-style", s1, m_vecAllProps);
+			PP_addOrSetAttribute(_PN("font-style"), s1, m_vecAllProps);
 		}
 
 		if (pDialog->getChangedColor(s1))
 		{
-			PP_addOrSetAttribute("color", s1, m_vecAllProps);
+			PP_addOrSetAttribute(_PN("color"), s1, m_vecAllProps);
 		}
 
 		if (pDialog->getChangedBGColor(s1))
 		{
-			PP_addOrSetAttribute("bgcolor", s1, m_vecAllProps);
+			PP_addOrSetAttribute(_PN("bgcolor"), s1, m_vecAllProps);
 		}
 
 		bool bUnderline = false;
@@ -412,7 +421,7 @@ void AP_Dialog_Styles::ModifyFont(void)
 				decors += "bottomline ";
 			if(!bUnderline && !bStrikeOut && !bOverline && !bTopline && !bBottomline)
 				decors = "none";
-			PP_addOrSetAttribute("text-decoration", decors, m_vecAllProps);
+			PP_addOrSetAttribute(_PN("text-decoration"), decors, m_vecAllProps);
 		}
 /*
 		if(bChangedDirection)
@@ -422,7 +431,7 @@ void AP_Dialog_Styles::ModifyFont(void)
 		    else
 		        s = "ltr";
 
-			PP_addOrSetAttribute("dir", s, m_vecAllProps);
+			PP_addOrSetAttribute(_PN("dir"), s, m_vecAllProps);
 		}
 */
 	}
@@ -436,9 +445,9 @@ void AP_Dialog_Styles::_tabCallback(const char *szTabStops,
 									const char *szDflTabStop)
 {
 	if (szTabStops)
-		PP_addOrSetAttribute("tabstops", szTabStops, m_vecAllProps);
+		PP_addOrSetAttribute(_PN("tabstops"), szTabStops, m_vecAllProps);
 	if (szDflTabStop)
-		PP_addOrSetAttribute("default-tab-interval", szDflTabStop, m_vecAllProps);
+		PP_addOrSetAttribute(_PN("default-tab-interval"), szDflTabStop, m_vecAllProps);
 }
 
 /*!
@@ -510,13 +519,13 @@ void AP_Dialog_Styles::ModifyLists(void)
 //
 // Fill input list for Lists dialog
 //
-	const std::string & sListStyle = PP_getAttribute("list-style", m_vecAllProps);
-	const std::string & sFieldFont = PP_getAttribute("field-font", m_vecAllProps);
-	const std::string & sStartValue = PP_getAttribute("start-value", m_vecAllProps);
-	const std::string & sListDelim = PP_getAttribute("list-delim", m_vecAllProps);
-	const std::string & sMarginLeft = PP_getAttribute("margin-left", m_vecAllProps);
-	const std::string & sListDecimal = PP_getAttribute("list-decimal", m_vecAllProps);
-	const std::string & sTextIndent = PP_getAttribute("text-indent", m_vecAllProps);
+	const std::string & sListStyle = PP_getAttribute(_PN("list-style"), m_vecAllProps);
+	const std::string & sFieldFont = PP_getAttribute(_PN("field-font"), m_vecAllProps);
+	const std::string & sStartValue = PP_getAttribute(_PN("start-value"), m_vecAllProps);
+	const std::string & sListDelim = PP_getAttribute(_PN("list-delim"), m_vecAllProps);
+	const std::string & sMarginLeft = PP_getAttribute(_PN("margin-left"), m_vecAllProps);
+	const std::string & sListDecimal = PP_getAttribute(_PN("list-decimal"), m_vecAllProps);
+	const std::string & sTextIndent = PP_getAttribute(_PN("text-indent"), m_vecAllProps);
 
 	if(!sListStyle.empty())
 	{
@@ -577,45 +586,45 @@ void AP_Dialog_Styles::ModifyLists(void)
 		{
 			m_ListProps[0] = getVecVal(vo,"list-style");
 			UT_DEBUGMSG(("SEVIOR: list-style %s \n",m_ListProps[0].c_str()));
-			PP_addOrSetAttribute("list-style", m_ListProps[0], m_vecAllProps);
+			PP_addOrSetAttribute(_PN("list-style"), m_ListProps[0], m_vecAllProps);
 		}
 		if(getVecVal(vo,"start-value"))
 		{
 			m_ListProps[1] = getVecVal(vo,"start-value");
 			UT_DEBUGMSG(("SEVIOR: start-value %s \n",m_ListProps[1].c_str()));
-			PP_addOrSetAttribute("start-value", m_ListProps[1], m_vecAllProps);
+			PP_addOrSetAttribute(_PN("start-value"), m_ListProps[1], m_vecAllProps);
 		}
 		if(getVecVal(vo,"list-delim"))
 		{
 			m_ListProps[2] = getVecVal(vo,"list-delim");
 			UT_DEBUGMSG(("SEVIOR: list-delim %s \n",m_ListProps[2].c_str()));
-			PP_addOrSetAttribute("list-delim", m_ListProps[2], m_vecAllProps);
+			PP_addOrSetAttribute(_PN("list-delim"), m_ListProps[2], m_vecAllProps);
 		}
 		if(getVecVal(vo,"margin-left"))
 		{
 			m_ListProps[3] = getVecVal(vo,"margin-left");
-			PP_addOrSetAttribute("margin-left", m_ListProps[3], m_vecAllProps);
+			PP_addOrSetAttribute(_PN("margin-left"), m_ListProps[3], m_vecAllProps);
 		}
 		if(getVecVal(vo,"field-font"))
 		{
 			m_ListProps[4] = getVecVal(vo,"field-font");
-			PP_addOrSetAttribute("field-font", m_ListProps[4], m_vecAllProps);
+			PP_addOrSetAttribute(_PN("field-font"), m_ListProps[4], m_vecAllProps);
 		}
 		if(getVecVal(vo,"list-decimal"))
 		{
 			m_ListProps[5] = getVecVal(vo,"list-decimal");
-			PP_addOrSetAttribute("list-decimal", m_ListProps[5], m_vecAllProps);
+			PP_addOrSetAttribute(_PN("list-decimal"), m_ListProps[5], m_vecAllProps);
 		}
 		if(getVecVal(vo,"text-indent"))
 		{
 			m_ListProps[6] = getVecVal(vo,"text-indent");
-			PP_addOrSetAttribute("text-indent", m_ListProps[6], m_vecAllProps);
+			PP_addOrSetAttribute(_PN("text-indent"), m_ListProps[6], m_vecAllProps);
 		}
 		// TODO: Why is field-font here twice?
 		if(getVecVal(vo,"field-font"))
 		{
 			m_ListProps[7] = getVecVal(vo,"field-font");
-			PP_addOrSetAttribute("field-font", m_ListProps[7], m_vecAllProps);
+			PP_addOrSetAttribute(_PN("field-font"), m_ListProps[7], m_vecAllProps);
 		}
 //
 // Whew we're done!
@@ -636,7 +645,17 @@ void AP_Dialog_Styles::ModifyParagraph(void)
 		= (AP_Dialog_Paragraph *)(pDialogFactory->requestDialog(AP_DIALOG_ID_PARAGRAPH));
 	UT_return_if_fail (pDialog);
 
-	const static gchar * paraFields[] = {"text-align", "text-indent", "margin-left", "margin-right", "margin-top", "margin-bottom", "line-height","tabstops","start-value","list-delim", "list-decimal","list-style","field-font","field-color", "keep-together","keep-with-next","orphans","widows","dom-dir"};
+	const static PP_PropName paraFields[] = {
+		_PN("text-align"), _PN("text-indent"),
+		_PN("margin-left"), _PN("margin-right"),
+		_PN("margin-top"), _PN("margin-bottom"),
+		_PN("line-height"), _PN("tabstops"),
+		_PN("start-value"), _PN("list-delim"),
+		_PN("list-decimal"), _PN("list-style"),
+		_PN("field-font"), _PN("field-color"),
+		_PN("keep-together"), _PN("keep-with-next"),
+		_PN("orphans"), _PN("widows"), _PN("dom-dir")
+	};
 
     const size_t NUM_PARAPROPS = sizeof(paraFields)/sizeof(paraFields[0]);
 //
@@ -708,15 +727,15 @@ void AP_Dialog_Styles::updateCurrentStyle(void)
 // Update the description in the Modify Dialog.
 //
 	setModifyDescription (m_curStyleDesc.c_str());
-	const std::string & szBasedon = PP_getAttribute("basedon", m_vecAllAttribs);
+	const std::string & szBasedon = PP_getAttribute(_PN("basedon"), m_vecAllAttribs);
 	std::string fullProps;
 	PD_Style * pBasedon = NULL;
 	if (!szBasedon.empty() && m_pDoc->getStyle(szBasedon.c_str(), &pBasedon))
 	{
 		PP_PropertyVector vecProps;
 		pBasedon->getAllProperties(vecProps, 0);
-		for (PP_PropertyVector::size_type i = 0; i < vecProps.size(); i += 2)	{
-			UT_std_string_setProperty(fullProps, vecProps[i], vecProps[i + 1]);
+		for (auto entry : vecProps) {
+			UT_std_string_setProperty(fullProps, entry.name.c_str(), entry.value);
 		}
 	}
 //
@@ -727,18 +746,18 @@ void AP_Dialog_Styles::updateCurrentStyle(void)
 	if( pStyle == NULL)
 	{
 		const PP_PropertyVector attrib = {
-			PT_NAME_ATTRIBUTE_NAME, "tmp",
-			PT_TYPE_ATTRIBUTE_NAME, "P",
-			"basedon", PP_getAttribute("basedon", m_vecAllAttribs),
-			"followedby", PP_getAttribute("followedby", m_vecAllAttribs),
-			"props",fullProps
+			{ PT_NAME_ATTRIBUTE_NAME, "tmp" },
+			{ PT_TYPE_ATTRIBUTE_NAME, "P" },
+			{ "basedon", PP_getAttribute(_PN("basedon"), m_vecAllAttribs) },
+			{ "followedby", PP_getAttribute(_PN("followedby"), m_vecAllAttribs) },
+			{ "props", fullProps }
 		};
 		getLDoc()->appendStyle(attrib);
 	}
 	else
 	{
 		const PP_PropertyVector atts = {
-			"props", fullProps.c_str()
+			{ "props", fullProps.c_str() }
 		};
 		getLDoc()->addStyleAttributes("tmp", atts);
 		getLDoc()->updateDocForStyleChange("tmp",true);
@@ -780,11 +799,11 @@ bool AP_Dialog_Styles::createNewStyle(const gchar * szName)
 // Assemble the attributes we need for this new style
 //
 	const PP_PropertyVector attrib = {
-		PT_NAME_ATTRIBUTE_NAME, szName,
-		PT_TYPE_ATTRIBUTE_NAME, PP_getAttribute(PT_TYPE_ATTRIBUTE_NAME, m_vecAllAttribs),
-		"basedon", PP_getAttribute("basedon", m_vecAllAttribs),
-		"followedby", PP_getAttribute("followedby", m_vecAllAttribs),
-		"props", m_curStyleDesc
+		{ PT_NAME_ATTRIBUTE_NAME, szName },
+		{ PT_TYPE_ATTRIBUTE_NAME, PP_getAttribute(PT_TYPE_ATTRIBUTE_NAME, m_vecAllAttribs) },
+		{ "basedon", PP_getAttribute(_PN("basedon"), m_vecAllAttribs) },
+		{ "followedby", PP_getAttribute(_PN("followedby"), m_vecAllAttribs) },
+		{ "props", m_curStyleDesc }
 	};
 	return getDoc()->appendStyle(attrib);
 }
@@ -802,8 +821,7 @@ bool AP_Dialog_Styles::applyModifiedStyleToDoc(void)
 
 	PP_PropertyVector attribs = m_vecAllAttribs;
 	m_curStyleDesc = PP_makePropString(m_vecAllProps);
-	attribs.push_back("props");
-	attribs.push_back(m_curStyleDesc);
+	attribs.push_back({ "props", m_curStyleDesc });
 //
 // Update the description in the Main Dialog.
 //
@@ -993,12 +1011,12 @@ void AP_Dialog_Styles::_populateAbiPreview(bool isNew)
 // Set all the margins to 0
 //
 	const PP_PropertyVector props =  {
-		"page-margin-left","0.0in",
-		"page-margin-right","0.0in",
-		"page-margin-top","0.0in",
-		"page-margin-bottom","0.0in",
-		"page-margin-footer","0.0in",
-		"page-margin-header","0.0in"
+		{ "page-margin-left","0.0in" },
+		{ "page-margin-right","0.0in" },
+		{ "page-margin-top","0.0in" },
+		{ "page-margin-bottom","0.0in" },
+		{ "page-margin-footer","0.0in" },
+		{ "page-margin-header","0.0in" }
 	};
 	getLView()->setSectionFormat(props);
 //
@@ -1022,8 +1040,8 @@ void AP_Dialog_Styles::_populateAbiPreview(bool isNew)
 
 	PP_PropertyVector props_in;
 	getLView()->getCharFormat(props_in);
-	const std::string & pszFGColor = PP_getAttribute("color", props_in);
-	const std::string & pszBGColor = PP_getAttribute("bgcolor", props_in);
+	const std::string & pszFGColor = PP_getAttribute(_PN("color"), props_in);
+	const std::string & pszBGColor = PP_getAttribute(_PN("bgcolor"), props_in);
 	if(!pszFGColor.empty()) {
 		UT_parseColor(pszFGColor.c_str(),FGColor);
 	}
@@ -1054,7 +1072,7 @@ void AP_Dialog_Styles::_populateAbiPreview(bool isNew)
 // Set the "Greyed" color for text in previous block
 //
 	const PP_PropertyVector GreyCol = {
-		"color", Grey
+		{ "color", Grey }
 	};
 	getLDoc()->changeSpanFmt(PTC_AddFmt, m_posBefore,getLView()->getPoint(), PP_NOPROPS, GreyCol);
 
@@ -1078,17 +1096,17 @@ void AP_Dialog_Styles::_populateAbiPreview(bool isNew)
 			m_curStyleDesc = "font-style:normal";
 		}
 		PP_PropertyVector attrib = {
-			PT_NAME_ATTRIBUTE_NAME, "tmp",
-			PT_TYPE_ATTRIBUTE_NAME, "P",
-			"basedon", "None",
-			"followedby", "Current Settings",
-			"props", m_curStyleDesc,
+			{ PT_NAME_ATTRIBUTE_NAME, "tmp" },
+			{ PT_TYPE_ATTRIBUTE_NAME, "P" },
+			{ "basedon", "None" },
+			{ "followedby", "Current Settings" },
+			{ "props", m_curStyleDesc },
 		};
 		if(!isNew)
 		{
-			attrib[3] = PP_getAttribute(PT_TYPE_ATTRIBUTE_NAME, m_vecAllAttribs);
-			attrib[5] = PP_getAttribute("basedon", m_vecAllAttribs);
-			attrib[7] = PP_getAttribute("followedby", m_vecAllAttribs);
+			attrib[1].value = PP_getAttribute(PT_TYPE_ATTRIBUTE_NAME, m_vecAllAttribs);
+			attrib[2].value = PP_getAttribute(_PN("basedon"), m_vecAllAttribs);
+			attrib[3].value = PP_getAttribute(_PN("followedby"), m_vecAllAttribs);
 		}
 		getLDoc()->appendStyle(attrib);
 	}
@@ -1103,11 +1121,11 @@ void AP_Dialog_Styles::_populateAbiPreview(bool isNew)
 //
 // Set Color Back
 //
-	const std::string & pszFGColorL = PP_getAttribute("color", m_vecAllAttribs);
+	const std::string & pszFGColorL = PP_getAttribute(_PN("color"), m_vecAllAttribs);
 	if(pszFGColorL.empty())
 	{
 		const PP_PropertyVector FGCol = {
-			"color", szFGColor
+			{ "color", szFGColor }
 		};
 		getLView()->setCharFormat(FGCol);
 	}
@@ -1244,13 +1262,28 @@ void AP_Dialog_Styles::_populatePreviews(bool isModify)
 {
 	PD_Style * pStyle = NULL;
 	const char * szStyle = NULL;
-	const static gchar * paraFields[] = {"text-align", "text-indent", "margin-left", "margin-right", "margin-top", "margin-bottom", "line-height","tabstops","start-value","list-delim", "list-style","field-font","list-decimal","field-color", "keep-together","keep-with-next","orphans","widows","dom-dir"};
+	const static PP_PropName paraFields[] = {
+		_PN("text-align"), _PN("text-indent"),
+		_PN("margin-left"), _PN("margin-right"),
+		_PN("margin-top"), _PN("margin-bottom"),
+		_PN("line-height"), _PN("tabstops"),
+		_PN("start-value"), _PN("list-delim"),
+		_PN("list-style"), _PN("field-font"),
+		_PN("list-decimal"), _PN("field-color"),
+		_PN("keep-together"), _PN("keep-with-next"),
+		_PN("orphans"), _PN("widows"),
+		_PN("dom-dir")
+	};
 	const size_t nParaFlds = sizeof(paraFields)/sizeof(paraFields[0]);
 	const gchar * paraValues [nParaFlds];
 
-	const static gchar * charFields[] =
-	{"bgcolor","color","font-family","font-size","font-stretch","font-style",
-	 "font-variant", "font-weight","text-decoration","lang"};
+	const static PP_PropName charFields[] = {
+		_PN("bgcolor"), _PN("color"),
+		_PN("font-family"), _PN("font-size"),
+		_PN("font-stretch"), _PN("font-style"),
+		_PN("font-variant"), _PN("font-weight"),
+		_PN("text-decoration"), _PN("lang")
+	};
 
 	const size_t nCharFlds = sizeof(charFields)/sizeof(charFields[0]);
 
@@ -1278,8 +1311,8 @@ void AP_Dialog_Styles::_populatePreviews(bool isModify)
 	    // first loop through and pass out each property:value combination for paragraphs
 		for(i = 0; i < nParaFlds; i++)
 		{
-			const gchar * szName = paraFields[i];
-			const gchar * szValue = NULL;
+			const PP_PropName szName = paraFields[i];
+			const gchar* szValue = NULL;
 			pStyle->getProperty(szName,szValue);
 			if (szValue == NULL)
 			{
@@ -1297,7 +1330,7 @@ void AP_Dialog_Styles::_populatePreviews(bool isModify)
 			else
 			{
 				paraValues[i] = szValue;
-				m_curStyleDesc += (const char *)szName;
+				m_curStyleDesc += szName.c_str();
 				m_curStyleDesc += ":";
 
 				if (szValue && *szValue)
@@ -1313,7 +1346,7 @@ void AP_Dialog_Styles::_populatePreviews(bool isModify)
 
 		for(i = 0; i < nCharFlds; i++)
 		{
-			const gchar * szName = charFields[i];
+			const PP_PropName szName = charFields[i];
 			const gchar * szValue = NULL;
 			pStyle->getProperty(szName,szValue);
 			if (szValue == NULL)
@@ -1326,7 +1359,7 @@ void AP_Dialog_Styles::_populatePreviews(bool isModify)
 			}
 			else
 			{
-				m_curStyleDesc += (const char *)szName;
+				m_curStyleDesc += szName.c_str();
 				m_curStyleDesc += ":";
 				if(szValue && *szValue)
 				    m_curStyleDesc += (const char *)szValue;
@@ -1335,7 +1368,7 @@ void AP_Dialog_Styles::_populatePreviews(bool isModify)
 //
 // Put them in our property vector for the Character preview
 //
-			m_mapCharProps[szName] = szValue;
+			m_mapCharProps[szName.c_str()] = szValue;
 		}
 
 		if (!m_curStyleDesc.empty())
@@ -1354,8 +1387,8 @@ void AP_Dialog_Styles::_populatePreviews(bool isModify)
 
 			if(!isModify)
 				event_paraPreviewUpdated(
-					PP_getAttribute("page-margin-left", props_in).c_str(),
-					PP_getAttribute("page-margin-right", props_in).c_str(),
+					PP_getAttribute(_PN("page-margin-left"), props_in).c_str(),
+					PP_getAttribute(_PN("page-margin-right"), props_in).c_str(),
 					(const gchar *)paraValues[0], (const gchar *)paraValues[1],
 					(const gchar *)paraValues[2], (const gchar *)paraValues[3],
 					(const gchar *)paraValues[4], (const gchar *)paraValues[5],

@@ -43,9 +43,9 @@ pf_Frag_Object::pf_Frag_Object(pt_PieceTable * pPT,
     const gchar* pszName = NULL;
 	const gchar* pszParam = NULL;
 
-    pAP->getAttribute(static_cast<const gchar *>("type"), pszType);
-    pAP->getAttribute(static_cast<const gchar *>("name"), pszName);
-    pAP->getAttribute(static_cast<const gchar *>("param"), pszParam);
+    pAP->getAttribute(_PN("type"), pszType);
+    pAP->getAttribute(_PN("name"), pszName);
+    pAP->getAttribute(_PN("param"), pszParam);
 
     fd_Field::FieldType fieldType = fd_Field::FD_None;
 

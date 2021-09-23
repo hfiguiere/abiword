@@ -293,15 +293,15 @@ void AP_Dialog_FormatFootnotes::updateDocWithValues(void)
 	}
 
 	PP_PropertyVector pProps = {
-		"document-footnote-type", sFootType,
-		"document-footnote-initial", UT_std_string_sprintf("%d", m_iFootnoteVal),
-		"document-footnote-restart-section", m_bRestartFootSection ? "1" : "0",
-		"document-footnote-restart-page", m_bRestartFootPage ? "1" : "0",
-		"document-endnote-type", sEndType,
-		"document-endnote-initial", UT_std_string_sprintf("%d", m_iEndnoteVal),
-		"document-endnote-restart-section", m_bRestartEndSection ? "1" : "0",
-		"document-endnote-place-endsection", m_bPlaceAtSecEnd ? "1" : "0",
-		"document-endnote-place-enddoc", m_bPlaceAtDocEnd ? "1" : "0"
+		{ "document-footnote-type", sFootType },
+		{ "document-footnote-initial", UT_std_string_sprintf("%d", m_iFootnoteVal) },
+		{ "document-footnote-restart-section", m_bRestartFootSection ? "1" : "0" },
+		{ "document-footnote-restart-page", m_bRestartFootPage ? "1" : "0" },
+		{ "document-endnote-type", sEndType },
+		{ "document-endnote-initial", UT_std_string_sprintf("%d", m_iEndnoteVal) },
+		{ "document-endnote-restart-section", m_bRestartEndSection ? "1" : "0" },
+		{ "document-endnote-place-endsection", m_bPlaceAtSecEnd ? "1" : "0" },
+		{ "document-endnote-place-enddoc", m_bPlaceAtDocEnd ? "1" : "0" }
 	};
 
 	m_pDoc->setProperties(pProps);

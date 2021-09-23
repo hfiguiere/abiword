@@ -3,6 +3,7 @@
  * Copyright (C) 1998 AbiSource, Inc.
  * Copyright (C) 2001,2002 Tomas Frydrych
  * Some change tracking code was added in 2011 by Ben Martin
+ * Copyright (c) 2021 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -659,9 +660,9 @@ bool pt_PieceTable::changeTrackingAddParaAttribute( pf_Frag_Strux* pfs,
     }
     else
     {
-        const gchar name[] = "revision";
+        PP_PropName name("revision");
         const gchar * pRevision = NULL;
-                    
+
         if(!pAP2->getAttribute(name, pRevision))
             pRevision = NULL;
         PP_RevisionAttr Revisions(pRevision);
@@ -674,7 +675,7 @@ bool pt_PieceTable::changeTrackingAddParaAttribute( pf_Frag_Strux* pfs,
         {
             Revisions.mergeAttr( 1, PP_REVISION_ADDITION_AND_FMT,
                                  attr, v.c_str() );
-            
+
             const gchar * ppRevAttrib[3];
             ppRevAttrib[0] = name;
             ppRevAttrib[1] = Revisions.getXMLstring();
@@ -682,7 +683,7 @@ bool pt_PieceTable::changeTrackingAddParaAttribute( pf_Frag_Strux* pfs,
 
             UT_DEBUGMSG(("ODTCT: changeTrackingAddParaAttribute() adding attr:%s v:%s for block at:%d\n",
                          attr, v.c_str(), pfs->getPos() ));
-                    
+
             int iLen = pf_FRAG_STRUX_BLOCK_LENGTH;
             PTStruxType eStruxType = pfs->getStruxType();
 
@@ -694,11 +695,11 @@ bool pt_PieceTable::changeTrackingAddParaAttribute( pf_Frag_Strux* pfs,
             }
         }
     }
-    
+
     return true;
 }
 #endif
-                                                    
+
 /*
  * If we are deleting a selection for which a delta:merge is in
  * progress, this method adds ABIATTR_PARA_END_DELETED_REVISION to the
@@ -808,7 +809,7 @@ bool pt_PieceTable::deleteSpan(PT_DocPosition dpos1,
 		
 		iRealDeleteCount = 0;
 
-		const gchar name[] = "revision";
+		PP_PropName name("revision");
 		const gchar * pRevision = NULL;
 
 
@@ -1121,11 +1122,11 @@ bool pt_PieceTable::deleteSpan(PT_DocPosition dpos1,
 							return false;
 
 						const gchar * pszHdrId;
-						if(!pAP->getAttribute("id", pszHdrId) || !pszHdrId)
+						if(!pAP->getAttribute(_PN("id"), pszHdrId) || !pszHdrId)
 							return false;
 
 						const gchar * pszHdrType;
-						if(!pAP->getAttribute("type", pszHdrType) || !pszHdrType)
+						if(!pAP->getAttribute(_PN("type"), pszHdrType) || !pszHdrType)
 							return false;
 
 						// needs to be in this order because of undo
@@ -1192,7 +1193,7 @@ bool pt_PieceTable::deleteSpan(PT_DocPosition dpos1,
 			Revisions.addRevision(iId, PP_REVISION_DELETION, PP_NOPROPS, PP_NOPROPS);
 			// UT_DEBUGMSG(("ODTCT: deleteSpan(revisions) 2...\n" ));
 			PP_PropertyVector ppRevAttrib = {
-				name, Revisions.getXMLstring()
+				{ name, Revisions.getXMLstring() }
 			};
 
             // UT_DEBUGMSG(("ODTCT: deleteSpan(revisions) while.6 dpos1:%d dpos2:%d eType:%d RX:%s\n",
@@ -1247,19 +1248,19 @@ bool pt_PieceTable::deleteSpan(PT_DocPosition dpos1,
 							return false;
 
 						const gchar * pszHdrId;
-						if(!pAP->getAttribute("id", pszHdrId) || !pszHdrId)
+						if(!pAP->getAttribute(_PN("id"), pszHdrId) || !pszHdrId)
 							return false;
 
 						const gchar * pszHdrType;
-						if(!pAP->getAttribute("type", pszHdrType) || !pszHdrType)
+						if(!pAP->getAttribute(_PN("type"), pszHdrType) || !pszHdrType)
 							return false;
 
 						_fixHdrFtrReferences(pszHdrType, pszHdrId, true);
-                        // empty the strux listener chache since the pointers are now
-                        // invalid                                              
-                        pfHdr->clearAllFmtHandles();                            
+						// empty the strux listener chache since the pointers are now
+						// invalid
+						pfHdr->clearAllFmtHandles();
 					}
-					
+
 					break;
 
 				default:;
@@ -1280,13 +1281,14 @@ bool pt_PieceTable::deleteSpan(PT_DocPosition dpos1,
     bNotional indicates that the header has been marked deleted in revison mode, but not
     physically removed from the document
 */
-bool pt_PieceTable::_fixHdrFtrReferences(const gchar * pszHdrType, const gchar * pszHdrId,
+bool pt_PieceTable::_fixHdrFtrReferences(const char* pszHdrType, const gchar * pszHdrId,
 										 bool bNotional /* = false */)
 {
-	UT_return_val_if_fail( pszHdrType && pszHdrId, false );
-	
+	UT_return_val_if_fail(!!pszHdrType && pszHdrId, false );
+
 	bool bRet = true;
 	const PP_AttrProp * pAP = NULL;
+	auto hdrType = UT_StaticString::Interned(pszHdrType);
 
 	// look for any doc sections that referrence this header type and id
 	const pf_Frag * pFrag = m_fragments.getFirst();
@@ -1300,12 +1302,11 @@ bool pt_PieceTable::_fixHdrFtrReferences(const gchar * pszHdrType, const gchar *
 
 			// check for normal attribute
 			const gchar * pszMyHdrId2 = NULL;
-			if(pAP->getAttribute(pszHdrType, pszMyHdrId2) && pszMyHdrId2)
-			{
+			if (pAP->getAttribute(hdrType, pszMyHdrId2) && pszMyHdrId2)	{
 				if(0 == strcmp(pszMyHdrId2, pszHdrId))
 				{
 					PP_PropertyVector pAttrs = {
-						pszHdrType, pszMyHdrId2
+						{ hdrType, pszMyHdrId2 }
 					};
 					bRet &= _fmtChangeStruxWithNotify(PTC_RemoveFmt, (pf_Frag_Strux*)pFrag,
 													  pAttrs, PP_NOPROPS, false);
@@ -1314,8 +1315,7 @@ bool pt_PieceTable::_fixHdrFtrReferences(const gchar * pszHdrType, const gchar *
 
 			// now check for revision attribute ...
 			const gchar * pszRevision;
-			if(pAP->getAttribute("revision", pszRevision) && pszRevision)
-			{
+			if (pAP->getAttribute(_PN("revision"), pszRevision) && pszRevision) {
 				bool bFound = false;
 				PP_RevisionAttr Revisions(pszRevision);
 
@@ -1325,8 +1325,7 @@ bool pt_PieceTable::_fixHdrFtrReferences(const gchar * pszHdrType, const gchar *
 					UT_return_val_if_fail( pRev2, false );
 
 					const gchar * pszMyHdrId = NULL;
-					if(pRev2->getAttribute(pszHdrType, pszMyHdrId) && pszMyHdrId)
-					{
+					if (pRev2->getAttribute(hdrType, pszMyHdrId) && pszMyHdrId) {
 						if(0 != strcmp(pszHdrId, pszMyHdrId))
 							continue;
 
@@ -1334,7 +1333,7 @@ bool pt_PieceTable::_fixHdrFtrReferences(const gchar * pszHdrType, const gchar *
 						{
 							// NB: this is safe, since we own the PP_RevisionAttr object
 							// of local scope which in turn owns this revisions
-							const_cast<PP_Revision*>(pRev2)->setAttribute(pszHdrType, "");
+							const_cast<PP_Revision*>(pRev2)->setAttribute(hdrType, "");
 						}
 						else
 						{
@@ -1345,7 +1344,7 @@ bool pt_PieceTable::_fixHdrFtrReferences(const gchar * pszHdrType, const gchar *
 							{
 								// NB: this is safe, since we own the PP_RevisionAttr object
 								// of local scope which in turn owns this revisions
-								const_cast<PP_Revision*>(pRev)->setAttribute(pszHdrType, "");
+								const_cast<PP_Revision*>(pRev)->setAttribute(hdrType, "");
 							}
 							else
 							{
@@ -1356,7 +1355,7 @@ bool pt_PieceTable::_fixHdrFtrReferences(const gchar * pszHdrType, const gchar *
 								// revisions in which the header is
 								// not referenced
 								const PP_PropertyVector attrs = {
-									pszHdrType, pszHdrId
+									{ hdrType, pszHdrId }
 								};
 								Revisions.addRevision(iId, PP_REVISION_FMT_CHANGE, attrs, PP_NOPROPS);
 							}
@@ -1370,7 +1369,7 @@ bool pt_PieceTable::_fixHdrFtrReferences(const gchar * pszHdrType, const gchar *
 				if(bFound)
 				{
 					PP_PropertyVector pAttrs = {
-						"revision", Revisions.getXMLstring()
+						{ "revision", Revisions.getXMLstring() }
 					};
 					bRet &= _fmtChangeStruxWithNotify(PTC_SetFmt, (pf_Frag_Strux*)pFrag,
 													  pAttrs, PP_NOPROPS, false);
@@ -2057,7 +2056,7 @@ pt_PieceTable::_deleteComplexSpanHAR( pf_Frag_Object *pO,
                                       pf_Frag_Strux*& pfsContainer,
                                       pf_Frag*& pfNewEnd,
                                       UT_uint32& fragOffsetNewEnd,
-                                      const char* startAttrCSTR )
+                                      PP_PropName startAttrCSTR)
 {
     UT_DEBUGMSG(("_deleteComplexSpanHAR() pO:%p\n", (void*)pO));
     
@@ -2068,8 +2067,8 @@ pt_PieceTable::_deleteComplexSpanHAR( pf_Frag_Object *pO,
     PT_DocPosition posComrade;
     pf_Frag_Strux * pfsContainer2 = NULL;
     pf_Frag * pF;
-    std::string startAttr = startAttrCSTR;
-    std::string startAttrInitialCap = startAttr;
+    PP_PropName startAttr = startAttrCSTR;
+    std::string startAttrInitialCap = startAttr.c_str();
     if( !startAttrInitialCap.empty() )
         startAttrInitialCap[0] = toupper( startAttrInitialCap[0] );
 
@@ -2077,13 +2076,12 @@ pt_PieceTable::_deleteComplexSpanHAR( pf_Frag_Object *pO,
     pO->getPieceTable()->getAttrProp(pO->getIndexAP(),&pAP);
     UT_return_val_if_fail (pAP, false);
     const gchar* pszHref = NULL;
-    const gchar* pszHname  = NULL;
+    PP_PropName pszHname;
     UT_uint32 k = 0;
     bool bStart = false;
     while((pAP)->getNthAttribute(k++,pszHname, pszHref))
     {
-        if((strcmp(pszHname, startAttr.c_str()) == 0) ||(strcmp(pszHname, startAttrInitialCap.c_str()) == 0) )
-        {
+        if(pszHname == startAttr || pszHname == startAttrInitialCap.c_str()) {
             bStart = true;
             break;
         }
@@ -2712,7 +2710,7 @@ bool pt_PieceTable::_deleteComplexSpan(PT_DocPosition & origPos1,
                                                       pfsContainer,
                                                       pfNewEnd,
                                                       fragOffsetNewEnd,
-                                                      "xlink:href" );
+                                                     _PN("xlink:href"));
                 // {
 				//      bool bFoundStrux2;
 				//      PT_DocPosition posComrade;
@@ -2857,7 +2855,7 @@ bool pt_PieceTable::_deleteComplexSpan(PT_DocPosition & origPos1,
                                                       pfsContainer,
                                                       pfNewEnd,
                                                       fragOffsetNewEnd,
-                                                      "annotation" );
+                                                     _PN("annotation"));
                     //   {
                 //     UT_ASSERT(pO->getObjectType() == PTO_Annotation);
 				//     bool bFoundStrux2;
@@ -3183,13 +3181,13 @@ bool pt_PieceTable::_realDeleteSpan(PT_DocPosition dpos1,
 		{
 			const PP_AttrProp *p_AttrProp;
 			getAttrProp(static_cast<pf_Frag_Text *>(pf1)->getIndexAP(), &p_AttrProp);
-		  
+
 			AttrProp_Before = *p_AttrProp;
 			if(p_AttrProp_Before)
 				*p_AttrProp_Before = *p_AttrProp;
 
 			// we do not want to inherit revision attribute
-			AttrProp_Before.setAttribute("revision", "");
+			AttrProp_Before.setAttribute(_PN("revision"), "");
 		}
 	}
 

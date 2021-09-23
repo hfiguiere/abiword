@@ -75,8 +75,8 @@ UT_UTF8String getStyleSizeString(const gchar * szWidth, double widthPercentage,
 	UT_Dimension widthDim, const gchar * szHeight,
 	UT_Dimension heightDim, bool bUseScale);
 
-bool getPropertySize(const PP_AttrProp * pAP, const gchar* szWidthProp,
-	const gchar* szHeightProp, const gchar** szWidth, double& widthPercentage,
+bool getPropertySize(const PP_AttrProp * pAP, PP_PropName szWidthProp,
+	PP_PropName szHeightProp, const gchar** szWidth, double& widthPercentage,
 	const gchar** szHeight, double dPageWidthInches, double dSecLeftMarginInches,
 	double dSecRightMarginInches, double dCellWidthInches,
 	ie_Table &tableHelper);

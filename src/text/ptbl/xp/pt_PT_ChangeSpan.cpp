@@ -58,7 +58,7 @@ bool pt_PieceTable::changeSpanFmt(PTChangeFmt ptc,
 	// the non-revision branch ...
 	if(m_pDocument->isMarkRevisions() && dpos1 != dpos2)
 	{
-		const gchar name[] = "revision";
+		PP_PropName name("revision");
 		const gchar * pRevision = NULL;
 
 		// we cannot retrieve the start and end fragments here and
@@ -113,7 +113,7 @@ bool pt_PieceTable::changeSpanFmt(PTChangeFmt ptc,
 								  PP_REVISION_FMT_CHANGE, attrs, props);
 
 			const PP_PropertyVector ppRevAttrib = {
-				name, Revisions.getXMLstring()
+				{ name, Revisions.getXMLstring() }
 			};
 
 			PT_DocPosition dposEnd = UT_MIN(dpos2,dpos1 + pf1->getLength());

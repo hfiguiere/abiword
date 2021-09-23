@@ -39,7 +39,7 @@ TFTEST_MAIN("pt_PieceTable")
 	pt.setPieceTableState(PTS_Loading);
 
 	const PP_PropertyVector attrs = {
-		"foo", "bar"
+		{ "foo", "bar" }
 	};
 
 	pf_Frag_Strux *frag = NULL;

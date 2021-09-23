@@ -40,6 +40,7 @@ ABI_W_POP
 #include "ut_debugmsg.h"
 #include "ut_Language.h"
 #include "ut_uuid.h"
+#include "ut_static_string.h"
 #include "ev_EditMethod.h"
 #include "ev_Menu_Actions.h"
 #include "ev_Toolbar_Actions.h"
@@ -169,6 +170,8 @@ XAP_App::~XAP_App()
 
 	/* reset the static pointer, since it is no longer valid */
 	m_pApp = NULL;
+
+	UT_DEBUGMSG(("Number of interned strings: %lu\n", UT_StaticString_count_interned()));
 }
 
 const char* XAP_App::getBuildId ()

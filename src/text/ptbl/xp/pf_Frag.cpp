@@ -277,7 +277,7 @@ pf_Frag::getXMLID() const
         PTStruxType st = pfs->getStruxType();
         if( st == PTX_Block || st == PTX_SectionCell )
         {
-            if(pAP->getAttribute("xml:id", v))
+            if (pAP->getAttribute(_PN("xml:id"), v))
             {
                 ret = v;
             }

@@ -38,12 +38,12 @@
 
 #define _s(name, displayed, type, base, follow, props)	\
 	do { const PP_PropertyVector a = {					\
-			PT_NAME_ATTRIBUTE_NAME, name,				\
-			PT_TYPE_ATTRIBUTE_NAME, type,				\
-			PT_BASEDON_ATTRIBUTE_NAME, base,			\
-			PT_FOLLOWEDBY_ATTRIBUTE_NAME, follow,		\
-			PT_PROPS_ATTRIBUTE_NAME, props				\
-			};											\
+        { PT_NAME_ATTRIBUTE_NAME, name },                 \
+        { PT_TYPE_ATTRIBUTE_NAME, type },                 \
+        { PT_BASEDON_ATTRIBUTE_NAME, base },              \
+        { PT_FOLLOWEDBY_ATTRIBUTE_NAME, follow },         \
+        { PT_PROPS_ATTRIBUTE_NAME, props }                \
+        };                                                \
 		if (!_createBuiltinStyle(name, displayed, a))	\
 			goto Failed;								\
 	} while(0)

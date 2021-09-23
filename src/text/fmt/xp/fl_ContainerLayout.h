@@ -86,7 +86,7 @@ public:
 
 	fl_ContainerType    getContainerType(void) const { return m_iConType; }
 	const char *        getContainerString(void);
-	const char *                getAttribute(const char * pKey) const;
+	const char *                getAttribute(PP_PropName name) const;
 	virtual fp_Container*		getFirstContainer() const;
 	virtual fp_Container*		getLastContainer() const;
 	virtual void                setFirstContainer(fp_Container * pCon);

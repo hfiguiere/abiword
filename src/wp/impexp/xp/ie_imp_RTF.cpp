@@ -1799,7 +1799,7 @@ void IE_Imp_RTF::closePastedTableIfNeeded(void)
 					UT_std_string_setProperty(sCellProps,sDum,sBot);
 
 					PP_PropertyVector attrs = {
-						"props", sCellProps
+						{ "props", sCellProps }
 					};
 					insertStrux(PTX_SectionCell, attrs, PP_NOPROPS);
 
@@ -1845,7 +1845,7 @@ void IE_Imp_RTF::closePastedTableIfNeeded(void)
 					getDoc()->getPropertyFromSDH(sdhCell,
 												 true,
 												 PD_MAX_REVISION,
-												 "top-attach", &szVal);
+												 _PN("top-attach"), &szVal);
 					UT_ASSERT(szVal);
 					UT_sint32 iTop = atoi(szVal);
 					iTop += numRows;
@@ -1853,15 +1853,15 @@ void IE_Imp_RTF::closePastedTableIfNeeded(void)
 					getDoc()->getPropertyFromSDH(sdhCell,
 												 true,
 												 PD_MAX_REVISION,
-												 "bot-attach", &szVal);
+												 _PN("bot-attach"), &szVal);
 					UT_ASSERT(szVal);
 					UT_sint32 iBot = atoi(szVal);
 					iBot += numRows;
 					sBot = UT_std_string_sprintf("%d",iBot);
 					UT_DEBUGMSG(("Change cell top to %d bot to %d \n",iTop,iBot));
 					PP_PropertyVector sProps = {
-						"top-attach", sTop,
-						"bot-attach", sBot
+						{ "top-attach", sTop },
+						{ "bot-attach", sBot }
 					};
 					getDoc()->changeStruxFmt(PTC_AddFmt, posCell + 1, posCell + 1, PP_NOPROPS, sProps, PTX_SectionCell);
 					b = getDoc()->getNextStruxOfType(sdhCell,PTX_SectionCell,&sdhCell);
@@ -1874,9 +1874,9 @@ void IE_Imp_RTF::closePastedTableIfNeeded(void)
 // Now a change strux on the table to make it rebuild.
 //
 				PP_PropertyVector sProps = {
-					"list-tag",
-					UT_std_string_sprintf("%d",
-										  getDoc()->getUID(UT_UniqueId::List)),
+					{ "list-tag",
+					  UT_std_string_sprintf("%d",
+											getDoc()->getUID(UT_UniqueId::List)) },
 				};
 				getDoc()->changeStruxFmt(PTC_AddFmt, posTable + 1, posTable + 1, PP_NOPROPS, sProps, PTX_SectionTable);
 			}
@@ -2329,8 +2329,8 @@ void IE_Imp_RTF::HandleNote(void)
 	    footpid = UT_std_string_sprintf("%i",m_iLastEndnoteId);
 	}
 	PP_PropertyVector attribs = {
-		m_bNoteIsFNote ? "footnote-id" : "endnote-id",
-		footpid
+		{ m_bNoteIsFNote ? "footnote-id" : "endnote-id",
+		  footpid }
 	};
 	UT_DEBUGMSG(("Note Strux ID = %s \n", footpid.c_str()));
 	UT_DEBUGMSG(("ie_imp_RTF: Handle Footnote now \n"));
@@ -2403,8 +2403,10 @@ void IE_Imp_RTF::HandleAnnotation(void)
 		m_pDelayedFrag = m_pAnnotation->m_pInsertFrag->getNext();
 		if(!m_pDelayedFrag)
 			m_pDelayedFrag = doc->getLastFrag();
+
 		UT_DEBUGMSG(("Delayed Frag set to %p \n", (void*)m_pDelayedFrag));
-		ann_attrs[2] = PT_PROPS_ATTRIBUTE_NAME;
+		ann_attrs[2] = PT_PROPS_ATTRIBUTE_NAME.c_str();
+
 		UT_sint32 k = 0;
 		std::string sProperties;
 		for(k=0; k<i;k++)
@@ -2760,8 +2762,7 @@ bool IE_Imp_RTF::HandleParKeyword()
 		}
 
 		_formRevisionAttr(rev, props, aStyle);
-		attrs.push_back("revision");
-		attrs.push_back(rev);
+		attrs.push_back({ "revision", rev });
 		props.clear();
 	}
 
@@ -3662,7 +3663,7 @@ bool IE_Imp_RTF::HandleField()
 			if(m_iHyperlinkOpen ==1)
 			{
 				const PP_PropertyVector props = {
-					"list-tag", "dummy"
+					{ "list-tag", "dummy" }
 				};
 				getDoc()->insertObject(m_dposPaste, PTO_Hyperlink, props, PP_NOPROPS);
 				m_dposPaste++;
@@ -3858,7 +3859,7 @@ gchar *IE_Imp_RTF::_parseFldinstBlock (UT_ByteBuf & _buf, gchar *xmlField, bool 
 			}
 
 			const PP_PropertyVector new_atts = {
-				"xlink:href", s
+				{ "xlink:href", s }
 			};
 
 			FlushStoredChars(true);
@@ -3970,9 +3971,9 @@ gchar *IE_Imp_RTF::_parseFldinstBlock (UT_ByteBuf & _buf, gchar *xmlField, bool 
 			UT_DEBUGMSG (("RTF: RDF opening text meta with updated  xmlid:%s\n", xmlid.c_str() ));
 
 			const PP_PropertyVector ppAtts = {
-				PT_XMLID, xmlid,
+				{ PT_XMLID, xmlid },
 				// sanity check
-				"this-is-an-rdf-anchor", "yes"
+				{ "this-is-an-rdf-anchor", "yes" }
 			};
 //			PT_RDF_END, "yes"
 
@@ -4314,7 +4315,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-endnote-place-endsection", "1"
+				{ "document-endnote-place-endsection", "1" }
 			};
 			getDoc()->setProperties(props);
 		}
@@ -4323,7 +4324,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-endnote-place-enddoc", "1"
+				{ "document-endnote-place-enddoc", "1" }
 			};
 			getDoc()->setProperties(props);
 		}
@@ -4332,7 +4333,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-endnote-initial", UT_std_string_sprintf("%d",param),
+				{ "document-endnote-initial", UT_std_string_sprintf("%d",param) },
 			};
 			getDoc()->setProperties(props);
 		}
@@ -4341,7 +4342,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-endnote-restart-section", "1",
+				{ "document-endnote-restart-section", "1" },
 			};
 			getDoc()->setProperties(props);
 		}
@@ -4350,7 +4351,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-endnote-type", "numeric",
+				{ "document-endnote-type", "numeric" },
 			};
 			getDoc()->setProperties(props);
 		}
@@ -4359,7 +4360,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-endnote-type", "lower"
+				{ "document-endnote-type", "lower" }
 			};
 			getDoc()->setProperties(props);
 		}
@@ -4368,7 +4369,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-endnote-type", "upper"
+				{ "document-endnote-type", "upper" }
 			};
 			getDoc()->setProperties(props);
 		}
@@ -4377,7 +4378,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-endnote-type", "lower-roman"
+				{ "document-endnote-type", "lower-roman" }
 			};
 			getDoc()->setProperties(props);
 		}
@@ -4386,7 +4387,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-footnote-type", "upper-roman"
+				{ "document-footnote-type", "upper-roman" }
 			};
 			getDoc()->setProperties(props);
 		}
@@ -4831,7 +4832,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 	case RTF_KW_endnotes:
 	{
 		const PP_PropertyVector props = {
-			"document-endnote-place-endsection", "1",
+			{ "document-endnote-place-endsection", "1" },
 		};
 		getDoc()->setProperties(props);
 	}
@@ -4839,7 +4840,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 	case RTF_KW_enddoc:
 	{
 		const PP_PropertyVector props = {
-			"document-endnote-place-enddoc", "1",
+			{ "document-endnote-place-enddoc", "1" },
 		};
 		getDoc()->setProperties(props);
 	}
@@ -4943,7 +4944,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-footnote-initial", UT_std_string_sprintf("%d", param)
+				{ "document-footnote-initial", UT_std_string_sprintf("%d", param) }
 			};
 			getDoc()->setProperties(props);
 		}
@@ -4952,7 +4953,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-footnote-restart-page", "1"
+				{ "document-footnote-restart-page", "1" }
 			};
 			getDoc()->setProperties(props);
 		}
@@ -4961,7 +4962,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-footnote-restart-section", "1"
+				{ "document-footnote-restart-section", "1" }
 			};
 			getDoc()->setProperties(props);
 		}
@@ -4970,7 +4971,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-footnote-type", "numeric"
+				{ "document-footnote-type", "numeric" }
 			};
 			getDoc()->setProperties(props);
 		}
@@ -4979,7 +4980,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-footnote-type", "lower"
+				{ "document-footnote-type", "lower" }
 			};
 			getDoc()->setProperties(props);
 		}
@@ -4988,7 +4989,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-footnote-type", "upper"
+				{ "document-footnote-type", "upper" }
 			};
 			getDoc()->setProperties(props);
 		}
@@ -4997,7 +4998,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-footnote-type", "lower-roman"
+				{ "document-footnote-type", "lower-roman" }
 			};
 			getDoc()->setProperties(props);
 		}
@@ -5006,7 +5007,7 @@ bool IE_Imp_RTF::TranslateKeywordID(RTF_KEYWORD_ID keywordID,
 		if(!getLoadStylesOnly())
 		{
 			const PP_PropertyVector props = {
-				"document-footnote-type", "upper-roman"
+				{ "document-footnote-type", "upper-roman" }
 			};
 			getDoc()->setProperties(props);
 		}
@@ -6089,8 +6090,8 @@ void IE_Imp_RTF::StartAnnotation()
 	m_pAnnotation->m_iAnnNumber = ABI_RTF_Annotation::newNumber();
 
 	PP_PropertyVector attr = {
-		PT_ANNOTATION_NUMBER,
-		UT_std_string_sprintf("%d",m_pAnnotation->m_iAnnNumber)
+		{ PT_ANNOTATION_NUMBER,
+		  UT_std_string_sprintf("%d",m_pAnnotation->m_iAnnNumber) }
 	};
 
 	UT_DEBUGMSG(("Handling atrfstart number %d \n",m_pAnnotation->m_iAnnNumber));
@@ -6128,8 +6129,8 @@ void IE_Imp_RTF::EndAnnotation()
 	//}
 
 	PP_PropertyVector attr = {
-		PT_ANNOTATION_NUMBER,
-		UT_std_string_sprintf("%d",m_pAnnotation->m_iAnnNumber)
+		{ PT_ANNOTATION_NUMBER,
+		  UT_std_string_sprintf("%d",m_pAnnotation->m_iAnnNumber) }
 	};
 	UT_DEBUGMSG(("found annotation end id %d  \n",m_pAnnotation->m_iAnnNumber));
 
@@ -6373,16 +6374,15 @@ bool IE_Imp_RTF::_appendSpan()
 	bool bRevisedRTF = !bRevisedABI && (m_currentRTFState.m_charProps.m_eRevision != PP_REVISION_NONE);
 
 	PP_PropertyVector propsArray = {
-		(bRevisedABI || bRevisedRTF) ? "revision" : "props", prop_basic,
+		{ (bRevisedABI || bRevisedRTF) ? "revision" : "props", prop_basic },
 	};
 
 	std::string styleName;
 	if(m_currentRTFState.m_charProps.m_styleNumber >= 0
 	   && static_cast<UT_uint32>(m_currentRTFState.m_charProps.m_styleNumber) < m_styleTable.size())
 	{
-		propsArray.push_back(PT_STYLE_ATTRIBUTE_NAME);
 		styleName = m_styleTable[m_currentRTFState.m_charProps.m_styleNumber];
-		propsArray.push_back(styleName);
+		propsArray.push_back({ PT_STYLE_ATTRIBUTE_NAME, styleName });
 	}
 
 	if(bRevisedRTF)
@@ -6390,13 +6390,13 @@ bool IE_Imp_RTF::_appendSpan()
 		_formRevisionAttr(revision, prop_basic, styleName);
 
 		// the style attribute is inside the revision, clear it out of the props array
-		propsArray[1] = revision;
-		propsArray.resize(2);
+		propsArray[0].value = revision;
+		propsArray.resize(1);
 	}
 	else if(bRevisedABI)
 	{
-		propsArray[1] = m_currentRTFState.m_revAttr.utf8_str();
-		propsArray.resize(2);
+		propsArray[0].value = m_currentRTFState.m_revAttr.utf8_str();
+		propsArray.resize(1);
 	}
 	else
 	{
@@ -6466,8 +6466,7 @@ bool IE_Imp_RTF::_appendSpan()
 						}
 					}
 					m_iAutoBidiOverride = UT_BIDI_LTR;
-					propsArray.push_back("props");
-					propsArray.push_back(prop_ltr);
+					propsArray.push_back({ "props", prop_ltr });
 					iLast = i;
 				}
 				else if(m_currentRTFState.m_charProps.m_dir == UT_BIDI_RTL
@@ -6498,8 +6497,7 @@ bool IE_Imp_RTF::_appendSpan()
 						}
 					}
 					m_iAutoBidiOverride = UT_BIDI_RTL;
-					propsArray.push_back("props");
-					propsArray.push_back(prop_rtl);
+					propsArray.push_back({ "props", prop_rtl });
 					iLast = i;
 				}
 			}
@@ -6535,9 +6533,9 @@ bool IE_Imp_RTF::_appendSpan()
 					m_iAutoBidiOverride = UT_BIDI_UNSET;
 
 					if(bRevisedABI || bRevisedRTF) {
-						propsArray.resize(2);
+						propsArray.resize(1);
 					} else {
-						propsArray[1] = prop_basic;
+						propsArray[0].value = prop_basic;
 					}
 
 					iLast = i;
@@ -6604,7 +6602,7 @@ bool IE_Imp_RTF::_insertSpan()
 	bool bRevised = m_currentRTFState.m_charProps.m_eRevision != PP_REVISION_NONE;
 
 	PP_PropertyVector propsArray = {
-		bRevised ? "revision" : "props", prop_basic
+		{ bRevised ? "revision" : "props", prop_basic }
 	};
 
 	UT_UCS4Char * p;
@@ -6614,9 +6612,8 @@ bool IE_Imp_RTF::_insertSpan()
 	if(m_currentRTFState.m_charProps.m_styleNumber >= 0
 	   && static_cast<UT_uint32>(m_currentRTFState.m_charProps.m_styleNumber) < m_styleTable.size())
 	{
-		propsArray.push_back(PT_STYLE_ATTRIBUTE_NAME);
 		styleName = m_styleTable[m_currentRTFState.m_charProps.m_styleNumber];
-		propsArray.push_back(styleName);
+		propsArray.push_back({ PT_STYLE_ATTRIBUTE_NAME, styleName });
 	}
 
 	if(bRevised)
@@ -6624,7 +6621,7 @@ bool IE_Imp_RTF::_insertSpan()
 		_formRevisionAttr(revision, prop_basic, styleName);
 
 		// the style attribute is inside the revision, clear it out of the props array
-		propsArray[1] = revision;
+		propsArray[0].value = revision;
 	}
 	else
 	{
@@ -6687,8 +6684,7 @@ bool IE_Imp_RTF::_insertSpan()
 							m_posSavedDocPosition += i - iLast;
 					}
 					m_iAutoBidiOverride = UT_BIDI_LTR;
-					propsArray.push_back("props");
-					propsArray.push_back(prop_ltr);
+					propsArray.push_back({ "props", prop_ltr });
 				}
 				else if(m_currentRTFState.m_charProps.m_dir == UT_BIDI_RTL
 						&& m_iAutoBidiOverride != UT_BIDI_RTL
@@ -6708,8 +6704,7 @@ bool IE_Imp_RTF::_insertSpan()
 							m_posSavedDocPosition  += i - iLast;
 					}
 					m_iAutoBidiOverride = UT_BIDI_RTL;
-					propsArray.push_back("props");
-					propsArray.push_back(prop_rtl);
+					propsArray.push_back({ "props", prop_rtl });
 					iLast = i;
 				}
 			}
@@ -6736,7 +6731,7 @@ bool IE_Imp_RTF::_insertSpan()
 					m_iAutoBidiOverride = UT_BIDI_UNSET;
 					if(!bRevised)
 					{
-						propsArray[1] = prop_basic;
+						propsArray[0].value = prop_basic;
 					}
 
 					iLast = i;
@@ -6816,26 +6811,24 @@ bool IE_Imp_RTF::ApplyCharacterAttributes()
 	}
 	else
 	{
-		const gchar* pProps = "props";
-		const gchar* pStyle = PT_STYLE_ATTRIBUTE_NAME;
+		PP_PropName pProps("props");
+		PP_PropName pStyle = PT_STYLE_ATTRIBUTE_NAME;
 		std::string propBuffer;
 		buildCharacterProps(propBuffer);
 
 		PP_PropertyVector propsArray = {
-			pProps, propBuffer
+			{ pProps, propBuffer }
 		};
 
 		if(m_currentRTFState.m_charProps.m_styleNumber >= 0
 		   && static_cast<UT_uint32>(m_currentRTFState.m_charProps.m_styleNumber) < m_styleTable.size())
 		{
-			propsArray.push_back(pStyle);
-			propsArray.push_back(m_styleTable[m_currentRTFState.m_charProps.m_styleNumber]);
+			propsArray.push_back({ pStyle, m_styleTable[m_currentRTFState.m_charProps.m_styleNumber] });
 		}
 
 		if(m_currentRTFState.m_revAttr.size())
 		{
-			propsArray.push_back("revision");
-			propsArray.push_back(m_currentRTFState.m_revAttr.utf8_str());
+			propsArray.push_back({ "revision", m_currentRTFState.m_revAttr.utf8_str() });
 		}
 
 		if (!bUseInsertNotAppend())	// if we are reading from a file or parsing headers and footers
@@ -7255,12 +7248,9 @@ bool IE_Imp_RTF::ApplyParagraphAttributes(bool bDontInsert)
 			m_currentRTFState.m_paraProps.m_level = 1;
 		szLevel1 = UT_std_string_sprintf("%d",m_currentRTFState.m_paraProps.m_level);
 
-		attribs1.push_back(PT_LISTID_ATTRIBUTE_NAME);
-		attribs1.push_back(szListID1);
-		attribs1.push_back(PT_PARENTID_ATTRIBUTE_NAME);
-		attribs1.push_back(szParentID1);
-		attribs1.push_back(PT_LEVEL_ATTRIBUTE_NAME);
-		attribs1.push_back(szLevel1);
+		attribs1.push_back({ PT_LISTID_ATTRIBUTE_NAME, szListID1 });
+		attribs1.push_back({ PT_PARENTID_ATTRIBUTE_NAME, szParentID1 });
+		attribs1.push_back({ PT_LEVEL_ATTRIBUTE_NAME, szLevel1 });
 	}
 
 //
@@ -7309,12 +7299,9 @@ bool IE_Imp_RTF::ApplyParagraphAttributes(bool bDontInsert)
 //
 // Got attributes
 //
-		attribs1.push_back(PT_LISTID_ATTRIBUTE_NAME);
-		attribs1.push_back(szListID);
-		attribs1.push_back(PT_PARENTID_ATTRIBUTE_NAME);
-		attribs1.push_back(szParentID);
-		attribs1.push_back(PT_LEVEL_ATTRIBUTE_NAME);
-		attribs1.push_back(szLevel);
+		attribs1.push_back({ PT_LISTID_ATTRIBUTE_NAME, szListID });
+		attribs1.push_back({ PT_PARENTID_ATTRIBUTE_NAME, szParentID });
+		attribs1.push_back({ PT_LEVEL_ATTRIBUTE_NAME, szLevel });
 
 //
 // Next do character properties redefined in this list
@@ -7460,8 +7447,7 @@ bool IE_Imp_RTF::ApplyParagraphAttributes(bool bDontInsert)
 	{
 		UT_uint32 styleNumber = m_currentRTFState.m_paraProps.m_styleNumber;
 		const std::string & styleName = m_styleTable[styleNumber];
-		attribs1.push_back(PT_STYLE_ATTRIBUTE_NAME);
-		attribs1.push_back(styleName);
+		attribs1.push_back({ PT_STYLE_ATTRIBUTE_NAME, styleName });
 	}
 
 	// Borders & Shading are exported here
@@ -7551,7 +7537,6 @@ bool IE_Imp_RTF::ApplyParagraphAttributes(bool bDontInsert)
 	{
 		propBuffer[eol] = 0;
 	}
-	attribs1.push_back(PT_PROPS_ATTRIBUTE_NAME);
 //
 // if we are reading a file or parsing header and footers
 // and we're in a list, append char props to this.
@@ -7561,12 +7546,11 @@ bool IE_Imp_RTF::ApplyParagraphAttributes(bool bDontInsert)
 		buildCharacterProps(propBuffer);
 		xxx_UT_DEBUGMSG(("SEVIOR: propBuffer = %s \n",propBuffer.c_str()));
 	}
-	attribs1.push_back(propBuffer);
+	attribs1.push_back({ PT_PROPS_ATTRIBUTE_NAME, propBuffer });
 
 	if(m_currentRTFState.m_revAttr.size())
 	{
-		attribs1.push_back("revision");
-		attribs1.push_back(m_currentRTFState.m_revAttr.utf8_str());
+		attribs1.push_back({ "revision", m_currentRTFState.m_revAttr.utf8_str() });
 	}
 
 	if (!bUseInsertNotAppend()) // if we are reading a file or parsing header and footers
@@ -7592,12 +7576,11 @@ bool IE_Imp_RTF::ApplyParagraphAttributes(bool bDontInsert)
 			// Insert a list-label field??
 			//
 			PP_PropertyVector fielddef = {
-				"type", "list_label"
+				{ "type", "list_label" }
 			};
 			if(bWord97List)
 			{
-				fielddef.push_back("props");
-				fielddef.push_back("text-decoration:none");
+				fielddef.push_back({ "props", "text-decoration:none" });
 			}
 			bret =   getDoc()->appendObject(PTO_Field,fielddef);
 			UT_UCSChar cTab = UCS_TAB;
@@ -7607,7 +7590,7 @@ bool IE_Imp_RTF::ApplyParagraphAttributes(bool bDontInsert)
 			if(bWord97List)
 			{
 					const PP_PropertyVector attribs = {
-						"props", "text-decoration:none"
+						{ "props", "text-decoration:none" }
 					};
 					getDoc()->appendFmt(attribs);
 			}
@@ -7801,7 +7784,7 @@ bool IE_Imp_RTF::ResetSectionAttributes()
 
 bool IE_Imp_RTF::ApplySectionAttributes()
 {
-	const gchar* pProps = "props";
+	PP_PropName pProps("props");
 	std::string propBuffer;
 	std::string tempBuffer;
 	std::string szFtrID;
@@ -7924,60 +7907,51 @@ bool IE_Imp_RTF::ApplySectionAttributes()
 	xxx_UT_DEBUGMSG(("SEVIOR: propBuffer = %s \n",propBuffer.c_str()));
 
 	PP_PropertyVector propsArray = {
-		pProps, propBuffer
+		{ pProps, propBuffer }
 	};
 	if (m_currentHdrID != 0)
 	{
 		UT_DEBUGMSG (("Applying header\n"));
-		propsArray.push_back("header");
-		propsArray.push_back(UT_std_string_sprintf ("%u", m_currentHdrID));
+		propsArray.push_back({ "header", UT_std_string_sprintf ("%u", m_currentHdrID) });
 	}
 	if (m_currentHdrEvenID != 0)
 	{
 		UT_DEBUGMSG (("Applying header even\n"));
-		propsArray.push_back("header-even");
-		propsArray.push_back(UT_std_string_sprintf ("%u", m_currentHdrEvenID));
+		propsArray.push_back({ "header-even", UT_std_string_sprintf ("%u", m_currentHdrEvenID) });
 	}
 	if (m_currentHdrFirstID != 0)
 	{
 		UT_DEBUGMSG (("Applying header first\n"));
-		propsArray.push_back("header-first");
-		propsArray.push_back(UT_std_string_sprintf ("%u", m_currentHdrFirstID));
+		propsArray.push_back({ "header-first", UT_std_string_sprintf ("%u", m_currentHdrFirstID) });
 	}
 	if (m_currentHdrLastID != 0)
 	{
 		UT_DEBUGMSG (("Applying header last\n"));
-		propsArray.push_back("header-last");
-		propsArray.push_back(UT_std_string_sprintf ("%u", m_currentHdrLastID));
+		propsArray.push_back({ "header-last", UT_std_string_sprintf ("%u", m_currentHdrLastID) });
 	}
 	if (m_currentFtrID != 0)
 	{
 		UT_DEBUGMSG (("Applying footer\n"));
-		propsArray.push_back("footer");
-		propsArray.push_back(UT_std_string_sprintf("%u", m_currentFtrID));
+		propsArray.push_back({ "footer", UT_std_string_sprintf("%u", m_currentFtrID) });
 	}
 	if (m_currentFtrEvenID != 0)
 	{
 		UT_DEBUGMSG (("Applying footer even\n"));
-		propsArray.push_back("footer-even");
-		propsArray.push_back(UT_std_string_sprintf("%u", m_currentFtrEvenID));
+		propsArray.push_back({ "footer-even", UT_std_string_sprintf("%u", m_currentFtrEvenID) });
 	}
 	if (m_currentFtrFirstID != 0)
 	{
 		UT_DEBUGMSG (("Applying footer first\n"));
-		propsArray.push_back("footer-first");
-		propsArray.push_back(UT_std_string_sprintf ("%u", m_currentFtrFirstID));
+		propsArray.push_back({ "footer-first", UT_std_string_sprintf ("%u", m_currentFtrFirstID)});
 	}
 	if (m_currentFtrLastID != 0)
 	{
 		UT_DEBUGMSG (("Applying footer last\n"));
-		propsArray.push_back("footer-last");
-		propsArray.push_back(UT_std_string_sprintf ("%u", m_currentFtrLastID));
+		propsArray.push_back({ "footer-last", UT_std_string_sprintf ("%u", m_currentFtrLastID) });
 	}
 	if(m_currentRTFState.m_revAttr.size())
 	{
-		propsArray.push_back("revision");
-		propsArray.push_back(m_currentRTFState.m_revAttr.utf8_str());
+		propsArray.push_back({ "revision", m_currentRTFState.m_revAttr.utf8_str() });
 	}
 
 	if (!bUseInsertNotAppend()) // if we are reading a file or parsing a header and footer
@@ -9769,30 +9743,23 @@ bool IE_Imp_RTF::HandleAbiMathml(void)
 			return false;
 	}
 
-	std::string sPropName = "dataid";
-	std::string sDataIDVal = UT_std_string_getPropVal(sProps,sPropName);
-	UT_std_string_removeProperty(sProps, sPropName);
+	PP_PropName sPropName("dataid");
+	std::string sDataIDVal = UT_std_string_getPropVal(sProps, sPropName.c_str());
+	UT_std_string_removeProperty(sProps, sPropName.c_str());
 	std::string sPropNameLatex ="latexid";
 	std::string sLatexIDVal = UT_std_string_getPropVal(sProps,sPropNameLatex);
 	UT_std_string_removeProperty(sProps, sPropNameLatex);
 
 	PP_PropertyVector attrs = {
-		sPropName, sDataIDVal,
-		"", ""
+		{ sPropName, sDataIDVal },
 	};
 	if(!sLatexIDVal.empty())
 	{
-		UT_std_string_removeProperty(sProps,sPropName);
-		attrs[2] = "latexid";
-		attrs[3] =  sLatexIDVal;
-		attrs.push_back("props");
-		attrs.push_back(sProps);
+		UT_std_string_removeProperty(sProps, sPropName.c_str());
+		attrs.push_back({ "latexid", sLatexIDVal });
 	}
-	else
-	{
-		attrs[2] = "props";
-		attrs[3] = sProps;
-	}
+	attrs.push_back({ "props", sProps });
+
 	getDoc()->getUID(UT_UniqueId::Image); // Increment the image uid counter
 	//
 	// OK put in all the complex handling we need. Code taken from insert field
@@ -9985,12 +9952,12 @@ bool IE_Imp_RTF::HandleAbiEmbed(void)
 			return false;
 	}
 
-	std::string sPropName = "dataid";
-	std::string sDataIDVal = UT_std_string_getPropVal(sProps, sPropName);
-	UT_std_string_removeProperty(sProps,sPropName);
+	PP_PropName sPropName("dataid");
+	std::string sDataIDVal = UT_std_string_getPropVal(sProps, sPropName.c_str());
+	UT_std_string_removeProperty(sProps, sPropName.c_str());
 	PP_PropertyVector attrs = {
-		sPropName, sDataIDVal,
-		"props", sProps
+		{ sPropName, sDataIDVal },
+		{ "props", sProps }
 	};
 	bool ok = FlushStoredChars(true);
 	UT_return_val_if_fail (ok, false);
@@ -10120,7 +10087,7 @@ bool IE_Imp_RTF::HandleAbiTable(void)
 					getDoc()->getPropertyFromSDH(sdhCell,
 												 true,
 												 PD_MAX_REVISION,
-												 "top-attach",&szTop);
+												 _PN("top-attach"), &szTop);
 					UT_return_val_if_fail(szTop,false);
 					UT_sint32 iOldTop = atoi(szTop); 
 					PT_DocPosition posCell = getDoc()->getStruxPosition(sdhCell);
@@ -10143,7 +10110,7 @@ bool IE_Imp_RTF::HandleAbiTable(void)
 							getDoc()->getPropertyFromSDH(sdhCell,
 														 true,
 														 PD_MAX_REVISION,
-														 "top-attach",&szTop);
+														 _PN("top-attach"), &szTop);
 							UT_return_val_if_fail(szTop,false);
 							UT_sint32 iNewTop = atoi(szTop); 
 							b = (iNewTop == iOldTop);
@@ -10168,7 +10135,7 @@ bool IE_Imp_RTF::HandleAbiTable(void)
 // Now a change strux on the table to make it rebuild.
 //
 					const PP_PropertyVector sDumProp = {
-						"list-tag", UT_std_string_sprintf("%d", getDoc()->getUID(UT_UniqueId::List))
+						{ "list-tag", UT_std_string_sprintf("%d", getDoc()->getUID(UT_UniqueId::List)) }
 					};
 					getDoc()->changeStruxFmt(PTC_AddFmt, posTable + 1, posTable + 1, PP_NOPROPS, sDumProp, PTX_SectionTable);
 
@@ -10184,7 +10151,7 @@ bool IE_Imp_RTF::HandleAbiTable(void)
 	if(! bIsPasteIntoSame)
 	{
 		const PP_PropertyVector attrs = {
-			"props", sProps
+			{ "props", sProps }
 		};
 //
 // insert a block to terminate the text before this if needed,
@@ -10240,7 +10207,7 @@ bool IE_Imp_RTF:: HandleAbiEndTable(void)
 			getDoc()->getPropertyFromSDH(sdhCell,
 										 true,
 										 PD_MAX_REVISION,
-										 "top-attach", &szVal);
+										 _PN("top-attach"), &szVal);
 			UT_return_val_if_fail(szVal,false);
 			UT_sint32 iTop = atoi(szVal);
 			iTop += numRows;
@@ -10248,14 +10215,14 @@ bool IE_Imp_RTF:: HandleAbiEndTable(void)
 			getDoc()->getPropertyFromSDH(sdhCell,
 										 true,
 										 PD_MAX_REVISION,
-										 "bot-attach", &szVal);
+										 _PN("bot-attach"), &szVal);
 			UT_return_val_if_fail(szVal,false);
 			UT_sint32 iBot = atoi(szVal);
 			iBot += numRows;
 
 			const PP_PropertyVector sProps = {
-				"top-attach", UT_std_string_sprintf("%d",iTop),
-				"bot-attach", UT_std_string_sprintf("%d",iBot)
+				{ "top-attach", UT_std_string_sprintf("%d",iTop) },
+				{ "bot-attach", UT_std_string_sprintf("%d",iBot) }
 			};
 
 			getDoc()->changeStruxFmt(PTC_AddFmt, posCell+1, posCell + 1, PP_NOPROPS, sProps, PTX_SectionCell);
@@ -10402,7 +10369,7 @@ bool IE_Imp_RTF::HandleAbiCell(void)
 	}
 	UT_DEBUGMSG(("RTF_Import: Pos %d Paste: Cell props are: %s \n",m_dposPaste,sProps.c_str()));
 	const PP_PropertyVector attrs = {
-		"props", sProps
+		{ "props", sProps }
 	};
 	insertStrux(PTX_SectionCell, attrs, PP_NOPROPS);
 	m_newParaFlagged = true;
@@ -11114,19 +11081,19 @@ bool IE_Imp_RTF::HandleBookmark (RTFBookmarkType type)
 	HandlePCData(bookmarkName);
 
 	PP_PropertyVector props = {
-		"type", "",
-		"name", bookmarkName.utf8_str()
+		{ "type", "" },
+		{ "name", bookmarkName.utf8_str() }
 	};
 	switch (type) {
 	case RBT_START:
-		props[1] = "start";
+		props[0].value = "start";
 		break;
 	case RBT_END:
-		props[1] = "end";
+		props[0].value = "end";
 		break;
 	default:
 		UT_ASSERT_NOT_REACHED();
-		props[1] = "";
+		props[0].value = "";
 		break;
 	}
 	UT_DEBUGMSG(("SEVIOR: Appending Object 3 m_bCellBlank %d m_bEndTableOpen %d \n",m_bCellBlank,m_bEndTableOpen));
@@ -11213,8 +11180,8 @@ bool IE_Imp_RTF::HandleRDFAnchor (RTFBookmarkType type)
 	UT_DEBUGMSG(("HandleRDFAnchor() of type %d updated  xmlid:%s\n", type, xmlid.c_str()));
 
 	PP_PropertyVector ppAtts = {
-		PT_XMLID, xmlid,
-		"this-is-an-rdf-anchor", "yes"
+		{ PT_XMLID, xmlid },
+		{ "this-is-an-rdf-anchor", "yes" }
 	};
 	switch (type)
 	{
@@ -11223,11 +11190,10 @@ bool IE_Imp_RTF::HandleRDFAnchor (RTFBookmarkType type)
 			break;
 		case RBT_END:
 			m_iRDFAnchorOpen++;
-			ppAtts.push_back(PT_RDF_END);
-			ppAtts.push_back("yes");
+			ppAtts.push_back({ PT_RDF_END, "yes" });
 			break;
 	}
-	
+
 	if (!bUseInsertNotAppend()) 
 	{
 			if(m_pDelayedFrag)
@@ -11338,10 +11304,10 @@ void IE_Imp_RTF::_appendHdrFtr ()
 		UT_DEBUGMSG (("id is %s\n", tempBuffer.c_str()));
 		hdrftrID = tempBuffer;
 		const PP_PropertyVector propsArray = {
-			"type", szType,
-			"id", tempBuffer,
-			"listid", "0",
-			"parentid", "0"
+			{ "type", szType },
+			{ "id", tempBuffer },
+			{ "listid", "0" },
+			{ "parentid", "0" }
 		};
 
 		if(!getDoc()->verifySectionID(hdrftrID.c_str()))
@@ -11377,7 +11343,7 @@ bool IE_Imp_RTF::_appendField (const gchar *xmlField, const gchar ** pszAttribs)
 	std::string propBuffer;
 	buildCharacterProps(propBuffer);
 
-	const gchar * pStyle = NULL;
+	PP_PropName pStyle;
 	std::string styleName;
 	if(m_currentRTFState.m_charProps.m_styleNumber >= 0
 	   && static_cast<UT_uint32>(m_currentRTFState.m_charProps.m_styleNumber) < m_styleTable.size())
@@ -11392,34 +11358,30 @@ bool IE_Imp_RTF::_appendField (const gchar *xmlField, const gchar ** pszAttribs)
 	}
 	if(pszAttribs == NULL)
 	{
-		propsArray.resize(pStyle ? 6 : 4);
-		propsArray [0] = "type";
-		propsArray [1] = xmlField;
-		propsArray [2] = "props";
-		propsArray [3] = propBuffer;
-		if(pStyle)
+		propsArray.push_back({ "type", xmlField });
+		propsArray.push_back({ "props", propBuffer });
+		if (!!pStyle)
 		{
-			propsArray [4] = pStyle;
-			propsArray [5] = styleName;
+			propsArray.push_back({ pStyle, styleName });
 		}
 	}
 	else
 	{
-		propsArray.resize(pStyle ? 6 : 4);
-		propsArray [0] = "type";
-		propsArray [1] = xmlField;
-		propsArray [2] = "props";
-		propsArray [3] = propBuffer;
-		if(pStyle)
+		propsArray.push_back({ "type", xmlField });
+		propsArray.push_back({ "props", propBuffer });
+		if (!!pStyle)
 		{
-			propsArray[4] = pStyle;
-			propsArray[5] = styleName;
+			propsArray.push_back({ pStyle, styleName });
 		}
 
 		// XXX performance
 		for(UT_uint32 i = 0; pszAttribs[i]; i++)
 		{
-			propsArray.push_back(pszAttribs[i]);
+			PP_PropName name = UT_StaticString::Interned(pszAttribs[i]);
+			i++;
+			if (pszAttribs[i]) {
+				propsArray.push_back({name, pszAttribs[i] });
+			}
 		}
 	}
 	// TODO get text props to apply them to the field
@@ -11737,8 +11699,7 @@ bool IE_Imp_RTF::HandleStyleDefinition(void)
 // So remember it and fill it later..
 //
 					BasedOn[styleCount] = static_cast<UT_sint32>(parameter);
-					attribs.push_back(PT_BASEDON_ATTRIBUTE_NAME);
-					attribs.push_back("");
+					attribs.push_back({ PT_BASEDON_ATTRIBUTE_NAME, "" });
 				}
 				else if(0)
 				{
@@ -11746,8 +11707,7 @@ bool IE_Imp_RTF::HandleStyleDefinition(void)
 					const std::string & val = m_styleTable[parameter];
 					if (!val.empty())
 					{
-						attribs.push_back(PT_BASEDON_ATTRIBUTE_NAME);
-						attribs.push_back(val);
+						attribs.push_back({ PT_BASEDON_ATTRIBUTE_NAME, val });
 					}
 				}
 			}
@@ -11762,8 +11722,7 @@ bool IE_Imp_RTF::HandleStyleDefinition(void)
 // So remember it and fill it later..
 //
 					FollowedBy[styleCount] = static_cast<UT_sint32>(parameter);
-					attribs.push_back(PT_FOLLOWEDBY_ATTRIBUTE_NAME);
-					attribs.push_back("");
+					attribs.push_back({ PT_FOLLOWEDBY_ATTRIBUTE_NAME, "" });
 				}
 				else if(parameter < styleNumber)
 				{
@@ -11771,8 +11730,7 @@ bool IE_Imp_RTF::HandleStyleDefinition(void)
 					const std::string & val = m_styleTable[parameter];
 					if (!val.empty())
 					{
-						attribs.push_back(PT_FOLLOWEDBY_ATTRIBUTE_NAME);
-						attribs.push_back(val);
+						attribs.push_back({ PT_FOLLOWEDBY_ATTRIBUTE_NAME, val });
 					}
 				}
 			}
@@ -11854,14 +11812,11 @@ bool IE_Imp_RTF::HandleStyleDefinition(void)
 			// Use it.
 			std::string propBuffer;
 			buildAllProps(propBuffer,pParas,pChars,pbParas,pbChars);
-			attribs.push_back(PT_PROPS_ATTRIBUTE_NAME);
-			attribs.push_back(propBuffer);
+			attribs.push_back({ PT_PROPS_ATTRIBUTE_NAME, propBuffer });
 
-			attribs.push_back(PT_NAME_ATTRIBUTE_NAME);
-			attribs.push_back(m_styleTable[styleNumber]);
+			attribs.push_back({ PT_NAME_ATTRIBUTE_NAME, m_styleTable[styleNumber] });
 
-			attribs.push_back(PT_TYPE_ATTRIBUTE_NAME);
-			attribs.push_back(styleType);
+			attribs.push_back({ PT_TYPE_ATTRIBUTE_NAME, styleType });
 //
 // OK now we clone this and save it so we can set basedon's and followedby's
 //
@@ -11869,9 +11824,10 @@ bool IE_Imp_RTF::HandleStyleDefinition(void)
 			UT_GenericVector<const gchar*>* pVecAttr = new UT_GenericVector<const gchar*>();
 			for( i= 0; i< attribs.size(); i++)
 			{
-				if(!attribs[i].empty())
+				if(!!attribs[i].name)
 				{
-					pVecAttr->addItem(g_strdup(attribs[i].c_str()));
+					pVecAttr->addItem(g_strdup(attribs[i].name.c_str()));
+					pVecAttr->addItem(g_strdup(attribs[i].value.c_str()));
 				}
 				else
 				{
@@ -11918,51 +11874,50 @@ bool IE_Imp_RTF::HandleStyleDefinition(void)
 				j++;
 				continue;
 			}
-			attribs.push_back(szAtt);
-			if( strcmp(szAtt, PT_NAME_ATTRIBUTE_NAME)== 0)
+			if (PT_NAME_ATTRIBUTE_NAME == szAtt)
 			{
 				szName = szValue;
-				attribs.push_back(szName ? szName : "");
+				attribs.push_back({ PT_NAME_ATTRIBUTE_NAME, szName ? szName : "" });
 			}
-			else if( strcmp(szAtt, PT_BASEDON_ATTRIBUTE_NAME)== 0)
+			else if (PT_BASEDON_ATTRIBUTE_NAME == szAtt)
 			{
 				if(NULL == szValue)
 				{
 					UT_sint32 istyle = BasedOn[i];
 					if (istyle >= 0 && static_cast<UT_uint32>(istyle) < m_styleTable.size()) {
-						attribs.push_back(m_styleTable[istyle]);
+						attribs.push_back({ PT_BASEDON_ATTRIBUTE_NAME, m_styleTable[istyle] });
 					} else {
 						UT_WARNINGMSG(("RTF: basedon style index out of bounds: %d. max %lu.\n",
 									   istyle, m_styleTable.size()));
-						attribs.push_back("");
+						attribs.push_back({ PT_BASEDON_ATTRIBUTE_NAME, "" });
 					}
 				}
 				else
 				{
-					attribs.push_back(szValue);
+					attribs.push_back({ PT_BASEDON_ATTRIBUTE_NAME, szValue });
 				}
 			}
-			else if( strcmp(szAtt, PT_FOLLOWEDBY_ATTRIBUTE_NAME)== 0)
+			else if (PT_FOLLOWEDBY_ATTRIBUTE_NAME == szAtt)
 			{
 				if(NULL == szValue)
 				{
 					UT_sint32 istyle = FollowedBy[i];
 					if (istyle >= 0 && static_cast<UT_uint32>(istyle) < m_styleTable.size()) {
-						attribs.push_back(m_styleTable[istyle]);
+						attribs.push_back({ PT_FOLLOWEDBY_ATTRIBUTE_NAME, m_styleTable[istyle] });
 					} else {
 						UT_WARNINGMSG(("RTF: followed by style index out of bounds: %d. max %lu.\n",
 									   istyle, m_styleTable.size()));
-						attribs.push_back("");
+						attribs.push_back({ PT_FOLLOWEDBY_ATTRIBUTE_NAME, "" });
 					}
 				}
 				else
 				{
-					attribs.push_back(szValue);
+					attribs.push_back({ PT_FOLLOWEDBY_ATTRIBUTE_NAME, szValue });
 				}
 			}
 			else
 			{
-				attribs.push_back(szValue ? szValue : "");
+				attribs.push_back({ UT_StaticString::Interned(szAtt), szValue ? szValue : "" });
 			}
 		}
 //
@@ -12306,7 +12261,7 @@ bool IE_Imp_RTF::HandleInfoMetaData()
 	bool paramUsed = false;	
 	int nested = 0;
 	//bool result;
-	const char * metaDataKey = NULL;
+	PP_PropName metaDataKey;
 	std::string metaDataProp;
 	enum {
 		ACT_NONE,

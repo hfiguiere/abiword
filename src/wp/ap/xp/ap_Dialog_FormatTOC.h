@@ -26,6 +26,7 @@
 #include "xav_View.h"
 #include "ut_vector.h"
 #include "ut_string_class.h"
+#include "pt_Types.h"
 
 class UT_Timer;
 class XAP_Frame;
@@ -52,10 +53,10 @@ public:
 	static void       autoUpdate(UT_Worker * pTimer);
 	void              updateDialog(void);
 	std::string     getNewStyle(const std::string & sProp) const;
-	bool              setPropFromDoc(const char * szProp);
-	void              setTOCProperty(const std::string & sProp, 
+	bool              setPropFromDoc(PP_PropName szProp);
+	void              setTOCProperty(const std::string& sProp,
 					 const std::string & sVal);
-	void              setTOCProperty(const char * szProp, const char * szVal);
+	void              setTOCProperty(const std::string& szProp, const char * szVal);
 	void              fillTOCPropsFromDoc(void);
 	void              applyTOCPropsToDoc(void);
 	std::string     getTOCPropVal(const std::string & sProp) const;

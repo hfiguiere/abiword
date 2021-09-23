@@ -443,22 +443,24 @@ void AP_LeftRuler::mouseRelease(EV_EditModifierState /*ems*/, EV_EditMouseButton
 				dyrel = tick.scalePixelDistanceToUnits(m_draggingCenter - yAbsTop);
 				UT_DEBUGMSG(("Release TOP Margin 1 Column \n"));
 
-				PP_PropertyVector properties(2);
+				PP_PropName name;
 				if (!hdrftr)
-					properties[0] = "page-margin-top";
+					name = _PN("page-margin-top");
 				else
 				{
 					if (hdr)
-						properties[0] = "page-margin-header";
+						name = _PN("page-margin-header");
 					else
 					{
-						properties[0] = "page-margin-bottom";
+						name = _PN("page-margin-bottom");
 
 						dyrel = tick.scalePixelDistanceToUnits(yEnd - m_draggingCenter);
 					}
 				}
 				sHeights = pG->invertDimension(tick.dimType,dyrel);
-				properties[1] = sHeights.c_str();
+				PP_PropertyVector properties = {
+					{ name, sHeights.c_str() }
+				};
 				pView1->setSectionFormat(properties);
 			}
 			else
@@ -477,7 +479,7 @@ void AP_LeftRuler::mouseRelease(EV_EditModifierState /*ems*/, EV_EditMouseButton
 					UT_sint32 iYpos;
 					const gchar * pszHeight = NULL;
 					UT_sint32 iHeight;
-					if(!pSectionAP || !pSectionAP->getProperty("ypos",pszYpos))
+					if (!pSectionAP || !pSectionAP->getProperty(_PN("ypos"), pszYpos))
 					{
 						UT_DEBUGMSG(("No ypos defined for Frame !\n"));
 						UT_ASSERT(UT_SHOULD_NOT_HAPPEN);
@@ -487,7 +489,7 @@ void AP_LeftRuler::mouseRelease(EV_EditModifierState /*ems*/, EV_EditMouseButton
 					{
 						iYpos = UT_convertToLogicalUnits(pszYpos);
 					}
-					if(!pSectionAP || !pSectionAP->getProperty("frame-height",pszHeight))
+					if (!pSectionAP || !pSectionAP->getProperty(_PN("frame-height"), pszHeight))
 					{
 						UT_DEBUGMSG(("No Height defined for Frame !\n"));
 						UT_ASSERT(UT_SHOULD_NOT_HAPPEN);
@@ -511,8 +513,8 @@ void AP_LeftRuler::mouseRelease(EV_EditModifierState /*ems*/, EV_EditMouseButton
 					double dHeight = static_cast<double>(iHeight)/static_cast<double>(UT_LAYOUT_RESOLUTION);
 					sHeight = UT_formatDimensionedValue(dHeight,"in", NULL);
 					const PP_PropertyVector props = {
-						"ypos", sYpos.c_str(),
-						"frame-height",sHeight.c_str()
+						{ "ypos", sYpos.c_str() },
+						{ "frame-height", sHeight.c_str() }
 					};
 					pView->setFrameFormat(props);
 				}
@@ -556,26 +558,27 @@ void AP_LeftRuler::mouseRelease(EV_EditModifierState /*ems*/, EV_EditMouseButton
 		{
 			if(!(m_infoCache.m_mode == AP_LeftRulerInfo::TRI_MODE_FRAME) && !pView1->isInFrame(pView1->getPoint()))
 			{
-
-				PP_PropertyVector properties(2);
 				dyrel = tick.scalePixelDistanceToUnits(yEnd - m_draggingCenter);
+				PP_PropName name;
 				if (!hdrftr)
-					properties[0] = "page-margin-bottom";
+					name = _PN("page-margin-bottom");
 				else
 				{
 					if (hdr)
 					{
-						properties[0] = "page-margin-top";
+						name = _PN("page-margin-top");
 						dyrel = tick.scalePixelDistanceToUnits
 							(m_draggingCenter - yAbsTop);
 					}
 					else
 					{
-						properties[0] = "page-margin-footer";
+						name = _PN("page-margin-footer");
 					}
 				}
 				UT_String sHeights = pG->invertDimension(tick.dimType,dyrel);
-				properties[1] = sHeights.c_str();
+				PP_PropertyVector properties = {
+					{ name, sHeights.c_str() }
+				};
 				pView1->setSectionFormat(properties);
 			}
 			else
@@ -592,7 +595,7 @@ void AP_LeftRuler::mouseRelease(EV_EditModifierState /*ems*/, EV_EditMouseButton
 					pFrame->getAP(pSectionAP);
 					const gchar * pszHeight = NULL;
 					UT_sint32 iHeight;
-					if(!pSectionAP || !pSectionAP->getProperty("frame-height",pszHeight))
+					if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-height"),pszHeight))
 					{
 						UT_DEBUGMSG(("No Height defined for Frame !\n"));
 						UT_ASSERT(UT_SHOULD_NOT_HAPPEN);
@@ -612,7 +615,7 @@ void AP_LeftRuler::mouseRelease(EV_EditModifierState /*ems*/, EV_EditMouseButton
 					double dHeight = static_cast<double>(iHeight)/static_cast<double>(UT_LAYOUT_RESOLUTION);
 					sHeight = UT_formatDimensionedValue(dHeight,"in", NULL);
 					const PP_PropertyVector props = {
-						"frame-height",sHeight.c_str()
+						{ "frame-height", sHeight.c_str() }
 					};
 					pView->setFrameFormat(props);
 				}
@@ -755,7 +758,7 @@ void AP_LeftRuler::mouseRelease(EV_EditModifierState /*ems*/, EV_EditMouseButton
 			}
 			xxx_UT_DEBUGMSG(("cell marker string is %s \n",sHeights.c_str()));
 			const PP_PropertyVector props = {
-				"table-row-heights", sHeights.c_str()
+				{ "table-row-heights", sHeights.c_str() }
 			};
 			if(!pView1->getDragTableLine())
 			{

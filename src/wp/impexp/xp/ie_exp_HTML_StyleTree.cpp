@@ -61,7 +61,7 @@ IE_Exp_HTML_StyleTree::IE_Exp_HTML_StyleTree(IE_Exp_HTML_StyleTree * parent, con
 
     UT_uint32 j = 0;
 
-    const gchar * szName = nullptr;
+    PP_PropName szName;
     const gchar * szValue = nullptr;
 
     std::string name;
@@ -69,7 +69,7 @@ IE_Exp_HTML_StyleTree::IE_Exp_HTML_StyleTree(IE_Exp_HTML_StyleTree * parent, con
 
     while (style->getNthProperty(j++, szName, szValue))
     {
-        name = szName;
+        name = szName.c_str();
         value = szValue;
 
         /* map property names to CSS equivalents
@@ -87,7 +87,8 @@ IE_Exp_HTML_StyleTree::IE_Exp_HTML_StyleTree(IE_Exp_HTML_StyleTree * parent, con
         {
             name = "background-color";
         }
-        else if (!is_CSS(szName)) continue;
+        else if (!is_CSS(szName.c_str()))
+			continue;
 
         /* map property values to CSS equivalents
          */

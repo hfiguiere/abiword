@@ -171,8 +171,8 @@ void AP_Dialog_Columns::setViewAndDoc(XAP_Frame * pFrame)
 	PP_PropertyVector pszSecProps;
 	m_pView->getSectionFormat(pszSecProps);
 
-	_convertToPreferredUnits( pFrame, PP_getAttribute("section-space-after",pszSecProps).c_str(), pszAfter);
-	_convertToPreferredUnits( pFrame, PP_getAttribute("section-max-column-height",pszSecProps).c_str(), pszMaxHeight);
+	_convertToPreferredUnits(pFrame, PP_getAttribute(_PN("section-space-after"), pszSecProps).c_str(), pszAfter);
+	_convertToPreferredUnits(pFrame, PP_getAttribute(_PN("section-max-column-height"), pszSecProps).c_str(), pszMaxHeight);
 
 	if(*pszAfter)
 	{
@@ -183,10 +183,10 @@ void AP_Dialog_Columns::setViewAndDoc(XAP_Frame * pFrame)
 		UT_DEBUGMSG(("SEVIOR: Initial Height string = %s \n",pszMaxHeight));
 		m_HeightString = pszMaxHeight;
 	}
-	const std::string & pszMarginTop = PP_getAttribute("page-margin-top",pszSecProps);
-	const std::string & pszMarginBottom =  PP_getAttribute("page-margin-bottom",pszSecProps);
-	const std::string & pszMarginLeft =  PP_getAttribute("page-margin-left",pszSecProps);
-	const std::string & pszMarginRight =  PP_getAttribute("page-margin-right",pszSecProps);
+	const std::string & pszMarginTop = PP_getAttribute(_PN("page-margin-top"), pszSecProps);
+	const std::string & pszMarginBottom = PP_getAttribute(_PN("page-margin-bottom"), pszSecProps);
+	const std::string & pszMarginLeft = PP_getAttribute(_PN("page-margin-left"), pszSecProps);
+	const std::string & pszMarginRight = PP_getAttribute(_PN("page-margin-right"), pszSecProps);
 	if(pszMarginTop.empty())
 	{
 		m_dMarginTop = UT_convertToInches(pszMarginTop.c_str());

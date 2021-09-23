@@ -64,7 +64,8 @@ PP_Revision::PP_Revision(UT_uint32 Id, PP_RevisionType eType, const gchar * prop
 		
 			if(n)
 			{
-				setProperty(n,v);
+				auto name = UT_StaticString::Interned(n);
+				setProperty(name, v);
 				p = strtok(NULL,":");
 			}
 			else
@@ -104,7 +105,8 @@ PP_Revision::PP_Revision(UT_uint32 Id, PP_RevisionType eType, const gchar * prop
 			
 			if(n)
 			{
-				setAttribute(n,v);
+				auto name = UT_StaticString::Interned(n);
+				setAttribute(name, v);
 				p = strtok(NULL,":");
 			}
 			else
@@ -150,14 +152,14 @@ bool PP_Revision::setAttributes(const PP_PropertyVector & attributes)
 bool PP_Revision::_handleNestedRevAttr()
 {
 	const gchar * pNestedRev = NULL;
-	getAttribute("revision", pNestedRev);
-	
+	getAttribute(_PN("revision"), pNestedRev);
+
 	if(pNestedRev)
 	{
 		PP_RevisionAttr NestedAttr(pNestedRev);
 
 		// now remove "revision"
-		setAttribute("revision", NULL);
+		setAttribute(_PN("revision"), NULL);
 		prune();
 
 		// overlay the attrs and props from the revision attribute
@@ -206,7 +208,8 @@ void PP_Revision::_refreshString() const
 
 	UT_uint32 i;
 	UT_uint32 iCount = getPropertyCount();
-	const gchar * n, *v;
+	PP_PropName n;
+	const gchar *v;
 
 	for(i = 0; i < iCount; i++)
 	{
@@ -292,7 +295,8 @@ bool PP_Revision::onlyContainsAbiwordChangeTrackingMarkup() const
     bool ret = true;
 	UT_uint32 i;
 	UT_uint32 iCount = getAttributeCount();
-	const gchar * n, *v;
+	PP_PropName n;
+	const gchar *v;
 
 	for(i = 0; i < iCount; i++)
 	{
@@ -301,10 +305,9 @@ bool PP_Revision::onlyContainsAbiwordChangeTrackingMarkup() const
 			// UT_ASSERT_HARMLESS( UT_SHOULD_NOT_HAPPEN );
 			continue;
 		}
-        UT_DEBUGMSG(("onlyContainsAbiwordChangeTrackingMarkup() n:%s\n", n ));
-        
-        if( n != strstr( n, "abi-para" ) )
-        {
+        UT_DEBUGMSG(("onlyContainsAbiwordChangeTrackingMarkup() n:%s\n", n.c_str()));
+
+        if (n != strstr(n.c_str(), "abi-para")) {
             return false;
         }
     }
@@ -336,7 +339,7 @@ bool PP_Revision::operator == (const PP_Revision &op2) const
 
 	// now the lengthy comparison
 	UT_uint32 i;
-	const gchar * n;
+	PP_PropName n;
 	const gchar * v1, * v2;
 
 	for(i = 0; i < iPCount1; i++)
@@ -663,8 +666,9 @@ void PP_RevisionAttr::pruneForCumulativeResult(PD_Document * pDoc)
 	
 	// finally, remove the revision attribute if present
 	const gchar * v;
-	if(r0->getAttribute("revision", v))
-		r0->setAttribute("revision", NULL);
+	if (r0->getAttribute(_PN("revision"), v)) {
+		r0->setAttribute(_PN("revision"), NULL);
+	}
 
 	UT_ASSERT_HARMLESS( m_vRev.getItemCount() == 1 );
 }
@@ -1063,12 +1067,12 @@ PP_RevisionAttr::addRevision( const PP_Revision* r )
     setRevision(tmp);
 }
 
-void PP_RevisionAttr::mergeAttr( UT_uint32 iId, PP_RevisionType t,
-                                 const gchar* pzName, const gchar* pzValue )
+void PP_RevisionAttr::mergeAttr(UT_uint32 iId, PP_RevisionType t,
+                                PP_PropName pzName, const gchar* pzValue)
 {
     PP_RevisionAttr ra;
     const PP_PropertyVector ppAtts = {
-        pzName, pzValue
+        { pzName, pzValue }
     };
     ra.addRevision(iId, t, ppAtts, PP_NOPROPS);
 
@@ -1080,7 +1084,7 @@ void PP_RevisionAttr::mergeAttr( UT_uint32 iId, PP_RevisionType t,
  */
 void PP_RevisionAttr::mergeAttrIfNotAlreadyThere( UT_uint32 iId,
                                                   PP_RevisionType t,
-                                                  const gchar* pzName,
+                                                  PP_PropName pzName,
                                                   const gchar* pzValue )
 {
 	for(UT_sint32 i = 0; i < m_vRev.getItemCount(); i++)
@@ -1093,14 +1097,13 @@ void PP_RevisionAttr::mergeAttrIfNotAlreadyThere( UT_uint32 iId,
             if( t == PP_REVISION_NONE || t == tr->getType() )
             {
                 const gchar * tattrs = tr->getAttrsString();
-                if( strstr( tattrs, pzName ))
-                {
+                if (strstr(tattrs, pzName.c_str())) {
                     return;
                 }
             }
         }
     }
-    
+
     return mergeAttr( iId, t, pzName, pzValue );
 }
 
@@ -1489,7 +1492,7 @@ bool PP_RevisionAttr::operator== (const PP_RevisionAttr &op2) const
     property pName, the value of which will be stored in pValue; see
     notes on PP_Revision::hasProperty(...)
 */
-bool PP_RevisionAttr::hasProperty(UT_uint32 iId, const gchar * pName, const gchar * &pValue) const
+bool PP_RevisionAttr::hasProperty(UT_uint32 iId, PP_PropName pName, const gchar * &pValue) const
 {
 	const PP_Revision * s;
 	const PP_Revision * r = getGreatestLesserOrEqualRevision(iId, &s);
@@ -1504,7 +1507,7 @@ bool PP_RevisionAttr::hasProperty(UT_uint32 iId, const gchar * pName, const gcha
     property pName, the value of which will be stored in pValue; see
     notes on PP_Revision::hasProperty(...)
 */
-bool PP_RevisionAttr::hasProperty(const gchar * pName, const gchar * &pValue) const
+bool PP_RevisionAttr::hasProperty(PP_PropName pName, const gchar * &pValue) const
 {
 	const PP_Revision * r = getLastRevision();
 	return r->getProperty(pName, pValue);
@@ -1535,7 +1538,7 @@ PP_RevisionType PP_RevisionAttr::getType() const
 }
 
 
-UT_uint32 PP_RevisionAttr::getHighestRevisionNumberWithAttribute( const gchar * attrName ) const
+UT_uint32 PP_RevisionAttr::getHighestRevisionNumberWithAttribute(const PP_PropName attrName) const
 {
     const PP_Revision* r = nullptr;
 
@@ -1550,11 +1553,11 @@ UT_uint32 PP_RevisionAttr::getHighestRevisionNumberWithAttribute( const gchar * 
 }
 
 
-const char* UT_getAttribute( const PP_AttrProp* pAP, const char* name, const char* def  )
+const char* UT_getAttribute(const PP_AttrProp* pAP, PP_PropName name, const char* def)
 {
     const gchar* pValue;
     bool ok;
-    
+
     ok = pAP->getAttribute( name, pValue );
     if (!ok)
     {
@@ -1588,18 +1591,17 @@ PP_RevisionAttr::getLowestDeletionRevision() const
 
 
 std::string UT_getLatestAttribute( const PP_AttrProp* pAP,
-                                   const char* name,
+                                   PP_PropName name,
                                    const char* def )
 {
     const char* t = nullptr;
     std::string ret = def;
     bool ok = false;
-    
-    if (const char* revisionString = UT_getAttribute(pAP, "revision", nullptr))
-    {
+
+    if (const char* revisionString = UT_getAttribute(pAP, _PN("revision"), nullptr)) {
         PP_RevisionAttr ra( revisionString );
         const PP_Revision* r = nullptr;
-            
+
         for( int raIdx = ra.getRevisionsCount()-1;
              raIdx >= 0 && (r = ra.getNthRevision( raIdx ));
              --raIdx )

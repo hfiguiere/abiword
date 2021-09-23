@@ -35,21 +35,44 @@
 #include "ut_misc.h"
 #include "ut_units.h"
 
+#include "pt_Types.h"
 #include "pp_PropertyMap.h"
 
 class PP_AttrProp;
 class PD_Document;
 
+class PP_PropertyVectorElem {
+public:
+	PP_PropertyVectorElem(PP_PropName n, const std::string& v)
+		: name(n), value(v) {}
+	PP_PropertyVectorElem(const char* n, const std::string& v)
+		: name(n), value(v) {}
+	PP_PropertyVectorElem(char*, const std::string &) = delete;
+	PP_PropertyVectorElem() = default;
+	PP_PropertyVectorElem(const PP_PropertyVectorElem &) = default;
+	PP_PropertyVectorElem(PP_PropertyVectorElem &&) = default;
+	PP_PropertyVectorElem& operator=(const PP_PropertyVectorElem &) = default;
+
+	bool operator==(const PP_PropertyVectorElem& rhs) const
+		{
+			return name == rhs.name && value == rhs.value;
+		}
+	bool operator!=(const PP_PropertyVectorElem& rhs) const
+		{
+			return !(*this == rhs);
+		}
+
+	PP_PropName name;
+	std::string value;
+};
+
 /// A basic container of properties vector.
 /// This replaces the gchar**
-typedef std::vector<std::string> PP_PropertyVector;
+typedef std::vector<PP_PropertyVectorElem> PP_PropertyVector;
 
 namespace {
 const PP_PropertyVector PP_NOPROPS;
 }
-
-#define ASSERT_PV_SIZE(x) \
-	UT_ASSERT(x.size() % 2 == 0)
 
 // PP_Property captures knowledge of the various CSS properties,
 // such as their initial/default values and whether they are
@@ -160,34 +183,33 @@ typedef unsigned int tPropLevel;
 class ABI_EXPORT PP_Property
 {
 public:
-	const gchar *			m_pszName;
-	const gchar *			m_pszInitial;
+	PP_PropName			m_pszName;
+	const gchar *		m_pszInitial;
 	bool				m_bInherit;
 	tPropLevel          m_iLevel;
 	~PP_Property();
 
-	inline const gchar *	getName() const {return m_pszName;}
+	inline PP_PropName	getName() const {return m_pszName;}
 	inline const gchar *	getInitial() const {return m_pszInitial;}
 	std::unique_ptr<PP_PropertyType>	getInitialType (tProperty_type Type) const;
 	inline bool				canInherit() const {return m_bInherit;}
 	inline tPropLevel       getLevel() const {return m_iLevel;}
 };
 
-ABI_EXPORT const PP_Property * PP_lookupProperty(const gchar * pszName);
+ABI_EXPORT const PP_Property * PP_lookupProperty(PP_PropName pszName);
 
 ABI_EXPORT void PP_resetInitialBiDiValues(const gchar * pszValue);
 
 ABI_EXPORT void PP_setDefaultFontFamily(const char* pszFamily);
 
-ABI_EXPORT const gchar * PP_evalProperty(const gchar * pszName,
+ABI_EXPORT const gchar * PP_evalProperty(PP_PropName name,
 								 const PP_AttrProp * pSpanAttrProp,
 								 const PP_AttrProp * pBlockAttrProp,
 								 const PP_AttrProp * pSectionAttrProp,
 								 const PD_Document * pDoc,
 								 bool bExpandStyles=false);
 
-
-ABI_EXPORT std::unique_ptr<PP_PropertyType> PP_evalPropertyType(const gchar * pszName,
+ABI_EXPORT std::unique_ptr<PP_PropertyType> PP_evalPropertyType(PP_PropName name,
 								 const PP_AttrProp * pSpanAttrProp,
 								 const PP_AttrProp * pBlockAttrProp,
 								 const PP_AttrProp * pSectionAttrProp,
@@ -196,6 +218,7 @@ ABI_EXPORT std::unique_ptr<PP_PropertyType> PP_evalPropertyType(const gchar * ps
 								 bool bExpandStyles=false);
 
 ABI_EXPORT UT_uint32        PP_getPropertyCount();
-ABI_EXPORT const gchar * PP_getNthPropertyName(UT_uint32 n);
+ABI_EXPORT PP_PropName PP_getNthPropertyName(UT_uint32 n);
 ABI_EXPORT tPropLevel       PP_getNthPropertyLevel(UT_uint32 n);
+
 #endif /* PP_PROPERTY_H */

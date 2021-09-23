@@ -204,7 +204,7 @@ bool IE_Exp_EncodedText_Sniffer::getDlgLabels(const char ** pszDesc,
 PL_Listener * IE_Exp_Text::_constructListener(void)
 {
 	if (!m_bExplicitlySetEncoding) {
-		const std::string & prop = getProperty ("encoding");
+		const std::string & prop = getProperty("encoding");
 		if (!prop.empty()) {
 			_setEncoding (prop.c_str());
 		}
@@ -509,7 +509,7 @@ void Text_Listener::_handleDirMarker(PT_AttrPropIndex api)
 		UT_UCS4Char cPDF = UCS_PDF;
 
 		const gchar *szValue = NULL;
-		if(pAP->getProperty("dir-override", szValue))
+		if(pAP->getProperty(_PN("dir-override"), szValue))
 		{
 			if(m_eDirOverride == DO_UNSET)
 			{
@@ -646,7 +646,7 @@ Text_Listener::Text_Listener(PD_Document * pDocument,
 	if (bHaveProp && pAP)
 	{
 		const gchar *szValue = NULL;
-		if(pAP->getProperty("dom-dir", szValue))
+		if(pAP->getProperty(_PN("dom-dir"), szValue))
 		{
 			if(!g_ascii_strcasecmp("rtl",szValue))
 			{
@@ -799,7 +799,7 @@ bool Text_Listener::populateStrux(pf_Frag_Strux* /*sdh*/,
 			if (bHaveProp && pAP)
 			{
 				const gchar *szValue = NULL;
-				if(pAP->getProperty("dom-dir", szValue))
+				if(pAP->getProperty(_PN("dom-dir"), szValue))
 				{
 					if(!g_ascii_strcasecmp("rtl",szValue))
 					{
@@ -834,14 +834,14 @@ bool Text_Listener::populateStrux(pf_Frag_Strux* /*sdh*/,
 
 			if (bHaveProp && pAP)
 			{
-				szValue = PP_evalProperty("margin-top", nullptr, pAP, nullptr, m_pDocument, true);
+				szValue = PP_evalProperty(_PN("margin-top"), nullptr, pAP, nullptr, m_pDocument, true);
 				if(szValue)
 				{
 					double inches = UT_convertToInches(szValue);
 					if (!m_bFirstWrite && (inches > 0.01))
 						m_pie->write(static_cast<const char *>(m_mbLineBreak),m_iLineBreakLen);
 				}
-				szValue = PP_evalProperty("margin-bottom", nullptr, pAP, nullptr, m_pDocument, true);
+				szValue = PP_evalProperty(_PN("margin-bottom"), nullptr, pAP, nullptr, m_pDocument, true);
 				if(szValue)
 				{
 					double inches = UT_convertToInches(szValue);
@@ -860,7 +860,7 @@ bool Text_Listener::populateStrux(pf_Frag_Strux* /*sdh*/,
 				if (bHaveProp && pAP)
 				{
 					szValue = NULL;
-					if(pAP->getProperty("dom-dir", szValue))
+					if(pAP->getProperty(_PN("dom-dir"), szValue))
 					{
 						if(!g_ascii_strcasecmp("rtl",szValue))
 						{

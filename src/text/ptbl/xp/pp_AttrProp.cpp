@@ -99,18 +99,9 @@ size_t PP_AttrProp::getAttributeCount (void) const
  */
 bool PP_AttrProp::setAttributes(const PP_PropertyVector & attributes)
 {
-	std::size_t i = 0;
-	for (auto iter = attributes.cbegin(); iter != attributes.cend(); ++iter, ++i) {
-		if (!(i % 2)) {
-			const std::string & key = *iter;
-			++iter;
-			++i;
-			if (iter == attributes.cend()) {
-				break;
-			}
-			if (!setAttribute(key.c_str(), iter->c_str())) {
-				return false;
-			}
+	for (auto entry : attributes) {
+		if (!setAttribute(entry.name, entry.value.c_str())) {
+			return false;
 		}
 	}
 	return true;
@@ -124,18 +115,9 @@ bool PP_AttrProp::setAttributes(const PP_PropertyVector & attributes)
  */
 bool PP_AttrProp::setProperties(const PP_PropertyVector & properties)
 {
-	std::size_t i = 0;
-	for (auto iter = properties.cbegin(); iter != properties.cend(); ++iter, ++i) {
-		if (!(i % 2)) {
-			const std::string & key = *iter;
-			++iter;
-			++i;
-			if (iter == properties.cend()) {
-				break;
-			}
-			if (!setProperty(key, *iter)) {
-				return false;
-			}
+	for (auto entry : properties) {
+		if (!setProperty(entry.name, entry.value)) {
+			return false;
 		}
 	}
 	return true;
@@ -149,13 +131,13 @@ bool PP_AttrProp::setProperties(const PP_PropertyVector & properties)
  * Because all mutations of attributes go through here, it is always the
  * case that the props attribute is correctly handled.
  */
-bool	PP_AttrProp::setAttribute(const gchar * szName, const gchar * szValue)
+bool PP_AttrProp::setAttribute(PP_PropName szName, const gchar * szValue)
 {
 	// XXX fix this.
 	// TODO when this assert fails, switch this file to use UT_XML_ version of str*() functions.
 	UT_return_val_if_fail (sizeof(char)==sizeof(gchar), false);
 
-	if (0 == strcmp(szName, PT_PROPS_ATTRIBUTE_NAME) && *szValue)	// PROPS -- cut value up into properties
+	if (szName == PT_PROPS_ATTRIBUTE_NAME && *szValue)	// PROPS -- cut value up into properties
 	{
 		char * pOrig = NULL;
 
@@ -213,13 +195,14 @@ bool	PP_AttrProp::setAttribute(const gchar * szName, const gchar * szValue)
 			while ((*q > 0) && isspace(*q))
 				q++;
 
-			setProperty(p, q);
+			auto name = UT_StaticString::Interned(p);
+			setProperty(name, q);
 		}
 
 		g_free(pOrig);
 		return true;
 	}
-	else if (0 == strcmp(szName, PT_XID_ATTRIBUTE_NAME) && *szValue)
+	else if (szName == PT_XID_ATTRIBUTE_NAME && *szValue)
 	{
 		// XID is a unique id for the xml element / PT frag. Its function is to facilitate
 		// comparing/merging documents and we do not want it in the AP
@@ -229,7 +212,7 @@ bool	PP_AttrProp::setAttribute(const gchar * szName, const gchar * szValue)
 	{
 		// XXX fix this. We should just have a std::string
 		UT_UTF8String url;
-		if (szValue && *szValue && (0 == strcmp(szName, "xlink:href") || 0 == strcmp(szName, "href")))
+		if (szValue && *szValue && (szName == "xlink:href" || szName == "href"))
 		{
 			url = szValue;
 			url.decodeURL();
@@ -239,7 +222,7 @@ bool	PP_AttrProp::setAttribute(const gchar * szName, const gchar * szValue)
 		// make sure we store attribute names in lowercase
 		UT_ASSERT_HARMLESS(sizeof(char) == sizeof(gchar));
 
-		std::string key = szName;
+		std::string key = szName.c_str();
 		// &key[0] is a mutable array of char. may not be NUL terminated.
 		ascii_strdown(&key[0], key.size());
 
@@ -249,7 +232,7 @@ bool	PP_AttrProp::setAttribute(const gchar * szName, const gchar * szValue)
 		UT_ensureValidXML(key);
 		UT_ensureValidXML(szDupValue);
 
-		m_attributes[std::move(key)] = std::move(szDupValue);
+		m_attributes[UT_StaticString::Interned(key)] = std::move(szDupValue);
 
 		return true;
 	}
@@ -262,9 +245,9 @@ bool	PP_AttrProp::setAttribute(const gchar * szName, const gchar * szValue)
 		 (?)Is there a reason for this?
 	 \return Whether or not the operation succeeded.
 */
-bool PP_AttrProp::setProperty(const std::string & name, const std::string & value)
+bool PP_AttrProp::setProperty(PP_PropName name, const std::string & value)
 {
-	UT_return_val_if_fail(!name.empty(), false);
+	UT_return_val_if_fail(!!name, false);
 
 	// if szValue == NULL or *szValue == 0, indicates absent property.
 	// We have to set it empty, otherwise the code that changes
@@ -274,14 +257,14 @@ bool PP_AttrProp::setProperty(const std::string & name, const std::string & valu
 	//bool bRemove = (!szValue || !*szValue);
 
 	// get rid of any chars invalid in xml
-	std::string name2 = name;
+	std::string name2 = name.c_str();
 	UT_ensureValidXML(name2);
 
 	std::string value2 = value;
 	UT_ensureValidXML(value2);
 
 	UT_return_val_if_fail (!m_bIsReadOnly, false);
-	m_properties[std::move(name2)] = std::move(value);
+	m_properties[UT_StaticString::Interned(name2)] = std::move(value);
 
 	return true;
 }
@@ -296,7 +279,7 @@ bool PP_AttrProp::setProperty(const std::string & name, const std::string & valu
 
     WARNING: Always check the return value before trying to work with szValue!
 */
-bool	PP_AttrProp::getNthAttribute(int ndx, const gchar *& szName, const gchar *& szValue) const
+bool PP_AttrProp::getNthAttribute(int ndx, PP_PropName& szName, const gchar *& szValue) const
 {
 	if (m_attributes.empty())
 		return false;
@@ -316,7 +299,7 @@ bool	PP_AttrProp::getNthAttribute(int ndx, const gchar *& szName, const gchar *&
 
 	if ((i == ndx) && iter != m_attributes.cend())
 	{
-	    szName = iter->first.c_str();
+	    szName = iter->first;
 	    szValue = iter->second.c_str();
 	    return true;
 	}
@@ -333,7 +316,7 @@ bool	PP_AttrProp::getNthAttribute(int ndx, const gchar *& szName, const gchar *&
 
     WARNING: Always check the return value before trying to work with szValue!
 */
-bool	PP_AttrProp::getNthProperty(int ndx, const gchar *& szName, const gchar *& szValue) const
+bool PP_AttrProp::getNthProperty(int ndx, PP_PropName& szName, const gchar *& szValue) const
 {
 	if (m_properties.empty()) {
 		return false;
@@ -353,7 +336,7 @@ bool	PP_AttrProp::getNthProperty(int ndx, const gchar *& szName, const gchar *& 
 	}
 
 	if ((i == ndx) && iter != m_properties.cend()) {
-		szName = iter->first.c_str();
+		szName = iter->first;
 		szValue = iter->second.c_str();
 		return true;
 	}
@@ -370,7 +353,7 @@ bool	PP_AttrProp::getNthProperty(int ndx, const gchar *& szName, const gchar *& 
 
 	 WARNING: Be sure to check the return value before trying to work with szValue.
 */
-bool PP_AttrProp::getProperty(const std::string & name, const gchar *& szValue) const
+bool PP_AttrProp::getProperty(PP_PropName name, const gchar *& szValue) const
 {
 	if (m_properties.empty()) {
 		return false;
@@ -390,8 +373,7 @@ PP_PropertyVector PP_AttrProp::getAttributes () const
 	PP_PropertyVector attributes;
 	for (auto iter = m_attributes.cbegin(); iter != m_attributes.cend();
 		 ++iter) {
-		attributes.push_back(iter->first);
-		attributes.push_back(iter->second);
+		attributes.push_back({ iter->first, iter->second });
 	}
 
 	return attributes;
@@ -410,15 +392,14 @@ PP_PropertyVector PP_AttrProp::getProperties () const
 
 	for (auto iter = m_properties.cbegin(); iter != m_properties.cend();
 		 ++iter) {
-		properties.push_back(iter->first);
-		properties.push_back(iter->second);
+		properties.push_back({ iter->first, iter->second });
 	}
 	return properties;
 }
 
 /*! (?)TODO: PLEASE DOCUMENT ME!
 */
-std::unique_ptr<PP_PropertyType> PP_AttrProp::getPropertyType(const gchar * szName, tProperty_type Type) const
+std::unique_ptr<PP_PropertyType> PP_AttrProp::getPropertyType(PP_PropName szName, tProperty_type Type) const
 {
 	if (m_properties.empty()) {
 		return NULL;
@@ -442,7 +423,7 @@ std::unique_ptr<PP_PropertyType> PP_AttrProp::getPropertyType(const gchar * szNa
 
 	 WARNING: Be sure to check the return value before trying to work with szValue.
 */
-bool PP_AttrProp::getAttribute(const std::string & name, const gchar *& szValue) const
+bool PP_AttrProp::getAttribute(PP_PropName name, const gchar *& szValue) const
 {
 	if (m_attributes.empty())
 		return false;
@@ -497,8 +478,7 @@ bool PP_AttrProp::hasAttributes(void) const
 bool PP_AttrProp::areAlreadyPresent(const PP_PropertyVector & attributes,
 									const PP_PropertyVector & properties) const
 {
-	ASSERT_PV_SIZE(attributes);
-	for (auto iter = attributes.cbegin(); iter != attributes.cend(); iter += 2) {
+	for (auto entry : attributes) {
 		/*
 		  It seems that we also want empty strings for attributes,
 		  at least for the 'param' attribute which goes with fields.
@@ -515,28 +495,27 @@ bool PP_AttrProp::areAlreadyPresent(const PP_PropertyVector & attributes,
 		// that attribute to be absent, not present
 		const gchar * szValue = NULL;
 
-		if((iter + 1)->empty() && getAttribute(*iter, szValue)
+		if(entry.value.empty() && getAttribute(entry.name, szValue)
 		   && szValue && *szValue) {
 			return false;
 		}
 		// the 'props' attribute has to be handled separatedly,
 		// since it is not returned using getAttribute() (it is
 		// not stored as attribute)
-		else if((iter + 1)->empty() && (*iter != "props")
+		else if(entry.value.empty() && (entry.name != "props")
 				&& hasProperties()) {
 			return false;
-		} else if(!(iter + 1)->empty()) {
-			if (!getAttribute(*iter, szValue)) {
+		} else if(!entry.value.empty()) {
+			if (!getAttribute(entry.name, szValue)) {
 				return false;		// item not present
 			}
-			if (*(iter + 1) != szValue) {
+			if (entry.value != szValue) {
 				return false;		// item has different value
 			}
 		}
 	}
 
-	ASSERT_PV_SIZE(properties);
-	for (auto iter = properties.cbegin(); iter != properties.cend(); iter += 2) {
+	for (auto entry : properties) {
 		/*
 		  Jeff, I weakened the following assert because we
 		  *want* to represent no tabstops as an empty string.
@@ -552,14 +531,14 @@ bool PP_AttrProp::areAlreadyPresent(const PP_PropertyVector & attributes,
 		// that attribute to be absent, not present
 		const gchar * szValue = NULL;
 
-		if(!(iter + 1)->empty() && getProperty(*iter, szValue)
+		if(!entry.value.empty() && getProperty(entry.name, szValue)
 		   && szValue && *szValue) {
 			return false;
-		} else if(!(iter + 1)->empty())	{
-			if (!getProperty(*iter, szValue)) {
+		} else if(!entry.value.empty())	{
+			if (!getProperty(entry.name, szValue)) {
 				return false;		// item not present
 			}
-			if (*(iter + 1) != szValue) {
+			if (entry.value != szValue) {
 				return false;		// item has different value
 			}
 		}
@@ -577,19 +556,18 @@ bool PP_AttrProp::areAlreadyPresent(const PP_PropertyVector & attributes,
 bool PP_AttrProp::areAnyOfTheseNamesPresent(const PP_PropertyVector & attributes,
 											const PP_PropertyVector & properties) const
 {
-	ASSERT_PV_SIZE(attributes);
-	for (auto iter = attributes.cbegin(); iter != attributes.cend(); iter += 2) {
+	for (auto entry : attributes) {
 
 		const gchar * szValue = NULL;
-		if (getAttribute(*iter, szValue)) {
+		if (getAttribute(entry.name, szValue)) {
 			return true;
 		}
 	}
-	ASSERT_PV_SIZE(properties);
-	for (auto iter = properties.cbegin(); iter != properties.cend(); iter += 2) {
+
+	for (auto entry : properties) {
 
 		const gchar * szValue = NULL;
-		if (getProperty(*iter, szValue)) {
+		if (getProperty(entry.name, szValue)) {
 			return true;
 		}
 	}
@@ -710,7 +688,7 @@ PP_AttrProp * PP_AttrProp::cloneWithReplacements(const PP_PropertyVector & attri
 	// (have not been overridden) in the new one.
 
 	UT_uint32 k;
-	const gchar * n;
+	PP_PropName n;
 	const gchar * v;
 	const gchar * vNew;
 
@@ -724,7 +702,7 @@ PP_AttrProp * PP_AttrProp::cloneWithReplacements(const PP_PropertyVector & attri
 		// TODO them from this?  or should we expand it and override
 		// TODO individual properties?
 		// TODO for now, we just ignore it.
-		if (strcmp(n, PT_PROPS_ATTRIBUTE_NAME) == 0) {
+		if (n == PT_PROPS_ATTRIBUTE_NAME) {
 			UT_ASSERT_HARMLESS(UT_SHOULD_NOT_HAPPEN);
 			continue;
 	    }
@@ -741,7 +719,7 @@ PP_AttrProp * PP_AttrProp::cloneWithReplacements(const PP_PropertyVector & attri
 	// skip the following loop if props is set to ""
 	const gchar * szValue;
 
-	if(papNew->getAttribute("props", szValue) && !*szValue) {
+	if (papNew->getAttribute(_PN("props"), szValue) && !*szValue) {
 		bIgnoreProps = true;
 	}
 
@@ -819,11 +797,8 @@ PP_AttrProp * PP_AttrProp::cloneWithElimination(const PP_PropertyVector & attrib
 	// first, create an empty AttrProp.
 	std::unique_ptr<PP_AttrProp> papNew(new PP_AttrProp);
 
-	ASSERT_PV_SIZE(attributes);
-	ASSERT_PV_SIZE(properties);
-
 	UT_uint32 k;
-	const gchar * n;
+	PP_PropName n;
 	const gchar * v;
 
 	k = 0;
@@ -831,11 +806,10 @@ PP_AttrProp * PP_AttrProp::cloneWithElimination(const PP_PropertyVector & attrib
 	{
 		// for each attribute in the old set, add it to the
 		// new set only if it is not present in the given array.
-		for (PP_PropertyVector::const_iterator iter = attributes.begin();
-			 iter != attributes.end(); iter += 2) {
+		for (auto entry : attributes) {
 
-			UT_return_val_if_fail (*iter != PT_PROPS_ATTRIBUTE_NAME, NULL); // cannot handle PROPS here
-			if (*iter == n) {		// found it, so we don't put it in the result.
+			UT_return_val_if_fail (entry.name != PT_PROPS_ATTRIBUTE_NAME, NULL); // cannot handle PROPS here
+			if (entry.name == n) {		// found it, so we don't put it in the result.
 				goto DoNotIncludeAttribute;
 			}
 		}
@@ -856,9 +830,8 @@ PP_AttrProp * PP_AttrProp::cloneWithElimination(const PP_PropertyVector & attrib
 		// for each property in the old set, add it to the
 		// new set only if it is not present in the given array.
 
-		for (auto iter = properties.begin(); iter != properties.end();
-			 iter += 2) {
-			if (*iter == n) {		// found it, so we don't put it in the result.
+		for (auto entry : properties) {
+			if (entry.name == n) {		// found it, so we don't put it in the result.
 				goto DoNotIncludeProperty;
 			}
 		}
@@ -900,11 +873,8 @@ PP_AttrProp * PP_AttrProp::cloneWithEliminationIfEqual(const PP_PropertyVector &
 	// first, create an empty AttrProp.
 	std::unique_ptr<PP_AttrProp> papNew(new PP_AttrProp);
 
-	ASSERT_PV_SIZE(attributes);
-	ASSERT_PV_SIZE(properties);
-
 	UT_uint32 k;
-	const gchar * n;
+	PP_PropName n;
 	const gchar * v;
 
 	k = 0;
@@ -913,12 +883,10 @@ PP_AttrProp * PP_AttrProp::cloneWithEliminationIfEqual(const PP_PropertyVector &
 		// for each attribute in the old set, add it to the
 		// new set only if it is not present in the given array.
 
-		for (auto iter = attributes.begin(); iter != attributes.end();
-			 iter += 2) {
-			if (*iter != PT_PROPS_ATTRIBUTE_NAME)
+		for (auto iter = attributes.begin(); iter != attributes.end(); ++iter) {
+			if (iter->name != PT_PROPS_ATTRIBUTE_NAME)
 				goto DoNotIncludeAttribute; // cannot handle PROPS here
-			// XXX should it be n and v ?
-			if (*iter == n && *(iter + 1) == n)		// found it, so we don't put it in the result.
+			if (iter->name == n && iter->value == v)		// found it, so we don't put it in the result.
 				goto DoNotIncludeAttribute;
 		}
 
@@ -938,10 +906,8 @@ PP_AttrProp * PP_AttrProp::cloneWithEliminationIfEqual(const PP_PropertyVector &
 		// for each property in the old set, add it to the
 		// new set only if it is not present in the given array.
 
-		for (auto iter = properties.begin(); iter != properties.end();
-			 iter += 2) {
-			// XXX should it be n and v ?
-			if (*iter == n && *(iter + 1) == n) {		// found it, so we don't put it in the result.
+		for (auto iter = properties.begin(); iter != properties.end(); ++iter) {
+			if (iter->name == n && iter->value == v) {		// found it, so we don't put it in the result.
 				goto DoNotIncludeProperty;
 			}
 		}
@@ -1045,7 +1011,7 @@ PP_AttrProp & PP_AttrProp::operator=(const PP_AttrProp &other)
 	UT_uint32 index;
 	for(index = 0; index < countMyAttrs; index++)
 	{
-		const gchar * szName;
+		PP_PropName szName;
 		const gchar * szValue;
 		if(other.getNthAttribute(index, szName, szValue))
 		{
@@ -1057,7 +1023,7 @@ PP_AttrProp & PP_AttrProp::operator=(const PP_AttrProp &other)
 
 	for(index = 0; index < countMyProps; index++)
 	{
-		const gchar * szName;
+		PP_PropName szName;
 		const gchar * szValue;
 		if(other.getNthProperty(index, szName, szValue))
 		{
@@ -1097,7 +1063,8 @@ bool PP_AttrProp::isEquivalent(const PP_AttrProp * pAP2) const
 		return false;
 
 	UT_uint32 i;
-	const gchar * pName, * pValue, * pValue2;
+	PP_PropName pName;
+	const gchar * pValue, * pValue2;
 
 	for(i =  0; i < getAttributeCount(); ++i)
 	{
@@ -1107,12 +1074,11 @@ bool PP_AttrProp::isEquivalent(const PP_AttrProp * pAP2) const
 			return false;
 
 		// ignore property attribute
-		if(0 == strcmp(pValue, PT_PROPS_ATTRIBUTE_NAME))
+		if (PT_PROPS_ATTRIBUTE_NAME == pValue)
 			continue;
 
 		// handle revision attribute correctly
-		if(0 == strcmp(pValue, PT_REVISION_ATTRIBUTE_NAME))
-		{
+		if (PT_REVISION_ATTRIBUTE_NAME == pValue) {
 			// requires special treatment
 			PP_RevisionAttr r1(pValue);
 			PP_RevisionAttr r2 (pValue2);
@@ -1148,8 +1114,8 @@ bool PP_AttrProp::isEquivalent(const PP_AttrProp * pAP2) const
 bool PP_AttrProp::isEquivalent(const PP_PropertyVector & attrs,
 							   const PP_PropertyVector & props) const
 {
-	size_t iAttrsCount = attrs.size() / 2;
-	size_t iPropsCount = props.size() / 2;
+	size_t iAttrsCount = attrs.size();
+	size_t iPropsCount = props.size();
 
 	if(getAttributeCount() != iAttrsCount
 	   || getPropertyCount()  != iPropsCount) {
@@ -1157,13 +1123,14 @@ bool PP_AttrProp::isEquivalent(const PP_PropertyVector & attrs,
 	}
 
 	UT_uint32 i;
-	std::string name, value;
+	PP_PropName name;
+	std::string value;
 	const gchar * pValue2;
 
 	for(i =  0; i < getAttributeCount(); ++i)
 	{
-		name = attrs[2*i];
-		value = attrs[2*i + 1];
+		name = attrs[i].name;
+		value = attrs[i].value;
 
 		if(!getAttribute(name, pValue2)) {
 			return false;
@@ -1190,8 +1157,8 @@ bool PP_AttrProp::isEquivalent(const PP_PropertyVector & attrs,
 
 	for(i =  0; i < getPropertyCount(); ++i)
 	{
-		name = props[2 * i];
-		value = props[2 * i + 1];
+		name = props[2].name;
+		value = props[2].value;
 
 		if(!getProperty(name, pValue2)) {
 			return false;
@@ -1228,21 +1195,21 @@ bool PP_AttrProp::explodeStyle(const PD_Document * pDoc, bool bOverwrite)
 			pStyle->getAllAttributes(vAttrs, 100);
 			pStyle->getAllProperties(vProps, 100);
 
-			for (PP_PropertyVector::size_type i = 0; i < vProps.size(); i += 2)	{
-				std::string pName =  vProps[i];
+			for (auto entry : vProps)  {
+				PP_PropName pName =  entry.name;
 				const gchar * p;
 
 				bool bSet = bOverwrite || !getProperty(pName, p);
 
 				if(bSet)
-					setProperty(pName, vProps[i + 1]);
+					setProperty(pName, entry.value);
 			}
 
 			// attributes are more complicated, because there are some style attributes that must
 			// not be transferred to the generic AP
-			for (PP_PropertyVector::size_type i = 0; i < vAttrs.size(); i += 2)	{
-				std::string pName = vAttrs[i];
-				if (pName.empty() || pName == "type"
+			for (auto entry : vAttrs) {
+				PP_PropName pName = entry.name;
+				if (!pName || pName == "" || pName == "type"
 				          || pName == "name"
 				          || pName == "basedon"
 				          || pName == "followedby"
@@ -1251,13 +1218,12 @@ bool PP_AttrProp::explodeStyle(const PD_Document * pDoc, bool bOverwrite)
 					continue;
 				}
 
-				std::string pValue = vAttrs[i + 1];
 				const gchar * p;
 
 				bool bSet = bOverwrite || !getAttribute(pName, p);
 
 				if(bSet)
-					setAttribute(pName.c_str(), pValue.c_str());
+					setAttribute(pName, entry.value.c_str());
 			}
 		}
 	}
@@ -1271,14 +1237,15 @@ bool PP_AttrProp::explodeStyle(const PD_Document * pDoc, bool bOverwrite)
 void PP_AttrProp::miniDump(const PD_Document * pDoc) const
 {
 #ifdef DEBUG
-	const gchar * pName, * pValue;
+	PP_PropName pName;
+	const gchar* pValue;
 	UT_uint32 i = 0;
 	
 	UT_DEBUGMSG(("--------------------- PP_AttrProp mini dump --------------------------------\n"));
 	UT_DEBUGMSG(("Attributes:\n"));
 	while(getNthAttribute(i,pName,pValue))
 	{
-		UT_DEBUGMSG(("%s : %s\n", pName, pValue));
+		UT_DEBUGMSG(("%s : %s\n", pName.c_str(), pValue));
 		++i;
 	}
 		  
@@ -1286,7 +1253,7 @@ void PP_AttrProp::miniDump(const PD_Document * pDoc) const
 	i = 0;
 	while(getNthProperty(i,pName,pValue))
 	{
-		UT_DEBUGMSG(("%s : %s\n", pName, pValue));
+		UT_DEBUGMSG(("%s : %s\n", pName.c_str(), pValue));
 		++i;
 	}
 
@@ -1311,23 +1278,13 @@ std::string PP_makePropString(const PP_PropertyVector & props)
 {
 	std::string propString;
 
-	std::size_t countp = props.size();
-	// make sure we have an even number.
-	if (countp % 2) {
-		countp--;
-	}
-	for(std::size_t i = 0; i < countp; i += 2) {
-		propString += props[i];
-		propString += ":";
-
-		const std::string & value = props[i + 1];
-		if(!value.empty()) {
-		    propString += value;
-		}
-
-		if(i + 2 < countp) {
+	for(auto entry : props) {
+		if (!propString.empty()) {
 			propString += "; ";
 		}
+		propString += entry.name;
+		propString += ":";
+		propString += entry.value;
 	}
 
 	return propString;
@@ -1340,13 +1297,9 @@ PP_PropertyVector PP_std_setPropsToNothing(const PP_PropertyVector & props)
 	if(props.empty())
 		return props2;
 
-	std::size_t i = 0;
-	for(auto iter = props.cbegin(); iter != props.cend(); ++iter, ++i)
-	{
-		if (!(i % 2)) {
-			props2.push_back(*iter);
-			props2.push_back("");
-		}
+	for (auto entry : props) {
+		entry.value = "";
+		props2.push_back(entry);
 	}
 
 	return props2;
@@ -1361,9 +1314,9 @@ PP_PropertyVector PP_std_copyProps(const gchar ** props)
 
 	UT_uint32 i;
 	for(i = 0; props[i]; i += 2) {
-		props2.push_back(props[i]);
+		auto name = UT_StaticString::Interned(props[i]);
 		const char *value = props[i + 1];
-		props2.push_back(value ? value : "");
+		props2.push_back({ name, value ? value : "" });
 	}
 
 	return props2;
@@ -1378,13 +1331,16 @@ PP_PropertyVector PP_cloneAndDecodeAttributes(const gchar ** attrs)
 
 	const gchar** p = attrs;
 	while (*p) {
-		props.push_back(UT_decodeXML(*p));
+		auto name = UT_StaticString::Interned(UT_decodeXML(*p).c_str());
 		++p;
+		std::string value;
+		if (*p) {
+			value = UT_decodeXML(*p);
+			++p;
+		}
+		props.push_back({ name, value });
 	}
 
-	if (props.size() % 2) {
-		props.push_back("");
-	}
 	return props;
 }
 
@@ -1392,25 +1348,19 @@ PP_PropertyVector PP_std_setPropsToValue(const PP_PropertyVector & props,
 										 const gchar * value)
 {
 	PP_PropertyVector out;
-
 	std::string svalue = value ? value : "";
 
-	for(auto iter = props.cbegin(); iter != props.cend(); ++iter) {
-		out.push_back(*iter);
-		++iter;
-		if (iter != props.cend()) {
-			out.push_back(svalue);
-		}
+	for (auto entry : props) {
+		out.push_back({ entry.name, svalue });
 	}
 
 	return out;
 }
 
-bool PP_hasAttribute(const char* name, const PP_PropertyVector & atts)
+bool PP_hasAttribute(PP_PropName name, const PP_PropertyVector & atts)
 {
-	std::size_t i = 0;
-	for (auto iter = atts.cbegin(); iter != atts.cend(); ++iter, ++i) {
-		if (!(i % 2) && *iter == name) {
+	for (auto iter = atts.cbegin(); iter != atts.cend(); ++iter) {
+		if (iter->name == name) {
 			return true;
 		}
 	}
@@ -1421,61 +1371,41 @@ bool PP_hasAttribute(const char* name, const PP_PropertyVector & atts)
 static const std::string _EMPTY_STRING;
 
 const std::string &
-PP_getAttribute(const char* name, const PP_PropertyVector & atts)
+PP_getAttribute(PP_PropName name, const PP_PropertyVector & atts)
 {
-	std::size_t i = 0;
-	for (auto iter = atts.cbegin(); iter != atts.cend(); ++iter, ++i) {
-		if (!(i % 2) && *iter == name) {
-			++iter;
-			++i;
-			if (iter != atts.cend()) {
-				return *iter;
-			}
+	for (auto iter = atts.cbegin(); iter != atts.cend(); ++iter) {
+		if (iter->name == name) {
+			return iter->value;
 		}
 	}
 	return _EMPTY_STRING;
 }
 
-bool PP_setAttribute(const char* name, const std::string & value, PP_PropertyVector & atts)
+bool PP_setAttribute(PP_PropName name, const std::string & value, PP_PropertyVector & atts)
 {
 	bool changed = false;
 
-	std::size_t i = 0;
-	for (auto iter = atts.begin(); iter != atts.end(); ++iter, ++i) {
-		if (!(i % 2) && *iter == name) {
-			++iter;
-			++i;
-			if (iter != atts.end()) {
-				*iter = value;
-				changed = true;
-			}
+	for (auto iter = atts.begin(); iter != atts.end(); ++iter) {
+		if (iter->name == name) {
+			iter->value = value;
+			changed = true;
 		}
 	}
 	return changed;
 }
 
-void PP_addOrSetAttribute(const char* name, const std::string & value, PP_PropertyVector & atts)
+void PP_addOrSetAttribute(PP_PropName name, const std::string & value, PP_PropertyVector & atts)
 {
 	if (!PP_setAttribute(name, value, atts)) {
-		std::size_t size = atts.size();
-		// make sure the atts size is even.
-		if (size && (size % 2)) {
-			atts.resize(size - 1);
-		}
-		atts.push_back(name);
-		atts.push_back(value);
+		atts.push_back({ name, value });
 	}
 }
 
-bool PP_removeAttribute(const char* name, PP_PropertyVector & atts)
+bool PP_removeAttribute(PP_PropName name, PP_PropertyVector & atts)
 {
-	std::size_t i = 0;
-	for (auto iter = atts.cbegin(); iter != atts.cend(); ++iter, ++i) {
-		if (!(i % 2) && *iter == name) {
-			iter = atts.erase(iter);
-			if (iter != atts.cend()) {
-				atts.erase(iter);
-			}
+	for (auto iter = atts.cbegin(); iter != atts.cend(); ++iter) {
+		if (iter->name == name) {
+			atts.erase(iter);
 			return true;
 		}
 	}

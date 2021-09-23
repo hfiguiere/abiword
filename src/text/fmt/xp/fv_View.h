@@ -444,8 +444,8 @@ public:
 	 */
 	// - begin
 	bool    getAllAttrProp(const PP_AttrProp *& pSpanAP, const PP_AttrProp *& pBlockAP, const PP_AttrProp *& pSectionAP, const PP_AttrProp *& pDocAP) const;
-	bool	queryCharFormat(const gchar * szProperty, UT_UTF8String & szValue, bool & bExplicitlyDefined, bool & bMixedSelection) const;
-	bool	queryCharFormat(const gchar * szProperty, UT_UTF8String & szValue, bool & bExplicitlyDefined, PT_DocPosition position) const;
+	bool	queryCharFormat(PP_PropName szProperty, UT_UTF8String & szValue, bool & bExplicitlyDefined, bool & bMixedSelection) const;
+	bool	queryCharFormat(PP_PropName szProperty, UT_UTF8String & szValue, bool & bExplicitlyDefined, PT_DocPosition position) const;
 	// - end
 
 	bool	setCharFormat(const PP_PropertyVector & properties,
@@ -835,7 +835,7 @@ public:
 	bool				getCellLineStyle(PT_DocPosition posCell, UT_sint32 * pLeft, UT_sint32 * pRight,
 										 UT_sint32 * pTop, UT_sint32 * pBot) const;
 	bool				setCellFormat(const PP_PropertyVector & properties, FormatTable applyTo, const FG_ConstGraphicPtr & pFG, UT_String & sDataID);
-	bool				getCellProperty(PT_DocPosition pos, const gchar * szPropName, gchar * &szPropValue) const;
+	bool				getCellProperty(PT_DocPosition pos, PP_PropName szPropName, gchar * &szPropValue) const;
 	bool	            setTableFormat(const PP_PropertyVector & properties);
 	bool	            setTableFormat(PT_DocPosition pos,const PP_PropertyVector & properties);
 	bool                getCellFormat(PT_DocPosition pos, std::string & sCellProps) const;

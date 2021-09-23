@@ -216,7 +216,7 @@ private:
 	// despite being a std::string, it will store an UTF-8 buffer
 	typedef std::set<std::string> string_set;
 	string_set m_pUsedImages;
-	const gchar*		getObjectKey(const PT_AttrPropIndex& api, const gchar* key);
+	const gchar*		getObjectKey(const PT_AttrPropIndex& api, PP_PropName key);
 };
 
 void s_AbiWord_1_Listener::_closeSection(void)
@@ -368,7 +368,7 @@ void s_AbiWord_1_Listener::_openTag(const char * szPrefix, bool bHasContent,
 	if (bHaveProp && pAP)
 	{
 		std::string url;
-		const gchar * szName;
+		PP_PropName szName;
 		UT_uint32 k = 0;
 
 		while (pAP->getNthAttribute(k++,szName,szValue))
@@ -380,17 +380,17 @@ void s_AbiWord_1_Listener::_openTag(const char * szPrefix, bool bHasContent,
 			//
 			// Strip out Author attributes for now.
 			//
-			if( !m_pDocument->isExportAuthorAtts() && strcmp(szName,PT_AUTHOR_NAME) == 0)
+			if( !m_pDocument->isExportAuthorAtts() && szName == PT_AUTHOR_NAME)
 				continue;
 
-			if ((strcmp (szName, "href") == 0) || (strcmp (szName, "xlink:href") == 0))
+			if (szName == "href" || szName == "xlink:href")
 			{
 				url = UT_escapeURL(szValue);
-				m_pie->addString(szName, url.c_str());
+				m_pie->addString(szName.c_str(), url.c_str());
 			}
 			else
 			{
-				m_pie->addString(szName, szValue);
+				m_pie->addString(szName.c_str(), szValue);
 			}
 		}
 		if(iXID != 0)
@@ -401,7 +401,7 @@ void s_AbiWord_1_Listener::_openTag(const char * szPrefix, bool bHasContent,
 		if (!bIgnoreProperties && pAP->getNthProperty(0,szName,szValue))
 		{
 			std::ostringstream buf;
-			buf << szName << ":" << szValue;
+			buf << szName.c_str() << ":" << szValue;
 			UT_uint32 j = 1;
 			while (pAP->getNthProperty(j++,szName,szValue))
 			{
@@ -410,23 +410,23 @@ void s_AbiWord_1_Listener::_openTag(const char * szPrefix, bool bHasContent,
 				// the property at all? For now I fixed it by the latter.
 				if (*szValue)
 				{
-					buf << "; " << szName << ":" << szValue;
+					buf << "; " << szName.c_str() << ":" << szValue;
 				}
 			}
-			m_pie->addString(PT_PROPS_ATTRIBUTE_NAME, buf.str());
+			m_pie->addString(PT_PROPS_ATTRIBUTE_NAME.c_str(), buf.str());
 		}
 	}
 	if(strcmp(szPrefix,"math") == 0)
 	{
 		const char * szPropVal = NULL;
-		pAP->getAttribute("dataid",szPropVal);
+		pAP->getAttribute(_PN("dataid"), szPropVal);
 		if(szPropVal != NULL)
 		{
 			m_pie->startElement("image");
 			std::string tag = "snapshot-svg-";
 			tag += szPropVal;
 			m_pie->addString("dataid", tag);
-			bool bFound = pAP->getProperty("height", szPropVal);
+			bool bFound = pAP->getProperty(_PN("height"), szPropVal);
 			std::ostringstream buf;
 			bool need_sep = false;
 			if(bFound)
@@ -435,7 +435,7 @@ void s_AbiWord_1_Listener::_openTag(const char * szPrefix, bool bHasContent,
 				buf << "height:" << dInch << "in";
 				need_sep = true;
 			}
-			bFound = pAP->getProperty("width", szPropVal);
+			bFound = pAP->getProperty(_PN("width"), szPropVal);
 			if(bFound)
 			{
 				if (need_sep)
@@ -443,14 +443,14 @@ void s_AbiWord_1_Listener::_openTag(const char * szPrefix, bool bHasContent,
 				double dInch = static_cast<double>(atoi(szPropVal))/UT_LAYOUT_RESOLUTION;
 				buf << "width:" << dInch << "in";
 			}
-			m_pie->addString(PT_PROPS_ATTRIBUTE_NAME, buf.str());
+			m_pie->addString(PT_PROPS_ATTRIBUTE_NAME.c_str(), buf.str());
 			m_pie->endElement();
 		}
 	}
 	else if(strcmp(szPrefix,"embed") == 0)
 	{
 		const char * szPropVal = NULL;
-		pAP->getAttribute("dataid",szPropVal);
+		pAP->getAttribute(_PN("dataid"), szPropVal);
 		if(szPropVal != NULL)
 		{
 			m_pie->startElement("image");
@@ -459,7 +459,7 @@ void s_AbiWord_1_Listener::_openTag(const char * szPrefix, bool bHasContent,
 			if (!m_pDocument->getDataItemDataByName(tag.c_str (), bb, NULL, NULL))
 				tag = std::string("snapshot-png-") + szPropVal;
 			m_pie->addString("dataid", tag);
-			bool bFound = pAP->getProperty("height", szPropVal);
+			bool bFound = pAP->getProperty(_PN("height"), szPropVal);
 			std::ostringstream buf;
 			bool need_sep = false;
 			if(bFound)
@@ -468,7 +468,7 @@ void s_AbiWord_1_Listener::_openTag(const char * szPrefix, bool bHasContent,
 				buf << "height:" << dInch << "in";
 				need_sep = true;
 			}
-			bFound = pAP->getProperty("width", szPropVal);
+			bFound = pAP->getProperty(_PN("width"), szPropVal);
 			if(bFound)
 			{
 				if (need_sep)
@@ -476,7 +476,7 @@ void s_AbiWord_1_Listener::_openTag(const char * szPrefix, bool bHasContent,
 				double dInch = static_cast<double>(atoi(szPropVal))/UT_LAYOUT_RESOLUTION;
 				buf << "width:" << dInch << "in";
 			}
-			m_pie->addString(PT_PROPS_ATTRIBUTE_NAME, buf.str());
+			m_pie->addString(PT_PROPS_ATTRIBUTE_NAME.c_str(), buf.str());
 			m_pie->endElement();
 		}
 	}
@@ -515,8 +515,8 @@ s_AbiWord_1_Listener::s_AbiWord_1_Listener(PD_Document * pDocument,
 
 	// we want to update the XID counter and the template status
 	const PP_PropertyVector attr = {
-		"template", m_bIsTemplate ? "true" : "false",
-		"xid-max", UT_std_string_sprintf("%d", pDocument->getTopXID())
+		{ "template", m_bIsTemplate ? "true" : "false" },
+		{ "xid-max", UT_std_string_sprintf("%d", pDocument->getTopXID()) }
 	};
 	pDocument->setAttributes(attr);
 
@@ -563,7 +563,7 @@ s_AbiWord_1_Listener::~s_AbiWord_1_Listener()
 
 
 const gchar*
-s_AbiWord_1_Listener::getObjectKey(const PT_AttrPropIndex& api, const gchar* key)
+s_AbiWord_1_Listener::getObjectKey(const PT_AttrPropIndex& api, PP_PropName key)
 {
 	const PP_AttrProp * pAP = NULL;
 	bool bHaveProp = m_pDocument->getAttrProp(api,&pAP);
@@ -609,7 +609,7 @@ bool s_AbiWord_1_Listener::populate(fl_ContainerLayout* /*sfh*/,
 				{
 				_closeSpan();
                 _closeField();
-				const gchar* image_name = getObjectKey(api, static_cast<const gchar*>("dataid"));
+				const gchar* image_name = getObjectKey(api, _PN("dataid"));
 				if (image_name)
 					m_pUsedImages.insert(image_name);
 				_openTag("image",false,api,pcr->getXID());
@@ -630,7 +630,7 @@ bool s_AbiWord_1_Listener::populate(fl_ContainerLayout* /*sfh*/,
                     _closeSpan();
                     _closeField();
                     _openTag("math",false,api,pcr->getXID());
-					const gchar* image_name = getObjectKey(api, "dataid");
+					const gchar* image_name = getObjectKey(api, _PN("dataid"));
 					if (image_name)
 					{
 						UT_DEBUGMSG(("resource name #%s# recorded \n",image_name));
@@ -641,7 +641,7 @@ bool s_AbiWord_1_Listener::populate(fl_ContainerLayout* /*sfh*/,
 						UT_DEBUGMSG(("resource name #%s# recorded \n", sSVGname.c_str()));
 						m_pUsedImages.insert(sSVGname);
 					}
-					const gchar* latex_name = getObjectKey(api, "latexid");
+					const gchar* latex_name = getObjectKey(api, _PN("latexid"));
 					if(latex_name)
 					{
 						UT_DEBUGMSG(("resource name #%s# recorded \n",latex_name));
@@ -654,7 +654,7 @@ bool s_AbiWord_1_Listener::populate(fl_ContainerLayout* /*sfh*/,
                     _closeSpan();
                     _closeField();
                     _openTag("embed",false,api,pcr->getXID());
-					const gchar* image_name = getObjectKey(api, static_cast<const gchar*>("dataid"));
+					const gchar* image_name = getObjectKey(api, _PN("dataid"));
 					if (image_name)
 					{
 						UT_DEBUGMSG(("resource name #%s# recorded \n",image_name));
@@ -687,14 +687,14 @@ bool s_AbiWord_1_Listener::populate(fl_ContainerLayout* /*sfh*/,
 					_closeHyperlink();
 					const PP_AttrProp * pAP = NULL;
 					m_pDocument->getAttrProp(api,&pAP);
-					const gchar * pName;
+					PP_PropName pName;
 					const gchar * pValue;
 					bool bFound = false;
 					UT_uint32 k = 0;
 
 					while(pAP->getNthAttribute(k++, pName, pValue))
 					{
-						bFound = (0 == g_ascii_strncasecmp(pName,"xlink:href",10));
+						bFound = (0 == g_ascii_strncasecmp(pName.c_str(), "xlink:href", 10));
 						if(bFound)
 							break;
 					}
@@ -716,14 +716,14 @@ bool s_AbiWord_1_Listener::populate(fl_ContainerLayout* /*sfh*/,
 					_closeAnnotation();
 					const PP_AttrProp * pAP = NULL;
 					m_pDocument->getAttrProp(api,&pAP);
-					const gchar * pName;
+					PP_PropName pName;
 					const gchar * pValue;
 					bool bFound = false;
 					UT_uint32 k = 0;
 
 					while(!bFound && pAP->getNthAttribute(k++, pName, pValue))
 					{
-						bFound = (0 == g_ascii_strncasecmp(pName,"Annotation",10));
+						bFound = (0 == g_ascii_strncasecmp(pName.c_str(),"Annotation",10));
 					}
 
 					if(bFound)
@@ -789,7 +789,7 @@ bool s_AbiWord_1_Listener::populateStrux(pf_Frag_Strux* /*sdh*/,
 	const PX_ChangeRecord_Strux * pcrx = static_cast<const PX_ChangeRecord_Strux *> (pcr);
 	*psfh = nullptr;						// we don't need it.
 	PT_AttrPropIndex api = pcr->getIndexAP();
-	const gchar* image_name = getObjectKey(api, static_cast<const gchar*>(PT_STRUX_IMAGE_DATAID));
+	const gchar* image_name = getObjectKey(api, PT_STRUX_IMAGE_DATAID);
 	if (image_name)
 		m_pUsedImages.insert(image_name);
 
@@ -1026,7 +1026,7 @@ bool s_AbiWord_1_Listener::signal(UT_uint32 /* iSignal */)
 UT_Error IE_Exp_AbiWord_1::_writeDocument(void)
 {
 	// allow people to override this on the command line or otherwise
-	const std::string & prop = (getProperty ("compress"));
+	const std::string & prop = (getProperty("compress"));
 	if (!prop.empty())
 		m_bIsCompressed = UT_parseBool(prop.c_str (), m_bIsCompressed);
 	setupFile(m_bIsCompressed);
@@ -1191,7 +1191,7 @@ void s_AbiWord_1_Listener::_handleMetaData(void)
 
   // TODO: set dc.date and abiword.date_created if document is new (i.e. first save)
 
-  const std::map<std::string, std::string> & ref = m_pDocument->getMetaData() ;
+  const auto & ref = m_pDocument->getMetaData() ;
 
   // don't print out a thing
   if ( ref.empty() ) {
@@ -1200,11 +1200,10 @@ void s_AbiWord_1_Listener::_handleMetaData(void)
 
   m_pie->startElement("metadata");
 
-  std::map<std::string, std::string>::const_iterator iter = ref.begin();
-  for ( ; iter != ref.end(); ++iter ) {
+  for (auto iter = ref.cbegin() ; iter != ref.cend(); ++iter ) {
 	  if( !iter->second.empty() ) {
 	      m_pie->startElement("m");
-		  m_pie->addString("key", iter->first);
+		  m_pie->addString("key", iter->first.c_str());
 	      m_pie->addString(NULL, iter->second);
 	      m_pie->endElement() ;
 	  }
@@ -1486,19 +1485,19 @@ void s_AbiWord_1_Listener::_handleAuthors(void)
 		if(pAP->getPropertyCount()>0)
 		{
 			std::ostringstream buf;
-			const gchar * szName = NULL;
+			PP_PropName szName;
 			const gchar * szValue = NULL;
 			UT_uint32 j = 0;
 			while (pAP->getNthProperty(j++,szName,szValue))
 			{
-				if (szName && *szName && szValue && *szValue)
+				if (!!szName && *szName.c_str() && szValue && *szValue)
 				{
 					if(j>1)
 						buf << "; ";
-					buf << szName << ":" << szValue;
+					buf << szName.c_str() << ":" << szValue;
 				}
 			}
-			m_pie->addString(PT_PROPS_ATTRIBUTE_NAME,buf.str());
+			m_pie->addString(PT_PROPS_ATTRIBUTE_NAME.c_str(), buf.str());
 		}
 		m_pie->endElement();
 	}

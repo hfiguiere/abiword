@@ -109,7 +109,7 @@ bool AP_Dialog_Paragraph::setDialogData(const PP_PropertyVector & pProps)
 	{
 		std::string sz;
 
-		sz = PP_getAttribute("text-align", pProps);
+		sz = PP_getAttribute(_PN("text-align"), pProps);
 		if (!sz.empty())
 		{
 			tAlignState t = align_LEFT;
@@ -129,7 +129,7 @@ bool AP_Dialog_Paragraph::setDialogData(const PP_PropertyVector & pProps)
 			_setMenuItemValue(id_MENU_ALIGNMENT, t, op_INIT);
 		}
 
-		sz = PP_getAttribute("dom-dir", pProps);
+		sz = PP_getAttribute(_PN("dom-dir"), pProps);
 		if (!sz.empty())
 		{
 			tCheckState t = check_FALSE;
@@ -145,15 +145,15 @@ bool AP_Dialog_Paragraph::setDialogData(const PP_PropertyVector & pProps)
 			_setCheckItemValue(id_CHECK_DOMDIRECTION, t, op_INIT);
 		}
 
-		sz = PP_getAttribute("margin-left", pProps);
+		sz = PP_getAttribute(_PN("margin-left"), pProps);
 		if (!sz.empty())
 			_setSpinItemValue(id_SPIN_LEFT_INDENT, sz.c_str(), op_INIT);
 
-		sz = PP_getAttribute("margin-right", pProps);
+		sz = PP_getAttribute(_PN("margin-right"), pProps);
 		if (!sz.empty())
 			_setSpinItemValue(id_SPIN_RIGHT_INDENT, sz.c_str(), op_INIT);
 
-		sz = PP_getAttribute("text-indent", pProps);
+		sz = PP_getAttribute(_PN("text-indent"), pProps);
 		if (!sz.empty())
 		{
 			// NOTE : Calling UT_convertDimensionless() _discards_ all
@@ -194,7 +194,7 @@ bool AP_Dialog_Paragraph::setDialogData(const PP_PropertyVector & pProps)
 			_setSpinItemValue(id_SPIN_SPECIAL_INDENT, newSz.c_str(), op_INIT);
 		}
 
-		sz = PP_getAttribute("line-height", pProps);
+		sz = PP_getAttribute(_PN("line-height"), pProps);
 		if (!sz.empty())
 		{
 			std::size_t idx = sz.find('+');
@@ -226,11 +226,11 @@ bool AP_Dialog_Paragraph::setDialogData(const PP_PropertyVector & pProps)
 			}
 		}
 
-		sz = PP_getAttribute("margin-top", pProps);
+		sz = PP_getAttribute(_PN("margin-top"), pProps);
 		if (!sz.empty())
 			_setSpinItemValue(id_SPIN_BEFORE_SPACING, sz.c_str(), op_INIT);
 
-		sz = PP_getAttribute("margin-bottom", pProps);
+		sz = PP_getAttribute(_PN("margin-bottom"), pProps);
 		if (!sz.empty())
 			_setSpinItemValue(id_SPIN_AFTER_SPACING, sz.c_str(), op_INIT);
 
@@ -248,13 +248,13 @@ bool AP_Dialog_Paragraph::setDialogData(const PP_PropertyVector & pProps)
 
 			double orphans = 0, widows = 0;
 
-			sz = PP_getAttribute("orphans", pProps);
+			sz = PP_getAttribute(_PN("orphans"), pProps);
 			if (!sz.empty())
 				orphans = UT_convertDimensionless(sz.c_str());
 			else
 				bNoOrphans = true;
 
-			sz = PP_getAttribute("widows", pProps);
+			sz = PP_getAttribute(_PN("widows"), pProps);
 			if (!sz.empty())
 				widows = UT_convertDimensionless(sz.c_str());
 			else
@@ -268,7 +268,7 @@ bool AP_Dialog_Paragraph::setDialogData(const PP_PropertyVector & pProps)
 				_setCheckItemValue(id_CHECK_WIDOW_ORPHAN, check_FALSE, op_INIT);
 		}
 
-		sz = PP_getAttribute("keep-together", pProps);
+		sz = PP_getAttribute(_PN("keep-together"), pProps);
 		if (!sz.empty())
 		{
 			if (sz == "yes")
@@ -279,7 +279,7 @@ bool AP_Dialog_Paragraph::setDialogData(const PP_PropertyVector & pProps)
 		else
 			_setCheckItemValue(id_CHECK_KEEP_LINES, check_INDETERMINATE, op_INIT);
 
-		sz = PP_getAttribute("keep-with-next", pProps);
+		sz = PP_getAttribute(_PN("keep-with-next"), pProps);
 		if (!sz.empty())
 		{
 			if (sz == "yes")
@@ -291,24 +291,24 @@ bool AP_Dialog_Paragraph::setDialogData(const PP_PropertyVector & pProps)
 			_setCheckItemValue(id_CHECK_KEEP_NEXT, check_INDETERMINATE, op_INIT);
 
 		// these are not like the others, they set fields on this, not dialogData.
-		sz = PP_getAttribute("page-margin-left", pProps);
+		sz = PP_getAttribute(_PN("page-margin-left"), pProps);
 		if (!sz.empty())
 		{
 			m_pageLeftMargin = sz;
 		}
 		else
 		{
-			m_pageLeftMargin = PP_lookupProperty("page-margin-left")->getInitial();
+			m_pageLeftMargin = PP_lookupProperty(_PN("page-margin-left"))->getInitial();
 		}
 
-		sz = PP_getAttribute("page-margin-right", pProps);
+		sz = PP_getAttribute(_PN("page-margin-right"), pProps);
 		if (!sz.empty())
 		{
 			m_pageRightMargin = sz;
 		}
 		else
 		{
-			m_pageRightMargin = PP_lookupProperty("page-margin-right")->getInitial();
+			m_pageRightMargin = PP_lookupProperty(_PN("page-margin-right"))->getInitial();
 		}
 
 		// TODO : add these to PP_Property (pp_Property.cpp) !!!
@@ -350,30 +350,26 @@ bool AP_Dialog_Paragraph::getDialogData(PP_PropertyVector & pProps)
 				UT_ASSERT_HARMLESS(UT_SHOULD_NOT_HAPPEN);
 		}
 		if (val) {
-			pProps.push_back("text-align");
-			pProps.push_back(val);
+			pProps.push_back({ "text-align", val});
 		}
 	}
 
 
 	if (_wasChanged(id_CHECK_DOMDIRECTION))
 	{
-		pProps.push_back("dom-dir");
-		pProps.push_back(_getCheckItemValue(id_CHECK_DOMDIRECTION) == check_TRUE
-						 ? "rtl" : "ltr");
+		pProps.push_back({ "dom-dir",
+				(_getCheckItemValue(id_CHECK_DOMDIRECTION) == check_TRUE? "rtl" : "ltr") });
 	}
 
 
 	if (_wasChanged(id_SPIN_LEFT_INDENT))
 	{
-		pProps.push_back("margin-left");
-		pProps.push_back(_getSpinItemValue(id_SPIN_LEFT_INDENT));
+		pProps.push_back({ "margin-left", _getSpinItemValue(id_SPIN_LEFT_INDENT) });
 	}
 
 	if (_wasChanged(id_SPIN_RIGHT_INDENT))
 	{
-		pProps.push_back("margin-right");
-		pProps.push_back(_getSpinItemValue(id_SPIN_RIGHT_INDENT));
+		pProps.push_back({ "margin-right", _getSpinItemValue(id_SPIN_RIGHT_INDENT) });
 	}
 
 	// TODO : The logic here might not be bulletproof.  If the user triggers
@@ -385,14 +381,13 @@ bool AP_Dialog_Paragraph::getDialogData(PP_PropertyVector & pProps)
 	if (_getMenuItemValue(id_MENU_SPECIAL_INDENT) &&
 		(_wasChanged(id_MENU_SPECIAL_INDENT) || _wasChanged(id_SPIN_SPECIAL_INDENT)))
 	{
-		pProps.push_back("text-indent");
 
 		tIndentState i = (tIndentState) _getMenuItemValue(id_MENU_SPECIAL_INDENT);
-
+		std::string value;
 		if (i == indent_NONE)
-			pProps.push_back(UT_convertInchesToDimensionString(m_dim, 0));
+			value = UT_convertInchesToDimensionString(m_dim, 0);
 		else if (i == indent_FIRSTLINE)
-			pProps.push_back(_getSpinItemValue(id_SPIN_SPECIAL_INDENT));
+			value = _getSpinItemValue(id_SPIN_SPECIAL_INDENT);
 		else if (i == indent_HANGING)
 		{
 			// we have to flip the sign for "hanging" indents to a negative quantity for
@@ -408,20 +403,19 @@ bool AP_Dialog_Paragraph::getDialogData(PP_PropertyVector & pProps)
 			val = val * (double) -1;
 
 			// store the reconstructed
-			pProps.push_back(UT_convertInchesToDimensionString(dim, val));
+			value = UT_convertInchesToDimensionString(dim, val);
 		}
+		pProps.push_back({ "text-indent", value });
 	}
 
 	if (_wasChanged(id_SPIN_BEFORE_SPACING))
 	{
-		pProps.push_back("margin-top");
-		pProps.push_back(_getSpinItemValue(id_SPIN_BEFORE_SPACING));
+		pProps.push_back({ "margin-top", _getSpinItemValue(id_SPIN_BEFORE_SPACING) });
 	}
 
 	if (_wasChanged(id_SPIN_AFTER_SPACING))
 	{
-		pProps.push_back("margin-bottom");
-		pProps.push_back(_getSpinItemValue(id_SPIN_AFTER_SPACING));
+		pProps.push_back({ "margin-bottom", _getSpinItemValue(id_SPIN_AFTER_SPACING) });
 	}
 
 	// TODO : The logic here might not be bulletproof.  If the user triggers
@@ -433,7 +427,6 @@ bool AP_Dialog_Paragraph::getDialogData(PP_PropertyVector & pProps)
 	if(_getMenuItemValue(id_MENU_SPECIAL_SPACING) &&
 		 (_wasChanged(id_MENU_SPECIAL_SPACING) || _wasChanged(id_SPIN_SPECIAL_SPACING)))
 	{
-		pProps.push_back("line-height");
 
 		// normal spacings (single, 1.5, double) are just simple numbers.
 		// "at least" needs a "+" at the end of the number (no units).
@@ -441,35 +434,34 @@ bool AP_Dialog_Paragraph::getDialogData(PP_PropertyVector & pProps)
 		// "multiple" has no units.
 
 		const gchar * pString = _getSpinItemValue(id_SPIN_SPECIAL_SPACING);
-
+		std::string value;
 		switch(_getMenuItemValue(id_MENU_SPECIAL_SPACING))
 		{
 		case spacing_SINGLE:
-			pProps.push_back("1.0");
+			value = "1.0";
 			break;
 		case spacing_ONEANDHALF:
-			pProps.push_back("1.5");
+			value = "1.5";
 			break;
 		case spacing_DOUBLE:
-			pProps.push_back("2.0");
+			value = "2.0";
 			break;
-		case spacing_ATLEAST: {
-			std::string value = pString;
+		case spacing_ATLEAST:
+			value = pString;
 			// stick a '+' at the end
 			value += '+';
-			pProps.push_back(value);
 			break;
-		}
 		case spacing_EXACTLY:
 			// fallthrough
 		case spacing_MULTIPLE:
 			// both these cases either do or don't have units associated with them.
 			// the platform dialog code takes care of that.
-			pProps.push_back(pString);
+			value = pString;
 			break;
 		default:
 			UT_ASSERT_HARMLESS(UT_SHOULD_NOT_HAPPEN);
 		}
+		pProps.push_back({ "line-height", value });
 	}
 
 	// NOTE : "orphans" and "widows" hold a number specifying the number
@@ -485,45 +477,37 @@ bool AP_Dialog_Paragraph::getDialogData(PP_PropertyVector & pProps)
 		// TODO : changed
 
 		{
-			pProps.push_back("orphans");
-
 			if (_getCheckItemValue(id_CHECK_WIDOW_ORPHAN) == check_TRUE) {
-				pProps.push_back("2");
+				pProps.push_back({ "orphans", "2" });
 			} else {
-				pProps.push_back("0");
+				pProps.push_back({ "orphans", "0" });
 			}
 		}
 
 		{
-			pProps.push_back("widows");
-
 			if (_getCheckItemValue(id_CHECK_WIDOW_ORPHAN) == check_TRUE) {
-				pProps.push_back("2");
+				pProps.push_back({"widows", "2" });
 			} else {
-				pProps.push_back("0");
+				pProps.push_back({"widows", "0" });
 			}
 		}
 	}
 
 	if (_wasChanged(id_CHECK_KEEP_LINES))
 	{
-		pProps.push_back("keep-together");
-
 		if (_getCheckItemValue(id_CHECK_KEEP_LINES) == check_TRUE) {
-			pProps.push_back("yes");
+			pProps.push_back({ "keep-together", "yes" });
 		} else {
-			pProps.push_back("no");
+			pProps.push_back({ "keep-together", "no" });
 		}
 	}
 
 	if (_wasChanged(id_CHECK_KEEP_NEXT))
 	{
-		pProps.push_back("keep-with-next");
-
 		if (_getCheckItemValue(id_CHECK_KEEP_NEXT) == check_TRUE) {
-			pProps.push_back("yes");
+			pProps.push_back({ "keep-with-next", "yes" });
 		} else {
-			pProps.push_back("no");
+			pProps.push_back({ "keep-with-next", "no" });
 		}
 	}
 
@@ -578,7 +562,7 @@ void AP_Dialog_Paragraph::_createPreviewFromGC(GR_Graphics * gc,
 	if (run) {
 		const PP_AttrProp *prop = run->getSpanAP();
 		if (prop) {
-			if (prop->getProperty("font-family",pfont)) {
+			if (prop->getProperty(_PN("font-family"), pfont)) {
 				UT_DEBUGMSG(("PREVIEW font=%s\n",pfont));
 			}
 		}

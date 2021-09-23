@@ -210,7 +210,7 @@ void AP_Dialog_FormatTOC::updateDialog(void)
 		setTOCPropsInGUI();
 		return;
 	}
-}			
+}
 
 /*!
  * Finalize the dialog.
@@ -241,22 +241,20 @@ std::string AP_Dialog_FormatTOC::getTOCPropVal(const char * szProp, UT_sint32 i)
 	return UT_std_string_getPropVal(m_sTOCProps,sProp);
 }
 
-void AP_Dialog_FormatTOC::setTOCProperty(const char * szProp, const char * szVal)
+void AP_Dialog_FormatTOC::setTOCProperty(const std::string& szProp, const char * szVal)
 {
-	std::string sProp = szProp;
-	std::string sVal = szVal;
 /*	don't return on empty prop strings - see Bug 9141
 	if(sVal.size() == 0)
 	{
 		return;
 	}
 */
-	UT_DEBUGMSG((" Prop: %s Val: %s \n",sProp.c_str(),sVal.c_str()));
-	UT_std_string_setProperty(m_sTOCProps,sProp,sVal);
+	UT_DEBUGMSG((" Prop: %s Val: %s \n", szProp.c_str(), szVal));
+	UT_std_string_setProperty(m_sTOCProps, szProp, szVal);
 //	m_sTOCProps.dump();
 }
 
-void AP_Dialog_FormatTOC::setTOCProperty(const std::string & sProp,
+void AP_Dialog_FormatTOC::setTOCProperty(const std::string& sProp,
 					 const std::string & sVal)
 {
 /*	don't return on empty prop strings - see Bug 9141
@@ -265,8 +263,8 @@ void AP_Dialog_FormatTOC::setTOCProperty(const std::string & sProp,
 		return;
 	}
 */
-	UT_DEBUGMSG((" Prop: %s Val: %s \n",sProp.c_str(),sVal.c_str()));
-	UT_std_string_setProperty(m_sTOCProps,sProp,sVal);
+	UT_DEBUGMSG((" Prop: %s Val: %s \n", sProp.c_str(), sVal.c_str()));
+	UT_std_string_setProperty(m_sTOCProps, sProp, sVal);
 //	m_sTOCProps.dump();
 }
 
@@ -277,7 +275,7 @@ Retrieves a property value from the document, and stores it in the dialog proper
         the property value was retrieved from default property values list or could
 		not be retrieved at all.
 */
-bool AP_Dialog_FormatTOC::setPropFromDoc(const char * szProp)
+bool AP_Dialog_FormatTOC::setPropFromDoc(PP_PropName szProp)
 {
 	UT_return_val_if_fail (m_pAP, false);
 	bool bRes = true;
@@ -294,7 +292,7 @@ bool AP_Dialog_FormatTOC::setPropFromDoc(const char * szProp)
 		}
 		szVal = pProp->m_pszInitial;
 	}
-	setTOCProperty(szProp,szVal);
+	setTOCProperty(szProp.c_str(), szVal);
 	return bRes;
 }
 
@@ -316,7 +314,7 @@ void AP_Dialog_FormatTOC::incrementStartAt(UT_sint32 iLevel, bool bInc)
 		iVal--;
 	}
 	sStartVal = UT_std_string_sprintf("%d",iVal);
-	setTOCProperty(sProp,sStartVal);
+	setTOCProperty(sProp, sStartVal);
 }
 
 
@@ -334,7 +332,7 @@ void AP_Dialog_FormatTOC::incrementIndent(UT_sint32 iLevel, bool bInc)
 		inc = -inc;
 	}
 	sVal = UT_incrementDimString(sVal.c_str(),inc);
-	setTOCProperty(sProp,sVal);
+	setTOCProperty(sProp, sVal);
 }
 
 
@@ -404,19 +402,19 @@ void AP_Dialog_FormatTOC::fillTOCPropsFromDoc(void)
 		m_pDoc->getAttrProp(iAPI,&m_pAP);
 	}
 	m_bTOCFilled = true;
-	setPropFromDoc("toc-dest-style1");
-	setPropFromDoc("toc-dest-style2");
-	setPropFromDoc("toc-dest-style3");
-	setPropFromDoc("toc-dest-style4");
+	setPropFromDoc(_PN("toc-dest-style1"));
+	setPropFromDoc(_PN("toc-dest-style2"));
+	setPropFromDoc(_PN("toc-dest-style3"));
+	setPropFromDoc(_PN("toc-dest-style4"));
 
-	setPropFromDoc("toc-has-heading");
+	setPropFromDoc(_PN("toc-has-heading"));
 
-	setPropFromDoc("toc-has-label1");
-	setPropFromDoc("toc-has-label2");
-	setPropFromDoc("toc-has-label3");
-	setPropFromDoc("toc-has-label4");
+	setPropFromDoc(_PN("toc-has-label1"));
+	setPropFromDoc(_PN("toc-has-label2"));
+	setPropFromDoc(_PN("toc-has-label3"));
+	setPropFromDoc(_PN("toc-has-label4"));
 
-	bool bRes = setPropFromDoc("toc-heading");
+	bool bRes = setPropFromDoc(_PN("toc-heading"));
 	if (!bRes)
 	{
 		std::string pszTOCHeading;
@@ -424,58 +422,58 @@ void AP_Dialog_FormatTOC::fillTOCPropsFromDoc(void)
 		pSS->getValueUTF8(AP_STRING_ID_TOC_TocHeading, pszTOCHeading);
 		setTOCProperty("toc-heading", pszTOCHeading.c_str());
 	}
-	setPropFromDoc("toc-heading-style");
-	setPropFromDoc("toc-id");
+	setPropFromDoc(_PN("toc-heading-style"));
+	setPropFromDoc(_PN("toc-id"));
 
-	setPropFromDoc("toc-indent1");
-	setPropFromDoc("toc-indent2");
-	setPropFromDoc("toc-indent3");
-	setPropFromDoc("toc-indent4");
+	setPropFromDoc(_PN("toc-indent1"));
+	setPropFromDoc(_PN("toc-indent2"));
+	setPropFromDoc(_PN("toc-indent3"));
+	setPropFromDoc(_PN("toc-indent4"));
 
-	setPropFromDoc("toc-label-after1");
-	setPropFromDoc("toc-label-after2");
-	setPropFromDoc("toc-label-after3");
-	setPropFromDoc("toc-label-after4");
+	setPropFromDoc(_PN("toc-label-after1"));
+	setPropFromDoc(_PN("toc-label-after2"));
+	setPropFromDoc(_PN("toc-label-after3"));
+	setPropFromDoc(_PN("toc-label-after4"));
 
-	setPropFromDoc("toc-label-before1");
-	setPropFromDoc("toc-label-before2");
-	setPropFromDoc("toc-label-before3");
-	setPropFromDoc("toc-label-before4");
+	setPropFromDoc(_PN("toc-label-before1"));
+	setPropFromDoc(_PN("toc-label-before2"));
+	setPropFromDoc(_PN("toc-label-before3"));
+	setPropFromDoc(_PN("toc-label-before4"));
 
-	setPropFromDoc("toc-label-inherits1");
-	setPropFromDoc("toc-label-inherits2");
-	setPropFromDoc("toc-label-inherits3");
-	setPropFromDoc("toc-label-inherits4");
+	setPropFromDoc(_PN("toc-label-inherits1"));
+	setPropFromDoc(_PN("toc-label-inherits2"));
+	setPropFromDoc(_PN("toc-label-inherits3"));
+	setPropFromDoc(_PN("toc-label-inherits4"));
 
-	setPropFromDoc("toc-label-start1");
-	setPropFromDoc("toc-label-start2");
-	setPropFromDoc("toc-label-start3");
-	setPropFromDoc("toc-label-start4");
+	setPropFromDoc(_PN("toc-label-start1"));
+	setPropFromDoc(_PN("toc-label-start2"));
+	setPropFromDoc(_PN("toc-label-start3"));
+	setPropFromDoc(_PN("toc-label-start4"));
 
-	setPropFromDoc("toc-label-type1");
-	setPropFromDoc("toc-label-type2");
-	setPropFromDoc("toc-label-type3");
-	setPropFromDoc("toc-label-type4");
+	setPropFromDoc(_PN("toc-label-type1"));
+	setPropFromDoc(_PN("toc-label-type2"));
+	setPropFromDoc(_PN("toc-label-type3"));
+	setPropFromDoc(_PN("toc-label-type4"));
 
-	setPropFromDoc("toc-page-type1");
-	setPropFromDoc("toc-page-type2");
-	setPropFromDoc("toc-page-type3");
-	setPropFromDoc("toc-page-type4");
+	setPropFromDoc(_PN("toc-page-type1"));
+	setPropFromDoc(_PN("toc-page-type2"));
+	setPropFromDoc(_PN("toc-page-type3"));
+	setPropFromDoc(_PN("toc-page-type4"));
 
-	setPropFromDoc("toc-source-style1");
-	setPropFromDoc("toc-source-style2");
-	setPropFromDoc("toc-source-style3");
-	setPropFromDoc("toc-source-style4");
+	setPropFromDoc(_PN("toc-source-style1"));
+	setPropFromDoc(_PN("toc-source-style2"));
+	setPropFromDoc(_PN("toc-source-style3"));
+	setPropFromDoc(_PN("toc-source-style4"));
 
-	setPropFromDoc("toc-tab-leader1");
-	setPropFromDoc("toc-tab-leader2");
-	setPropFromDoc("toc-tab-leader3");
-	setPropFromDoc("toc-tab-leader4");
+	setPropFromDoc(_PN("toc-tab-leader1"));
+	setPropFromDoc(_PN("toc-tab-leader2"));
+	setPropFromDoc(_PN("toc-tab-leader3"));
+	setPropFromDoc(_PN("toc-tab-leader4"));
 
-	setPropFromDoc("toc-label-start1");
-	setPropFromDoc("toc-label-start2");
-	setPropFromDoc("toc-label-start3");
-	setPropFromDoc("toc-label-start4");
+	setPropFromDoc(_PN("toc-label-start1"));
+	setPropFromDoc(_PN("toc-label-start2"));
+	setPropFromDoc(_PN("toc-label-start3"));
+	setPropFromDoc(_PN("toc-label-start4"));
 }
 
 void AP_Dialog_FormatTOC::applyTOCPropsToDoc(void)

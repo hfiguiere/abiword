@@ -302,9 +302,13 @@ UT_ellipsisPath(const std::string & path, size_t maxlen, size_t cut)
 	return s;
 }
 
+
 /*!
- * Assuming a string of standard abiword properties eg. "fred:nerk; table-width:1.0in; table-height:10.in"
- * Return the value of the property sProp or NULL if it is not present.
+ * Assuming a string of standard abiword properties eg. "fred:nerk;
+ * table-width:1.0in; table-height:10.in"
+ *
+ * Return the value of the property sProp or NULL if it is not
+ * present.
  */
 std::string UT_std_string_getPropVal(const std::string & sPropertyString, const std::string & sProp)
 {
@@ -368,9 +372,11 @@ std::string UT_std_string_getPropVal(const std::string & sPropertyString, const 
 }
 
 /*!
- * Assuming a string of standard abiword properties eg. "fred:nerk; table-width:1.0in; table-height:10.in"
- * Add aother propety string, updating previously defined properties with
- * values in the new string.
+ * Assuming a string of standard abiword properties eg. "fred:nerk;
+ * table-width:1.0in; table-height:10.in"
+ *
+ * Add aother propety string, updating previously defined properties
+ * with values in the new string.
  */
 void UT_std_string_addPropertyString(std::string & sPropertyString,
 									 const std::string & sNewProp)
@@ -426,9 +432,12 @@ void UT_std_string_addPropertyString(std::string & sPropertyString,
 }
 
 /*!
- * Assuming a string of standard abiword properties eg. "fred:nerk; table-width:1.0in; table-height:10.in"
- * Add the property sProp with value sVal to the string of properties. If the property is already present, replace the 
- * old value with the new value.
+ * Assuming a string of standard abiword properties eg. "fred:nerk;
+ * table-width:1.0in; table-height:10.in"
+ *
+ * Add the property sProp with value sVal to the string of
+ * properties. If the property is already present, replace the old
+ * value with the new value.
  */
 void UT_std_string_setProperty(std::string & sPropertyString, const std::string &sProp, const std::string & sVal)
 {
@@ -447,8 +456,11 @@ void UT_std_string_setProperty(std::string & sPropertyString, const std::string 
 
 
 /*!
- * Assuming a string of standard abiword properties eg. "fred:nerk; table-width:1.0in; table-height:10.in"
- * Remove the property sProp and it's value from the string of properties. 
+ * Assuming a string of standard abiword properties eg. "fred:nerk;
+ * table-width:1.0in; table-height:10.in"
+ *
+ * Remove the property sProp and it's value from the string of
+ * properties.
  */
 void UT_std_string_removeProperty(std::string & sPropertyString, const std::string & sProp)
 {
@@ -476,7 +488,7 @@ void UT_std_string_removeProperty(std::string & sPropertyString, const std::stri
 			return;
 		}
 		szLoc = szLocCheck;
-	}	    
+	}
 
 	UT_sint32 locLeft = static_cast<UT_sint32>(reinterpret_cast<size_t>(szLoc) - reinterpret_cast<size_t>(szProps));
 	std::string sLeft;
@@ -523,10 +535,8 @@ void UT_std_string_removeProperty(std::string & sPropertyString, const std::stri
 		}
 		sNew += sPropertyString.substr(offset,iLen);
 		sPropertyString = sNew;
-	}  
+	}
 }
-
-
 
 const std::string StreamToString( std::istream& iss )
 {

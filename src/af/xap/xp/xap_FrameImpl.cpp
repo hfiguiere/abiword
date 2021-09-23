@@ -115,7 +115,7 @@ bool XAP_FrameImpl::_updateTitle()
 
 	/* first try to use the metadata title as our title */
 	std::string title;
-	if (m_pFrame->m_pDoc->getMetaDataProp ("dc.title", title) && m_pFrame->m_sTitle.size()) {
+	if (m_pFrame->m_pDoc->getMetaDataProp (_SS("dc.title"), title) && m_pFrame->m_sTitle.size()) {
 		m_pFrame->m_sTitle = title;
 		m_pFrame->m_sNonDecoratedTitle = m_pFrame->m_sTitle;
 

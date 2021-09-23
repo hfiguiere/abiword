@@ -195,7 +195,7 @@ private:
     GR_Image * _makeImageForRaster(const std::string & name,
                                    GR_Graphics * pGraphics,
                                    const FG_ConstGraphicPtr & pG);
-	bool					_getToggleButtonStatus(const char * lineStyle);
+	bool					_getToggleButtonStatus(PP_PropName lineStyle);
 
 	bool					m_bSettingsChanged;
 

@@ -482,7 +482,7 @@ bool fl_SectionLayout::bl_doclistener_insertSection(fl_ContainerLayout* pPrevL,
 		UT_UNUSED(bres);
 		UT_ASSERT(bres);
 		const gchar* pszNewID = NULL;
-		pHFAP->getAttribute("id", pszNewID);
+		pHFAP->getAttribute(_PN("id"), pszNewID);
 //
 // pszHFID may not be defined yet. If not we can't do this stuff. If it is defined
 // this step is essential
@@ -499,7 +499,7 @@ bool fl_SectionLayout::bl_doclistener_insertSection(fl_ContainerLayout* pPrevL,
 // Determine if this is a header or a footer.
 //
 			const gchar* pszSectionType = NULL;
-			pHFAP->getAttribute("type", pszSectionType);
+			pHFAP->getAttribute(_PN("type"), pszSectionType);
 
 			HdrFtrType hfType = FL_HDRFTR_NONE;
 			if (pszSectionType && *pszSectionType)
@@ -1141,11 +1141,11 @@ void fl_DocSectionLayout::setHdrFtr(HdrFtrType iType, fl_HdrFtrSectionLayout* pH
 		checkAndRemovePages();
 		return;
 	}
-	const char* pszID = pHFSL->getAttribute("id");
+	const char* pszID = pHFSL->getAttribute(_PN("id"));
 
 	const char* pszAtt = NULL;
 
-	pszAtt = getAttribute("header");
+	pszAtt = getAttribute(_PN("header"));
 	if (pszAtt && (0 == strcmp(pszAtt, pszID)) && (iType == FL_HDRFTR_HEADER) )
 	{
 		m_pHeaderSL = pHFSL;
@@ -1153,7 +1153,7 @@ void fl_DocSectionLayout::setHdrFtr(HdrFtrType iType, fl_HdrFtrSectionLayout* pH
 		return;
 	}
 
-	pszAtt = getAttribute("header-even");
+	pszAtt = getAttribute(_PN("header-even"));
 	if (pszAtt && (0 == strcmp(pszAtt, pszID))&& (iType == FL_HDRFTR_HEADER_EVEN) )
 	{
 		m_pHeaderEvenSL = pHFSL;
@@ -1161,7 +1161,7 @@ void fl_DocSectionLayout::setHdrFtr(HdrFtrType iType, fl_HdrFtrSectionLayout* pH
 		return;
 	}
 
-	pszAtt = getAttribute("header-first");
+	pszAtt = getAttribute(_PN("header-first"));
 	if (pszAtt && (0 == strcmp(pszAtt, pszID))&& (iType == FL_HDRFTR_HEADER_FIRST) )
 	{
 		m_pHeaderFirstSL = pHFSL;
@@ -1169,7 +1169,7 @@ void fl_DocSectionLayout::setHdrFtr(HdrFtrType iType, fl_HdrFtrSectionLayout* pH
 		return;
 	}
 
-	pszAtt = getAttribute("header-last");
+	pszAtt = getAttribute(_PN("header-last"));
 	if (pszAtt && (0 == strcmp(pszAtt, pszID))&& (iType == FL_HDRFTR_HEADER_LAST) )
 	{
 		m_pHeaderLastSL = pHFSL;
@@ -1177,7 +1177,7 @@ void fl_DocSectionLayout::setHdrFtr(HdrFtrType iType, fl_HdrFtrSectionLayout* pH
 		return;
 	}
 
-	pszAtt = getAttribute("footer");
+	pszAtt = getAttribute(_PN("footer"));
 	if (pszAtt && (0 == strcmp(pszAtt, pszID))&& (iType == FL_HDRFTR_FOOTER))
 	{
 		m_pFooterSL = pHFSL;
@@ -1185,7 +1185,7 @@ void fl_DocSectionLayout::setHdrFtr(HdrFtrType iType, fl_HdrFtrSectionLayout* pH
 		return;
 	}
 
-	pszAtt = getAttribute("footer-even");
+	pszAtt = getAttribute(_PN("footer-even"));
 	if (pszAtt && (0 == strcmp(pszAtt, pszID)) && (iType == FL_HDRFTR_FOOTER_EVEN)	)
 	{
 		m_pFooterEvenSL = pHFSL;
@@ -1193,7 +1193,7 @@ void fl_DocSectionLayout::setHdrFtr(HdrFtrType iType, fl_HdrFtrSectionLayout* pH
 		return;
 	}
 
-	pszAtt = getAttribute("footer-first");
+	pszAtt = getAttribute(_PN("footer-first"));
 	if (pszAtt && (0 == strcmp(pszAtt, pszID)) && (iType == FL_HDRFTR_FOOTER_FIRST)	)
 	{
 		m_pFooterFirstSL = pHFSL;
@@ -1201,7 +1201,7 @@ void fl_DocSectionLayout::setHdrFtr(HdrFtrType iType, fl_HdrFtrSectionLayout* pH
 		return;
 	}
 
-	pszAtt = getAttribute("footer-last");
+	pszAtt = getAttribute(_PN("footer-last"));
 	if (pszAtt && (0 == strcmp(pszAtt, pszID)) && (iType == FL_HDRFTR_FOOTER_LAST)	)
 	{
 		m_pFooterLastSL = pHFSL;
@@ -1282,7 +1282,7 @@ void fl_DocSectionLayout::_HdrFtrChangeCallback(UT_Worker * pWorker)
 	const char * pProps = pDSL->m_sHdrFtrChangeProps.c_str();
 	UT_DEBUGMSG(("Header/Footer change props %s \n",pProps));
 	PP_PropertyVector atts = {
-		"props", pProps
+		{"props", pProps}
 	};
 	pDoc->notifyPieceTableChangeStart();
 	FV_View * pView =  pDSL->m_pLayout->getView();
@@ -1348,7 +1348,7 @@ void fl_DocSectionLayout::doMarginChangeOnly(void)
 	UT_return_if_fail(pAP);
 
 	const gchar* pszSectionType = NULL;
-	pAP->getAttribute("type", pszSectionType);
+	pAP->getAttribute(_PN("type"), pszSectionType);
 	lookupProperties();
 	fp_Page * pMyPage = m_pLayout->getFirstPage();
 	while(pMyPage && pMyPage->getOwningSection() != this)
@@ -1404,8 +1404,7 @@ bool fl_DocSectionLayout::setHdrFtrHeightChange(bool bHdrFtr, UT_sint32 newHeigh
 		getDocument()->setNewHdrHeight(newHeight);
 		UT_sint32 fullHeight = newHeight + getHeaderMargin();
 		std::string sHeight = m_pLayout->getGraphics()->invertDimension(DIM_IN, static_cast<double>(fullHeight));
-		std::string sProp = "page-margin-top";
-		UT_std_string_setProperty(m_sHdrFtrChangeProps, sProp, sHeight);
+		UT_std_string_setProperty(m_sHdrFtrChangeProps, "page-margin-top", sHeight);
 	}
 	else
 	{
@@ -1417,8 +1416,7 @@ bool fl_DocSectionLayout::setHdrFtrHeightChange(bool bHdrFtr, UT_sint32 newHeigh
 		getDocument()->setNewFtrHeight(newHeight);
 		UT_sint32 fullHeight = newHeight + getFooterMargin();
 		std::string sHeight = m_pLayout->getGraphics()->invertDimension(DIM_IN, static_cast<double>(fullHeight));
-		std::string sProp = "page-margin-bottom";
-		UT_std_string_setProperty(m_sHdrFtrChangeProps, sProp, sHeight);
+		UT_std_string_setProperty(m_sHdrFtrChangeProps, "page-margin-bottom", sHeight);
 	}
 //
 // OK the idea is to run the timer in the idle loop until the Piecetable
@@ -2040,7 +2038,7 @@ bool fl_DocSectionLayout::doclistener_changeStrux(const PX_ChangeRecord_StruxCha
 		getDocLayout()->rebuildFromHere(this);
 	}
 
-	const gchar * prop = "dom-dir";
+	PP_PropName prop = _PN("dom-dir");
 	const gchar * val1 = NULL;
 	const gchar * val2 = NULL;
 
@@ -2072,7 +2070,7 @@ void fl_DocSectionLayout::updateDocSection(void)
 	UT_return_if_fail(pAP);
 
 	const gchar* pszSectionType = NULL;
-	pAP->getAttribute("type", pszSectionType);
+	pAP->getAttribute(_PN("type"), pszSectionType);
 	lookupProperties();
 
 	// clear all the columns
@@ -2154,7 +2152,7 @@ void fl_DocSectionLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	*/
 
 	const char* pszNumColumns = NULL;
-	pSectionAP->getProperty("columns", (const gchar *&)pszNumColumns);
+	pSectionAP->getProperty(_PN("columns"), (const gchar *&)pszNumColumns);
 	if (pszNumColumns && pszNumColumns[0])
 	{
 		m_iNumColumns = atoi(pszNumColumns);
@@ -2165,7 +2163,7 @@ void fl_DocSectionLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	}
 
 	const char* pszColumnGap = NULL;
-	pSectionAP->getProperty("column-gap", (const gchar *&)pszColumnGap);
+	pSectionAP->getProperty(_PN("column-gap"), (const gchar *&)pszColumnGap);
 	if (pszColumnGap && pszColumnGap[0])
 	{
 		m_iColumnGap = UT_convertToLogicalUnits(pszColumnGap);
@@ -2176,7 +2174,7 @@ void fl_DocSectionLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	}
 	UT_ASSERT(m_iColumnGap < 2000000);
 	const char* pszColumnLineBetween = NULL;
-	pSectionAP->getProperty("column-line", (const gchar *&)pszColumnLineBetween);
+	pSectionAP->getProperty(_PN("column-line"), (const gchar *&)pszColumnLineBetween);
 	if (pszColumnLineBetween && pszColumnLineBetween[0])
 	{
 		m_bColumnLineBetween = (strcmp(pszColumnLineBetween, "on") == 0) ? true : false;
@@ -2192,7 +2190,7 @@ void fl_DocSectionLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	const PP_AttrProp * pSpanAP = NULL;
 	const PP_AttrProp * pBlockAP = NULL;
 
-	const char * pszColumnOrder = PP_evalProperty("dom-dir",pSpanAP,pBlockAP,pSectionAP,m_pDoc,false);
+	const char * pszColumnOrder = PP_evalProperty(_PN("dom-dir"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, false);
     UT_DEBUGMSG(("column order: %s\n", pszColumnOrder));
 
 	FV_View * pView = m_pLayout->getView();
@@ -2214,7 +2212,7 @@ void fl_DocSectionLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	}
 
 	const char* pszSpaceAfter = NULL;
-	pSectionAP->getProperty("section-space-after", (const gchar *&)pszSpaceAfter);
+	pSectionAP->getProperty(_PN("section-space-after"), (const gchar *&)pszSpaceAfter);
 	if (pszSpaceAfter && pszSpaceAfter[0])
 	{
 		m_iSpaceAfter = UT_convertToLogicalUnits(pszSpaceAfter);
@@ -2225,7 +2223,7 @@ void fl_DocSectionLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	}
 
 	const char* pszRestart = NULL;
-	pSectionAP->getProperty("section-restart", (const gchar *&)pszRestart);
+	pSectionAP->getProperty(_PN("section-restart"), (const gchar *&)pszRestart);
 	if (pszRestart && pszRestart[0])
 	{
 		m_bRestart = (strcmp(pszRestart,"1")==0);
@@ -2236,7 +2234,7 @@ void fl_DocSectionLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	}
 
 	const char* pszRestartValue = NULL;
-	pSectionAP->getProperty("section-restart-value", (const gchar *&)pszRestartValue);
+	pSectionAP->getProperty(_PN("section-restart-value"), (const gchar *&)pszRestartValue);
 	if (pszRestartValue && pszRestartValue[0])
 	{
 		m_iRestartValue = atoi(pszRestartValue);
@@ -2253,12 +2251,12 @@ void fl_DocSectionLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	const char* pszFooterMargin = NULL;
 	const char* pszHeaderMargin = NULL;
 	const char* pszMaxColumnHeight = NULL;
-	pSectionAP->getProperty("page-margin-left", (const gchar *&)pszLeftMargin);
-	pSectionAP->getProperty("page-margin-top", (const gchar *&)pszTopMargin);
-	pSectionAP->getProperty("page-margin-right", (const gchar *&)pszRightMargin);
-	pSectionAP->getProperty("page-margin-bottom", (const gchar *&)pszBottomMargin);
-	pSectionAP->getProperty("page-margin-footer", (const gchar *&)pszFooterMargin);
-	pSectionAP->getProperty("page-margin-header", (const gchar *&)pszHeaderMargin);
+	pSectionAP->getProperty(_PN("page-margin-left"), (const gchar *&)pszLeftMargin);
+	pSectionAP->getProperty(_PN("page-margin-top"), (const gchar *&)pszTopMargin);
+	pSectionAP->getProperty(_PN("page-margin-right"), (const gchar *&)pszRightMargin);
+	pSectionAP->getProperty(_PN("page-margin-bottom"), (const gchar *&)pszBottomMargin);
+	pSectionAP->getProperty(_PN("page-margin-footer"), (const gchar *&)pszFooterMargin);
+	pSectionAP->getProperty(_PN("page-margin-header"), (const gchar *&)pszHeaderMargin);
 
 
 	std::string rulerUnits;
@@ -2337,7 +2335,7 @@ void fl_DocSectionLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_dHeaderMarginUserUnits = UT_convertDimensionless("0.0in");
 	}
 
-	pSectionAP->getProperty("section-max-column-height", (const gchar *&)pszMaxColumnHeight);
+	pSectionAP->getProperty(_PN("section-max-column-height"), (const gchar *&)pszMaxColumnHeight);
 	if (pszMaxColumnHeight && pszMaxColumnHeight[0])
 	{
 		m_iMaxSectionColumnHeight = UT_convertToLogicalUnits(pszMaxColumnHeight);
@@ -2348,7 +2346,7 @@ void fl_DocSectionLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	}
 
 	const gchar * pszFootnoteLine = NULL;
-	pSectionAP->getProperty("section-footnote-line-thickness", (const gchar *&)pszFootnoteLine);
+	pSectionAP->getProperty(_PN("section-footnote-line-thickness"), (const gchar *&)pszFootnoteLine);
 	if (pszFootnoteLine && pszFootnoteLine[0])
 	{
 		m_iFootnoteLineThickness = UT_convertToLogicalUnits(pszFootnoteLine);
@@ -2360,7 +2358,7 @@ void fl_DocSectionLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 
 
 	const gchar * pszFootnoteYoff = NULL;
-	pSectionAP->getProperty("section-footnote-yoff", (const gchar *&)pszFootnoteYoff);
+	pSectionAP->getProperty(_PN("section-footnote-yoff"), (const gchar *&)pszFootnoteYoff);
 	if (pszFootnoteYoff && pszFootnoteYoff[0])
 	{
 		m_iFootnoteYoff = UT_convertToLogicalUnits(pszFootnoteYoff);
@@ -2405,7 +2403,7 @@ void fl_DocSectionLayout::setPaperColor(void)
 	UT_return_if_fail(pSectionAP);
 
 	const char* pszClrPaper = NULL;
-	pSectionAP->getProperty("background-color", (const gchar *&)pszClrPaper);
+	pSectionAP->getProperty(_PN("background-color"), (const gchar *&)pszClrPaper);
 	FV_View * pView = m_pLayout->getView();
 	if(pszClrPaper && strcmp(pszClrPaper,"transparent") != 0)
 	{
@@ -5510,7 +5508,7 @@ bool fl_ShadowListener::populateStrux(pf_Frag_Strux* sdh,
 		if (pAP)
 		{
 			const gchar* pszSectionType = NULL;
-			pAP->getAttribute("type", pszSectionType);
+			pAP->getAttribute(_PN("type"), pszSectionType);
 			if (
 				!pszSectionType
 				|| (0 == strcmp(pszSectionType, "doc"))
@@ -5587,7 +5585,7 @@ bool fl_ShadowListener::populateStrux(pf_Frag_Strux* sdh,
 		if (pAP)
 		{
 			const gchar* pszSectionType = NULL;
-			pAP->getAttribute("type", pszSectionType);
+			pAP->getAttribute(_PN("type"), pszSectionType);
 			if (
 				!pszSectionType
 				|| (0 == strcmp(pszSectionType, "doc"))

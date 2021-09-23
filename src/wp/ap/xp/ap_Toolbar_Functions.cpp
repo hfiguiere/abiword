@@ -478,7 +478,7 @@ Defun_EV_GetToolbarItemState_Fn(ap_ToolbarGetState_CharFmt)
 	bool bSize = false;
 	bool bString = false;
 
-	const gchar * prop = NULL;
+	PP_PropName prop;
 	const gchar * val  = NULL;
 
 	EV_Toolbar_ItemState s = EV_TIS_ZERO;
@@ -491,78 +491,78 @@ Defun_EV_GetToolbarItemState_Fn(ap_ToolbarGetState_CharFmt)
 	switch (id)
 	{
 	case AP_TOOLBAR_ID_FMT_FONT:
-		prop = "font-family";
+		prop = _PN("font-family");
 		val  = "";
 		bString = true;
 		break;
 
 	case AP_TOOLBAR_ID_FMT_SIZE:
-		prop = "font-size";
+		prop = _PN("font-size");
 		val  = "";
 		bSize = true;
 		break;
 
 	case AP_TOOLBAR_ID_FMT_BOLD:
-		prop = "font-weight";
+		prop = _PN("font-weight");
 		val  = "bold";
 		break;
 
 	case AP_TOOLBAR_ID_FMT_ITALIC:
-		prop = "font-style";
+		prop = _PN("font-style");
 		val  = "italic";
 		break;
 
 	case AP_TOOLBAR_ID_FMT_UNDERLINE:
-		prop = "text-decoration";
+		prop = _PN("text-decoration");
 		val  = "underline";
 		bMultiple = true;
 		break;
 
 	case AP_TOOLBAR_ID_FMT_OVERLINE:
-		prop = "text-decoration";
+		prop = _PN("text-decoration");
 		val  = "overline";
 		bMultiple = true;
 		break;
 
 	case AP_TOOLBAR_ID_FMT_STRIKE:
-		prop = "text-decoration";
+		prop = _PN("text-decoration");
 		val  = "line-through";
 		bMultiple = true;
 		break;
 
 
 	case AP_TOOLBAR_ID_FMT_TOPLINE:
-		prop = "text-decoration";
+		prop = _PN("text-decoration");
 		val  = "topline";
 		bMultiple = true;
 		break;
 
 
 	case AP_TOOLBAR_ID_FMT_BOTTOMLINE:
-		prop = "text-decoration";
+		prop = _PN("text-decoration");
 		val  = "bottomline";
 		bMultiple = true;
 		break;
 
 	case AP_TOOLBAR_ID_FMT_SUPERSCRIPT:
-		prop = "text-position";
+		prop = _PN("text-position");
 		val  = "superscript";
 		bMultiple = true;
 		break;
 
 	case AP_TOOLBAR_ID_FMT_SUBSCRIPT:
-		prop = "text-position";
+		prop = _PN("text-position");
 		val  = "subscript";
 		bMultiple = true;
 		break;
 
 	case AP_TOOLBAR_ID_FMT_DIR_OVERRIDE_LTR:
-		prop = "dir-override";
+		prop = _PN("dir-override");
 		val  = "ltr";
 		break;
 
 	case AP_TOOLBAR_ID_FMT_DIR_OVERRIDE_RTL:
-		prop = "dir-override";
+		prop = _PN("dir-override");
 		val  = "rtl";
 		break;
 
@@ -571,7 +571,7 @@ Defun_EV_GetToolbarItemState_Fn(ap_ToolbarGetState_CharFmt)
 		break;
 	}
 
-	if (prop && val)
+	if (!!prop && val)
 	{
 		// get current char properties from pView
 		PP_PropertyVector props_in;
@@ -624,7 +624,7 @@ Defun_EV_GetToolbarItemState_Fn(ap_ToolbarGetState_SectionFmt)
 	if (pszState)
 		*pszState = NULL;
 
-	const gchar * prop = "";
+	PP_PropName prop;
 	const gchar * val  = NULL;
 
 	EV_Toolbar_ItemState s = EV_TIS_ZERO;
@@ -651,15 +651,15 @@ Defun_EV_GetToolbarItemState_Fn(ap_ToolbarGetState_SectionFmt)
 	switch (id)
 	{
 	case AP_TOOLBAR_ID_1COLUMN:
-		prop = "columns";
+		prop = _PN("columns");
 		val = "1";
 		break;
 	case AP_TOOLBAR_ID_2COLUMN:
-		prop = "columns";
+		prop = _PN("columns");
 		val = "2";
 		break;
 	case AP_TOOLBAR_ID_3COLUMN:
-		prop = "columns";
+		prop = _PN("columns");
 		val = "3";
 		break;
 	default:
@@ -667,7 +667,7 @@ Defun_EV_GetToolbarItemState_Fn(ap_ToolbarGetState_SectionFmt)
 		break;
 	}
 	s = EV_TIS_ZERO;
-	if (prop && val)
+	if (!!prop && val)
 	{
 		// get current block properties from pView
 		PP_PropertyVector props_in;
@@ -707,7 +707,7 @@ Defun_EV_GetToolbarItemState_Fn(ap_ToolbarGetState_BlockFmt)
 
 	bool bPoints = false;
 
-	const gchar * prop = "text-align";
+	PP_PropName prop = _PN("text-align");
 	const gchar * val  = NULL;
 
 	EV_Toolbar_ItemState s = EV_TIS_ZERO;
@@ -735,34 +735,34 @@ Defun_EV_GetToolbarItemState_Fn(ap_ToolbarGetState_BlockFmt)
 		break;
 
 	case AP_TOOLBAR_ID_PARA_0BEFORE:
-		prop = "margin-top";
+		prop = _PN("margin-top");
 		val = "0pt";
 		bPoints = true;
 		break;
 
 	case AP_TOOLBAR_ID_PARA_12BEFORE:
-		prop = "margin-top";
+		prop = _PN("margin-top");
 		val = "12pt";
 		bPoints = true;
 		break;
 
 	case AP_TOOLBAR_ID_SINGLE_SPACE:
-		prop = "line-height";
+		prop = _PN("line-height");
 		val = "1.0";
 		break;
 
 	case AP_TOOLBAR_ID_MIDDLE_SPACE:
-		prop = "line-height";
+		prop = _PN("line-height");
 		val = "1.5";
 		break;
 
 	case AP_TOOLBAR_ID_DOUBLE_SPACE:
-		prop = "line-height";
+		prop = _PN("line-height");
 		val = "2.0";
 		break;
 
 	case AP_TOOLBAR_ID_FMT_DOM_DIRECTION:
-		prop = "dom-dir";
+		prop = _PN("dom-dir");
 		val = "rtl";
 		xxx_UT_DEBUGMSG(("ap_ToolbarGetState_BlockFmt: dom-dir\n"));
 		break;
@@ -773,7 +773,7 @@ Defun_EV_GetToolbarItemState_Fn(ap_ToolbarGetState_BlockFmt)
 		break;
 	}
 
-	if (prop && val)
+	if (!!prop && val)
 	{
 		// get current block properties from pView
 		PP_PropertyVector props_in;

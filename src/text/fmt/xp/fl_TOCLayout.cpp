@@ -1540,7 +1540,7 @@ UT_UTF8String fl_TOCLayout::getDefaultSourceStyle(UT_uint32 iLevel)
 {
 	// fetch the default TOC destination style from the buildin defaults
 	UT_UTF8String sStyle = UT_UTF8String_sprintf("toc-source-style%d", iLevel);
-	const PP_Property* pProp = PP_lookupProperty(sStyle.utf8_str());
+	const PP_Property* pProp = PP_lookupProperty(UT_StaticString::Interned(sStyle.utf8_str()));
 	if (pProp)
 		return pProp->getInitial();
 	UT_ASSERT_HARMLESS(UT_SHOULD_NOT_HAPPEN);
@@ -1553,7 +1553,7 @@ UT_UTF8String fl_TOCLayout::getDefaultDestStyle(UT_uint32 iLevel)
 {
 	// fetch the default TOC destination style from the buildin defaults
 	UT_UTF8String sStyle = UT_UTF8String_sprintf("toc-dest-style%d", iLevel);
-	const PP_Property* pProp = PP_lookupProperty(sStyle.utf8_str());
+	const PP_Property* pProp = PP_lookupProperty(UT_StaticString::Interned(sStyle.utf8_str()));
 	if (pProp)
 		return pProp->getInitial();
 	UT_ASSERT_HARMLESS(UT_SHOULD_NOT_HAPPEN);
@@ -1573,7 +1573,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	// I can't think of any properties we need for now.
 	// If we need any later, we'll add them. -PL
 	const gchar *pszTOCPID = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-id",pszTOCPID))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-id"), pszTOCPID))
 	{
 		m_iTOCPID = 0;
 	}
@@ -1589,7 +1589,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 
 
 	const gchar *pszINDENT = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-indent1",pszINDENT))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-indent1"), pszINDENT))
 	{
 		m_sNumOff1 = "0.5in";
 	}
@@ -1598,7 +1598,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_sNumOff1 = pszINDENT;
 	}
 	pszINDENT = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-indent2",pszINDENT))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-indent2"), pszINDENT))
 	{
 		m_sNumOff2 = "0.5in";
 	}
@@ -1608,7 +1608,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	}
 
 	pszINDENT = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-indent3",pszINDENT))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-indent3"), pszINDENT))
 	{
 		m_sNumOff3 = "0.5in";
 	}
@@ -1618,7 +1618,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	}
 
 	pszINDENT = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-indent4",pszINDENT))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-indent4"), pszINDENT))
 	{
 		m_sNumOff4 = "0.5in";
 	}
@@ -1628,7 +1628,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	}
 
 	const gchar *pszTOCSRC = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-source-style1",pszTOCSRC))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-source-style1"), pszTOCSRC))
 	{
 		m_sSourceStyle1 = getDefaultSourceStyle(1);
 	}
@@ -1637,7 +1637,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_sSourceStyle1 = pszTOCSRC;
 	}
 	pszTOCSRC = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-source-style2",pszTOCSRC))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-source-style2"), pszTOCSRC))
 	{
 		m_sSourceStyle2 = getDefaultSourceStyle(2);
 	}
@@ -1646,7 +1646,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_sSourceStyle2 = pszTOCSRC;
 	}
 	pszTOCSRC = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-source-style3",pszTOCSRC))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-source-style3"), pszTOCSRC))
 	{
 		m_sSourceStyle3 = getDefaultSourceStyle(3);
 	}
@@ -1655,7 +1655,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_sSourceStyle3 = pszTOCSRC;
 	}
 	pszTOCSRC = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-source-style4",pszTOCSRC))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-source-style4"), pszTOCSRC))
 	{
 		m_sSourceStyle4 = getDefaultSourceStyle(4);
 	}
@@ -1664,7 +1664,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_sSourceStyle4 = pszTOCSRC;
 	}
 	const gchar * pszTOCDEST = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-dest-style1",pszTOCDEST))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-dest-style1"), pszTOCDEST))
 	{
 		m_sDestStyle1 = getDefaultDestStyle(1);
 	}
@@ -1673,7 +1673,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_sDestStyle1 = pszTOCDEST;
 	}
 	pszTOCDEST = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-dest-style2",pszTOCDEST))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-dest-style2"), pszTOCDEST))
 	{
 		m_sDestStyle2 = getDefaultDestStyle(2);
 	}
@@ -1682,7 +1682,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_sDestStyle2 = pszTOCDEST;
 	}
 	pszTOCDEST = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-dest-style3",pszTOCDEST))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-dest-style3"), pszTOCDEST))
 	{
 		m_sDestStyle3 = getDefaultDestStyle(3);
 	}
@@ -1691,7 +1691,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_sDestStyle3 = pszTOCDEST;
 	}
 	pszTOCDEST = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-dest-style4",pszTOCDEST))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-dest-style4"), pszTOCDEST))
 	{
 		m_sDestStyle4 = getDefaultDestStyle(4);
 	}
@@ -1701,7 +1701,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	}
 
 	const gchar * pszTOCHEADING = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-heading",pszTOCHEADING))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-heading"), pszTOCHEADING))
 	{
 		m_sTOCHeading = getDefaultHeading();
 	}
@@ -1711,7 +1711,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	}
 
 	const gchar * pszTOCHEADINGStyle = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-heading-style",pszTOCHEADINGStyle))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-heading-style"), pszTOCHEADINGStyle))
 	{
 		m_sTOCHeadingStyle = "Contents Header";
 	}
@@ -1722,7 +1722,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 
 
 	const gchar * pszTOCHASHEADING = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-has-heading",pszTOCHASHEADING))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-has-heading"), pszTOCHASHEADING))
 	{
 		m_bTOCHeading = true;
 	}
@@ -1741,7 +1741,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 // TOC Label
 //
 	const gchar * pszTOCLABEL = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-has-label1",pszTOCLABEL))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-has-label1"), pszTOCLABEL))
 	{
 		m_bHasLabel1 = true;
 	}
@@ -1757,7 +1757,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		}
 	}
 	pszTOCLABEL = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-has-label2",pszTOCLABEL))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-has-label2"), pszTOCLABEL))
 	{
 		m_bHasLabel2 = true;
 	}
@@ -1773,7 +1773,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		}
 	}
 	pszTOCLABEL = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-has-label3",pszTOCLABEL))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-has-label3"), pszTOCLABEL))
 	{
 		m_bHasLabel3 = true;
 	}
@@ -1789,7 +1789,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		}
 	}
 	pszTOCLABEL = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-has-label4",pszTOCLABEL))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-has-label4"), pszTOCLABEL))
 	{
 		m_bHasLabel4 = true;
 	}
@@ -1808,7 +1808,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 // TOC Label Inherits
 //
 	const gchar * pszTOCLABELINHERITS = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-inherits1",pszTOCLABELINHERITS))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-inherits1"), pszTOCLABELINHERITS))
 	{
 		m_bInherit1 = true;
 	}
@@ -1824,7 +1824,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		}
 	}
 	pszTOCLABELINHERITS = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-inherits2",pszTOCLABELINHERITS))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-inherits2"), pszTOCLABELINHERITS))
 	{
 		m_bInherit2 = true;
 	}
@@ -1840,7 +1840,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		}
 	}
 	pszTOCLABELINHERITS = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-inherits3",pszTOCLABELINHERITS))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-inherits3"), pszTOCLABELINHERITS))
 	{
 		m_bInherit3 = true;
 	}
@@ -1856,7 +1856,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		}
 	}
 	pszTOCLABELINHERITS = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-inherits4",pszTOCLABELINHERITS))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-inherits4"), pszTOCLABELINHERITS))
 	{
 		m_bInherit4 = true;
 	}
@@ -1875,7 +1875,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 // TOC Label Type
 //
 	const gchar * pszTOCLABELTYPE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-type1",pszTOCLABELTYPE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-type1"), pszTOCLABELTYPE))
 	{
 		m_iLabType1 = FOOTNOTE_TYPE_NUMERIC;
 	}
@@ -1884,7 +1884,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_iLabType1 = m_pLayout->FootnoteTypeFromString(pszTOCLABELTYPE);
 	}
 	pszTOCLABELTYPE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-type2",pszTOCLABELTYPE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-type2"), pszTOCLABELTYPE))
 	{
 		m_iLabType2 = FOOTNOTE_TYPE_NUMERIC;
 	}
@@ -1893,7 +1893,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_iLabType2 = m_pLayout->FootnoteTypeFromString(pszTOCLABELTYPE);
 	}
 	pszTOCLABELTYPE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-type3",pszTOCLABELTYPE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-type3"), pszTOCLABELTYPE))
 	{
 		m_iLabType3 = FOOTNOTE_TYPE_NUMERIC;
 	}
@@ -1902,7 +1902,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_iLabType3 = m_pLayout->FootnoteTypeFromString(pszTOCLABELTYPE);
 	}
 	pszTOCLABELTYPE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-type4",pszTOCLABELTYPE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-type4"), pszTOCLABELTYPE))
 	{
 		m_iLabType4 = FOOTNOTE_TYPE_NUMERIC;
 	}
@@ -1914,7 +1914,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 // TOC Label Before Text
 //
 	const gchar * pszTOCSTRBEFORE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-before1",pszTOCSTRBEFORE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-before1"), pszTOCSTRBEFORE))
 	{
 		m_sLabBefore1 = "";
 	}
@@ -1923,7 +1923,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_sLabBefore1 = pszTOCSTRBEFORE;
 	}
 	pszTOCSTRBEFORE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-before2",pszTOCSTRBEFORE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-before2"), pszTOCSTRBEFORE))
 	{
 		m_sLabBefore2 = "";
 	}
@@ -1932,7 +1932,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_sLabBefore2 = pszTOCSTRBEFORE;
 	}
 	pszTOCSTRBEFORE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-before3",pszTOCSTRBEFORE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-before3"), pszTOCSTRBEFORE))
 	{
 		m_sLabBefore3 = "";
 	}
@@ -1941,7 +1941,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_sLabBefore3 = pszTOCSTRBEFORE;
 	}
 	pszTOCSTRBEFORE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-before4",pszTOCSTRBEFORE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-before4"), pszTOCSTRBEFORE))
 	{
 		m_sLabBefore4 = "";
 	}
@@ -1953,7 +1953,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 // TOC Label After Text
 //
 	const gchar * pszTOCSTRAFTER = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-after1",pszTOCSTRAFTER))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-after1"), pszTOCSTRAFTER))
 	{
 		m_sLabAfter1 = "";
 	}
@@ -1962,7 +1962,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_sLabAfter1 = pszTOCSTRAFTER;
 	}
 	pszTOCSTRAFTER = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-after2",pszTOCSTRAFTER))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-after2"), pszTOCSTRAFTER))
 	{
 		m_sLabAfter2 = "";
 	}
@@ -1971,7 +1971,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_sLabAfter2 = pszTOCSTRAFTER;
 	}
 	pszTOCSTRAFTER = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-after2",pszTOCSTRAFTER))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-after2"), pszTOCSTRAFTER))
 	{
 		m_sLabAfter2 = "";
 	}
@@ -1980,7 +1980,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_sLabAfter3 = pszTOCSTRAFTER;
 	}
 	pszTOCSTRAFTER = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-after4",pszTOCSTRAFTER))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-after4"), pszTOCSTRAFTER))
 	{
 		m_sLabAfter4 = "";
 	}
@@ -1992,7 +1992,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 // TOC Label Initial Value
 //
 	const gchar * pszTOCLABELSTART = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-start1",pszTOCLABELSTART))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-start1"), pszTOCLABELSTART))
 	{
 		m_iStartAt1 = 1;
 	}
@@ -2001,7 +2001,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_iStartAt1 = atoi(pszTOCLABELSTART);
 	}
 	pszTOCLABELSTART = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-start2",pszTOCLABELSTART))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-start2"), pszTOCLABELSTART))
 	{
 		m_iStartAt2 = 1;
 	}
@@ -2010,7 +2010,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_iStartAt2 = atoi(pszTOCLABELSTART);
 	}
 	pszTOCLABELSTART = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-start3",pszTOCLABELSTART))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-start3"), pszTOCLABELSTART))
 	{
 		m_iStartAt3 = 1;
 	}
@@ -2019,7 +2019,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_iStartAt3 = atoi(pszTOCLABELSTART);
 	}
 	pszTOCLABELSTART = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-label-start4",pszTOCLABELSTART))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-label-start4"), pszTOCLABELSTART))
 	{
 		m_iStartAt4 = 1;
 	}
@@ -2031,7 +2031,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 // TOC Page Number Type
 //
 	const gchar * pszTOCPAGETYPE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-page-type1",pszTOCPAGETYPE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-page-type1"), pszTOCPAGETYPE))
 	{
 		m_iNumType1 = FOOTNOTE_TYPE_NUMERIC;
 	}
@@ -2040,7 +2040,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_iNumType1 = m_pLayout->FootnoteTypeFromString(pszTOCPAGETYPE);
 	}
 	pszTOCPAGETYPE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-page-type2",pszTOCPAGETYPE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-page-type2"), pszTOCPAGETYPE))
 	{
 		m_iNumType2 = FOOTNOTE_TYPE_NUMERIC;
 	}
@@ -2049,7 +2049,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_iNumType2 = m_pLayout->FootnoteTypeFromString(pszTOCPAGETYPE);
 	}
 	pszTOCPAGETYPE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-page-type3",pszTOCPAGETYPE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-page-type3"), pszTOCPAGETYPE))
 	{
 		m_iNumType3 = FOOTNOTE_TYPE_NUMERIC;
 	}
@@ -2058,7 +2058,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_iNumType3 = m_pLayout->FootnoteTypeFromString(pszTOCPAGETYPE);
 	}
 	pszTOCPAGETYPE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-page-type4",pszTOCPAGETYPE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-page-type4"), pszTOCPAGETYPE))
 	{
 		m_iNumType4 = FOOTNOTE_TYPE_NUMERIC;
 	}
@@ -2070,7 +2070,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 // TOC TAB leader
 //
 	const gchar * pszTOCTABTYPE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-tab-leader1",pszTOCTABTYPE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-tab-leader1"), pszTOCTABTYPE))
 	{
 		m_iTabLeader1 = FL_LEADER_DOT;
 	}
@@ -2098,7 +2098,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		}
 	}
 	pszTOCTABTYPE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-tab-leader2",pszTOCTABTYPE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-tab-leader2"),pszTOCTABTYPE))
 	{
 		m_iTabLeader2 = FL_LEADER_DOT;
 	}
@@ -2126,7 +2126,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		}
 	}
 	pszTOCTABTYPE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-tab-leader3",pszTOCTABTYPE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-tab-leader3"),pszTOCTABTYPE))
 	{
 		m_iTabLeader3 = FL_LEADER_DOT;
 	}
@@ -2154,7 +2154,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		}
 	}
 	pszTOCTABTYPE = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("toc-tab-leader4",pszTOCTABTYPE))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("toc-tab-leader4"),pszTOCTABTYPE))
 	{
 		m_iTabLeader4 = FL_LEADER_DOT;
 	}
@@ -2183,7 +2183,7 @@ void fl_TOCLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	}
 
 	pszTOCTABTYPE = NULL;
-	if(pSectionAP && pSectionAP->getProperty("toc-range-bookmark",pszTOCTABTYPE))
+	if(pSectionAP && pSectionAP->getProperty(_PN("toc-range-bookmark"), pszTOCTABTYPE))
 	{
 		m_sRangeBookmark = pszTOCTABTYPE;
 	}

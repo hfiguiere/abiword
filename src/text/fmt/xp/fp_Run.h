@@ -783,7 +783,7 @@ protected:
 	void _setTarget( const gchar * pTarget );
 	void _setTitle( const gchar * pTitle );
 	void _setTargetFromAPAttribute( const gchar* pAttrName );
-	void _setTitleFromAPAttribute( const gchar* pAttrName );
+	void _setTitleFromAPAttribute(PP_PropName pAttrName );
 	bool m_bIsStart;
 	gchar *	  	m_pTarget;
 	gchar *		m_pTitle;
@@ -1456,7 +1456,7 @@ class ABI_EXPORT fp_FieldMailMergeRun : public fp_FieldRun
 class ABI_EXPORT fp_FieldMetaRun : public fp_FieldRun
 {
  public:
-  fp_FieldMetaRun(fl_BlockLayout* pBL, UT_uint32 iOffsetFirst, UT_uint32 iLen, const char * which);
+  fp_FieldMetaRun(fl_BlockLayout* pBL, UT_uint32 iOffsetFirst, UT_uint32 iLen, PP_PropName which);
 
   virtual ~fp_FieldMetaRun(){}
 
@@ -1466,7 +1466,7 @@ class ABI_EXPORT fp_FieldMetaRun : public fp_FieldRun
   virtual UT_uint32		needsFrequentUpdates() override { return FIELD_UPDATE_META;}
 
  private:
-  std::string m_which;
+  PP_PropName m_which;
 };
 
 class ABI_EXPORT fp_FieldMetaTitleRun : public fp_FieldMetaRun

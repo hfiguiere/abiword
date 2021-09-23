@@ -1003,14 +1003,14 @@ public:
         void setup_pocol()
         {
             UT_DEBUGMSG(("SI... statement iter++/setup_pocol(top)\n" ));
-            const gchar* szName = nullptr;
+            PP_PropName szName;
             const gchar* szValue = nullptr;
             const PP_AttrProp* AP = *m_apiter;
             if( AP->getNthProperty( m_apPropertyNumber, szName, szValue) )
             {
 //                UT_DEBUGMSG(("statement iter++/setup_pocol szName :%s\n", szName ));
 //                UT_DEBUGMSG(("statement iter++/setup_pocol szValue:%s\n", szValue ));
-                m_subject   = szName;
+                m_subject   = szName.c_str();
                 m_pocol     = decodePOCol( szValue );
                 if( m_pocol.empty() )
                     return;
@@ -1225,13 +1225,13 @@ void
 PD_RDFModelIterator::setup_pocol()
 {
     xxx_UT_DEBUGMSG(("MI statement iter++/setup_pocol(top) apn:%d\n", m_apPropertyNumber ));
-    const gchar* szName = nullptr;
+    PP_PropName szName;
     const gchar* szValue = nullptr;
-    if( m_AP->getNthProperty( m_apPropertyNumber, szName, szValue) )
+    if (m_AP->getNthProperty( m_apPropertyNumber, szName, szValue) )
     {
         xxx_UT_DEBUGMSG(("MI statement iter++/setup_pocol szName :%s\n", szName ));
         xxx_UT_DEBUGMSG(("MI statement iter++/setup_pocol szValue:%s\n", szValue ));
-        m_subject   = szName;
+        m_subject   = szName.c_str();
         m_pocol     = decodePOCol( szValue );
         if( m_pocol.empty() )
             return;
@@ -1276,10 +1276,10 @@ PD_RDFModelIterator::moveToNextSubject()
         m_end = true;
         return *this;
     }
-    const gchar* szName = nullptr;
+    PP_PropName szName;
     const gchar* szValue = nullptr;
     m_AP->getNthProperty( m_apPropertyNumber, szName, szValue );
-    m_subject = szName;
+    m_subject = szName.c_str();
     m_current = PD_RDFStatement( m_subject, PD_URI(), PD_Object() );
     m_pocol.clear();
     return *this;
@@ -3264,11 +3264,11 @@ PD_DocumentRDF::apGetAllSubjects( const PP_AttrProp* AP, PD_URIList& ret )
     size_t count = AP->getPropertyCount();
     for( size_t i = 0; i<count; ++i )
     {
-        const gchar* szName = nullptr;
+        PP_PropName szName;
         const gchar* szValue = nullptr;
         if( AP->getNthProperty( i, szName, szValue) )
         {
-            std::string subj = szName;
+            std::string subj = szName.c_str();
             ret.push_back(subj);
         }
     }
@@ -3299,8 +3299,8 @@ POCol&
 PD_DocumentRDF::apGetArcsOut( const PP_AttrProp* AP, POCol& ret, const PD_URI& s )
 {
     const gchar* szValue = nullptr;
-	if(AP->getProperty(s.toString(), szValue))
-    {
+    auto name = PP_PropName::Interned(s.toString().c_str());
+    if (AP->getProperty(name, szValue)) {
         ret = decodePOCol(szValue);
     }
     return ret;
@@ -3320,17 +3320,17 @@ PD_ObjectList&
 PD_DocumentRDF::apGetObjects( const PP_AttrProp* AP, PD_ObjectList& ret, const PD_URI& s, const PD_URI& p )
 {
     const gchar* szValue = nullptr;
-	if(AP->getProperty(s.toString(), szValue))
-    {
+    auto name = UT_StaticString::Interned(s.toString().c_str());
+    if (AP->getProperty(name, szValue)) {
         POCol l = decodePOCol(szValue);
         std::pair< POCol::iterator, POCol::iterator > range
             = std::equal_range( l.begin(), l.end(), p );
         for( POCol::iterator iter = range.first; iter != range.second; ++iter )
         {
             ret.push_back( iter->second );
-        }        
+        }
     }
-    return ret;    
+    return ret;
 }
 
 /**
@@ -3349,12 +3349,12 @@ PD_DocumentRDF::apGetSubjects( const PP_AttrProp* AP, PD_URIList& ret, const PD_
     size_t count = AP->getPropertyCount();
     for( size_t i = 0; i<count; ++i )
     {
-        const gchar* szName = nullptr;
+        PP_PropName szName;
         const gchar* szValue = nullptr;
         if( AP->getNthProperty( i, szName, szValue) )
         {
             POCol l = decodePOCol( szValue );
-            std::string subj = szName;
+            std::string subj = szName.c_str();
             for( POCol::iterator iter = l.begin(); iter!=l.end(); ++iter )
             {
                 if( iter->first == p && iter->second == o )
@@ -3373,8 +3373,8 @@ PD_DocumentRDF::apGetSubjects( const PP_AttrProp* AP, PD_URIList& ret, const PD_
 bool PD_DocumentRDF::apContains( const PP_AttrProp* AP, const PD_URI& s, const PD_URI& p, const PD_Object& o )
 {
     const gchar* szValue = nullptr;
-	if(AP->getProperty(s.toString(), szValue))
-    {
+    auto name = UT_StaticString::Interned(s.toString().c_str());
+    if (AP->getProperty(name, szValue)) {
         POCol l = decodePOCol(szValue);
 
         std::pair< POCol::iterator, POCol::iterator > range
@@ -3383,7 +3383,7 @@ bool PD_DocumentRDF::apContains( const PP_AttrProp* AP, const PD_URI& s, const P
         {
             if( iter->second == o )
                 return true;
-        }             
+        }
     }
     return false;
 }
@@ -3698,11 +3698,11 @@ PD_DocumentRDF::getObjectsInScopeOfTypesForRange( std::set< PTObjectType > objec
                     if( pAP->getAttribute(PT_XMLID, v) && v)
                     {
                         std::string xmlid = v;
-                        bool isEnd = pAP->getAttribute("type", v) && v && !strcmp(v,"end");
-                        
+                        bool isEnd = pAP->getAttribute(_PN("type"), v) && v && !strcmp(v, "end");
+
                         xxx_UT_DEBUGMSG(("PD_DocumentRDF::getObjectsInScope() isEnd:%d id:%s\n",
                                      isEnd, xmlid.c_str() ));
-                        
+
                         if( isEnd && curr < start )
                         {
                             m_ignoreIDSet.insert( xmlid );
@@ -3798,8 +3798,7 @@ PD_DocumentRDF::addXMLIDsForBlockAndTableCellForPosition( std::set< std::string 
         if( AP )
         {
             const char * v = NULL;
-            if(AP->getAttribute("xml:id", v))
-            {
+            if (AP->getAttribute(_PN("xml:id"), v)) {
                 xxx_UT_DEBUGMSG(("PD_DocumentRDF::priv_addRelevantIDsForPosition() xmlid:%s \n",v));
                 col.insert(v);
             }
@@ -3818,12 +3817,11 @@ PD_DocumentRDF::addXMLIDsForBlockAndTableCellForPosition( std::set< std::string 
         if( AP )
         {
             const char * v = NULL;
-            if(AP->getAttribute("xml:id", v))
-            {
+            if (AP->getAttribute(_PN("xml:id"), v)) {
                 xxx_UT_DEBUGMSG(("PD_DocumentRDF::priv_addRelevantIDsForPosition() xmlid:%s \n",v));
                 col.insert(v);
 #if 0
-                if(AP->getAttribute("props", v)) {
+                if (AP->getAttribute(_PN("props"), v)) {
                     xxx_UT_DEBUGMSG(("PD_DocumentRDF::priv_addRelevantIDsForPosition() props:%s \n",v));
 				}
 #endif
@@ -3962,8 +3960,8 @@ PD_DocumentRDF::priv_addRelevantIDsForPosition( std::set< std::string >& ret,
                     if( pAP->getAttribute(PT_XMLID, v) && v)
                     {
                         std::string xmlid = v;
-                        bool isEnd = pAP->getAttribute("type", v) && v && !strcmp(v,"end");
-                        
+                        bool isEnd = pAP->getAttribute(_PN("type"), v) && v && !strcmp(v, "end");
+
                         UT_DEBUGMSG(("PD_DocumentRDF::priv_addRelevantIDsForPosition() isEnd:%d id:%s\n",
                                      isEnd, xmlid.c_str() ));
                         
@@ -4016,8 +4014,7 @@ PD_DocumentRDF::priv_addRelevantIDsForPosition( std::set< std::string >& ret,
         if( AP )
         {
             const char * v = NULL;
-            if(AP->getAttribute("xml:id", v))
-            {
+            if (AP->getAttribute(_PN("xml:id"), v)) {
                 UT_DEBUGMSG(("PD_DocumentRDF::priv_addRelevantIDsForPosition() xmlid:%s \n",v));
                 ret.insert(v);
             }
@@ -4036,12 +4033,11 @@ PD_DocumentRDF::priv_addRelevantIDsForPosition( std::set< std::string >& ret,
         if( AP )
         {
             const char * v = NULL;
-            if(AP->getAttribute("xml:id", v))
-            {
+            if (AP->getAttribute(_PN("xml:id"), v)) {
                 UT_DEBUGMSG(("PD_DocumentRDF::priv_addRelevantIDsForPosition() xmlid:%s \n",v));
                 ret.insert(v);
 
-                if(AP->getAttribute("props", v)) {
+                if (AP->getAttribute(_PN("props"), v)) {
                     UT_DEBUGMSG(("PD_DocumentRDF::priv_addRelevantIDsForPosition() props:%s \n",v));
 				}
 
@@ -4440,8 +4436,7 @@ void PD_DocumentRDF::dumpObjectMarkersFromDocument()
             if( AP )
             {
                 const char * v = NULL;
-                if(AP->getAttribute("xml:id",v))
-                {
+                if (AP->getAttribute(_PN("xml:id"), v)) {
                     UT_DEBUGMSG(("PD_DocumentRDF::dumpObjectMarkersFromDocument() xmlid:%s \n",v));
                 }
             }
@@ -4473,7 +4468,7 @@ void PD_DocumentRDF::dumpObjectMarkersFromDocument()
                     {
                         UT_DEBUGMSG(("PD_DocumentRDF::dumpObjectMarkersFromDocument() xml:id:%s\n",v));
                     }
-                    if(pAP->getAttribute("this-is-an-rdf-anchor", v) && v) {
+                    if (pAP->getAttribute(_PN("this-is-an-rdf-anchor"), v) && v) {
                         UT_DEBUGMSG(("PD_DocumentRDF::dumpObjectMarkersFromDocument() is-rdf-a:%s\n",v));
 					}
                 }
@@ -4534,16 +4529,15 @@ PD_DocumentRDF::apDumpModel( const PP_AttrProp* AP, const std::string& headerMsg
     UT_DEBUGMSG(("PD_DocumentRDF::DUMPMODEL() API:%d COUNT:%ld\n", m_indexAP, (long)count));
     for( size_t i = 0; i < count; ++i )
     {
-        const gchar * szName = nullptr;
+        PP_PropName szName;
         const gchar * szValue = nullptr;
-        if( AP->getNthProperty( i, szName, szValue) )
-        {
+        if (AP->getNthProperty(i, szName, szValue)) {
 //            UT_DEBUGMSG(("PD_DocumentRDF::dumpModel() szName :%s\n", szName ));
 //            UT_DEBUGMSG(("PD_DocumentRDF::dumpModel() szValue:%s\n", szValue ));
-            
+
             POCol l = decodePOCol( szValue );
 //            UT_DEBUGMSG(("PD_DocumentRDF::dumpModel() po list size:%d\n", (int)l.size() ));
-            std::string subj = szName;
+            std::string subj = szName.c_str();
             for( POCol::iterator iter = l.begin(); iter!=l.end(); ++iter )
             {
                 std::string pred = iter->first.toString();
@@ -4672,22 +4666,20 @@ RDFModel_SPARQLLimited::update()
             objectType = dobj.getObjectType();
         
         PD_Object o( d["o"], objectType );
-        
 
         POCol l;
-        const gchar* szName = s.toString().c_str();
+        auto name = UT_StaticString::Interned(s.toString().c_str());
         const gchar* szValue = nullptr;
-        if( AP->getProperty( szName, szValue) )
-        {
+        if (AP->getProperty(name, szValue)) {
             l = decodePOCol(szValue);
         }
         l.insert( std::make_pair( p, o ));
         std::string po = encodePOCol(l);
-        AP->setProperty(szName, po);
-        
+        AP->setProperty(name, po);
+
         PD_RDFStatement st( s, p, o );
         UT_DEBUGMSG(("RDFModel_SPARQLLimited::update() adding st:%s \n", st.toString().c_str() ));
-    }    
+    }
 
     delete m_AP;
     m_AP = AP;
@@ -4754,12 +4746,12 @@ RDFModel_XMLIDLimited::update()
         PD_URI s = m_delegate->getSubject( idref, rdflink );
         POCol polist = m_delegate->getArcsOut( s );
 
-        const gchar* szName = s.toString().c_str();
+        auto name = UT_StaticString::Interned(s.toString().c_str());
         std::string po = encodePOCol( polist );
-        AP->setProperty(szName, po);
+        AP->setProperty(name, po);
         return;
     }
-    
+
     RDFModel_SPARQLLimited::update();
 }
 
@@ -5271,10 +5263,9 @@ PD_DocumentRDFMutation::~PD_DocumentRDFMutation()
 bool PD_DocumentRDFMutation::apAdd( PP_AttrProp* AP, const PD_URI& s, const PD_URI& p, const PD_Object& o )
 {
     POCol l;
-    const std::string szName = s.toString();
+    auto name = UT_StaticString::Interned(s.toString().c_str());
     const gchar* szValue = nullptr;
-	if( AP->getProperty( szName, szValue) )
-    {
+    if (AP->getProperty(name, szValue)) {
         l = decodePOCol(szValue);
     }
 
@@ -5285,7 +5276,7 @@ bool PD_DocumentRDFMutation::apAdd( PP_AttrProp* AP, const PD_URI& s, const PD_U
     // }
     l.insert( std::make_pair( p, o ));
     std::string po = encodePOCol(l);
-    return AP->setProperty(szName, po);
+    return AP->setProperty(name, po);
 }
 
 void PD_DocumentRDFMutation::apRemove( PP_AttrProp*& AP, const PD_URI& s, const PD_URI& p, const PD_Object& o )
@@ -5294,11 +5285,10 @@ void PD_DocumentRDFMutation::apRemove( PP_AttrProp*& AP, const PD_URI& s, const 
 	size_t propCount = AP->getPropertyCount();
     for( size_t i = 0; i<propCount; ++i )
     {
-        const gchar * szName = nullptr;
+        PP_PropName szName;
         const gchar * szValue = nullptr;
-        
-        if( !AP->getNthProperty( i, szName, szValue))
-        {
+
+        if (!AP->getNthProperty(i, szName, szValue)) {
             // failed to get old prop
             continue;
         }
@@ -5492,7 +5482,7 @@ PD_DocumentRDFMutation::handleAddAndRemove( PP_AttrProp* add_, PP_AttrProp* remo
 	size_t propCount = existingAP->getPropertyCount();
     for( size_t i = 0; i<propCount; ++i )
     {
-        const gchar * szExistingName = nullptr;
+        PP_PropName szExistingName;
         const gchar * szExistingValue = nullptr;
         
         if( !existingAP->getNthProperty( i, szExistingName, szExistingValue))
@@ -5541,7 +5531,7 @@ PD_DocumentRDFMutation::handleAddAndRemove( PP_AttrProp* add_, PP_AttrProp* remo
         }
         else
         {
-            UT_DEBUGMSG(("PD_DocumentRDFMutation::handleAddAndRemove() copy prop:%s\n", szExistingName ));
+            UT_DEBUGMSG(("PD_DocumentRDFMutation::handleAddAndRemove() copy prop:%s\n", szExistingName.c_str()));
             if( !newAP->setProperty( szExistingName, szExistingValue ))
             {
                 // FIXME: failed to copy prop
@@ -5555,15 +5545,15 @@ PD_DocumentRDFMutation::handleAddAndRemove( PP_AttrProp* add_, PP_AttrProp* remo
 	propCount = add_->getPropertyCount();
     for( size_t i = 0; i<propCount; ++i )
     {
-        const gchar * szName = nullptr;
+        PP_PropName szName;
         const gchar * szValue = nullptr;
-        
+
         if( !add_->getNthProperty( i, szName, szValue))
         {
             // FIXME: failed to get old prop
             continue;
         }
-        PD_URI s(szName);
+        PD_URI s(szName.c_str());
         POCol  c = decodePOCol(szValue);
         for( POCol::iterator iter = c.begin(); iter != c.end(); ++iter )
         {

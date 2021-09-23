@@ -773,7 +773,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	const gchar * pszMinHeight = NULL;
 // Frame Type
 
-	if(!pSectionAP || !pSectionAP->getProperty("frame-type",pszFrameType))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-type"), pszFrameType))
 	{
 		m_iFrameType = FL_FRAME_TEXTBOX_TYPE;
 	}
@@ -794,7 +794,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 
 // Position-to
 
-	if((!pSectionAP || !pSectionAP->getProperty("position-to",pszPositionTo)))
+	if((!pSectionAP || !pSectionAP->getProperty(_PN("position-to"), pszPositionTo)))
 	{
 		m_iFramePositionTo = FL_FRAME_POSITIONED_TO_BLOCK;
 	}
@@ -820,7 +820,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 
 // wrap-mode
 	
-	if(!pSectionAP || !pSectionAP->getProperty("wrap-mode",pszWrapMode))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("wrap-mode"), pszWrapMode))
 	{
 		m_iFrameWrapMode = FL_FRAME_ABOVE_TEXT;
 	}
@@ -857,7 +857,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	//
 	// Wrap type
 	//
-	if(!pSectionAP || !pSectionAP->getProperty("tight-wrap",pszTightWrapped))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("tight-wrap"), pszTightWrapped))
 	{
 		m_bIsTightWrap = false;
 	}
@@ -872,7 +872,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 
 // Xpos
 
-	if(!pSectionAP || !pSectionAP->getProperty("xpos",pszXpos))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("xpos"), pszXpos))
 	{
 		m_iXpos = 0;
 	}
@@ -883,7 +883,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	UT_DEBUGMSG(("xpos for frame is %s \n",pszXpos));
 // Ypos
 
-	if(!pSectionAP || !pSectionAP->getProperty("ypos",pszYpos))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("ypos"), pszYpos))
 	{
 		m_iYpos = 0;
 	}
@@ -895,7 +895,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 
 // ColXpos
 
-	if(!pSectionAP || !pSectionAP->getProperty("frame-col-xpos",pszColXpos))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-col-xpos"), pszColXpos))
 	{
 		m_iXColumn = 0;
 	}
@@ -906,7 +906,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	UT_DEBUGMSG(("ColXpos for frame is %s \n",pszColXpos));
 // colYpos
 
-	if(!pSectionAP || !pSectionAP->getProperty("frame-col-ypos",pszColYpos))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-col-ypos"), pszColYpos))
 	{
 		m_iYColumn = 0;
 	}
@@ -919,7 +919,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 
 // PageXpos
 
-	if(!pSectionAP || !pSectionAP->getProperty("frame-page-xpos",pszPageXpos))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-page-xpos"), pszPageXpos))
 	{
 		m_iXPage = 0;
 	}
@@ -930,7 +930,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	UT_DEBUGMSG(("PageXpos for frame is %s units %d \n",pszPageXpos,m_iXPage));
 // PageYpos
 
-	if(!pSectionAP || !pSectionAP->getProperty("frame-page-ypos",pszPageYpos))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-page-ypos"), pszPageYpos))
 	{
 		m_iYPage = 0;
 	}
@@ -943,7 +943,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 
 // Width
 
-	if(!pSectionAP || !pSectionAP->getProperty("frame-width",pszWidth))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-width"), pszWidth))
 	{
 		m_iWidth = UT_convertToLogicalUnits("1.0in");
 	}
@@ -958,7 +958,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	UT_DEBUGMSG(("Width %s \n",pszWidth));
 // Height
 
-	if(!pSectionAP || !pSectionAP->getProperty("frame-height",pszHeight))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-height"), pszHeight))
 	{
 		m_iHeight = UT_convertToLogicalUnits("1.0in");
 	}
@@ -976,7 +976,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 // Xpadding
 
 
-	if(!pSectionAP || !pSectionAP->getProperty("xpad",pszXpad))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("xpad"), pszXpad))
 	{
 		m_iXpad = UT_convertToLogicalUnits("0.03in");
 	}
@@ -989,7 +989,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 // Ypadding
 
 
-	if(!pSectionAP || !pSectionAP->getProperty("ypad",pszYpad))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("ypad"), pszYpad))
 	{
 		m_iYpad = UT_convertToLogicalUnits("0.03in");
 	}
@@ -1002,11 +1002,11 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	/* Frame-border properties:
 	 */
 
-	pSectionAP->getProperty ("color", pszColor);
+	pSectionAP->getProperty(_PN("color"), pszColor);
 
-	pSectionAP->getProperty ("bot-color",pszBorderColor);
-	pSectionAP->getProperty ("bot-style",pszBorderStyle);
-	pSectionAP->getProperty ("bot-thickness",pszBorderWidth);
+	pSectionAP->getProperty(_PN("bot-color"), pszBorderColor);
+	pSectionAP->getProperty(_PN("bot-style"), pszBorderStyle);
+	pSectionAP->getProperty(_PN("bot-thickness"), pszBorderWidth);
 
 	s_border_properties (pszBorderColor, pszBorderStyle, pszBorderWidth, pszColor, m_lineBottom);
 
@@ -1014,9 +1014,9 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	pszBorderStyle = NULL;
 	pszBorderWidth = NULL;
 
-	pSectionAP->getProperty ("left-color", pszBorderColor);
-	pSectionAP->getProperty ("left-style", pszBorderStyle);
-	pSectionAP->getProperty ("left-thickness", pszBorderWidth);
+	pSectionAP->getProperty(_PN("left-color"), pszBorderColor);
+	pSectionAP->getProperty(_PN("left-style"), pszBorderStyle);
+	pSectionAP->getProperty(_PN("left-thickness"), pszBorderWidth);
 
 	s_border_properties (pszBorderColor, pszBorderStyle, pszBorderWidth, pszColor, m_lineLeft);
 
@@ -1024,9 +1024,9 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	pszBorderStyle = NULL;
 	pszBorderWidth = NULL;
 
-	pSectionAP->getProperty ("right-color",pszBorderColor);
-	pSectionAP->getProperty ("right-style",pszBorderStyle);
-	pSectionAP->getProperty ("right-thickness", pszBorderWidth);
+	pSectionAP->getProperty(_PN("right-color"), pszBorderColor);
+	pSectionAP->getProperty(_PN("right-style"), pszBorderStyle);
+	pSectionAP->getProperty(_PN("right-thickness"), pszBorderWidth);
 
 	s_border_properties (pszBorderColor, pszBorderStyle, pszBorderWidth, pszColor, m_lineRight);
 
@@ -1034,9 +1034,9 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	pszBorderStyle = NULL;
 	pszBorderWidth = NULL;
 
-	pSectionAP->getProperty ("top-color",  pszBorderColor);
-	pSectionAP->getProperty ("top-style",  pszBorderStyle);
-	pSectionAP->getProperty ("top-thickness",pszBorderWidth);
+	pSectionAP->getProperty(_PN("top-color"),  pszBorderColor);
+	pSectionAP->getProperty(_PN("top-style"),  pszBorderStyle);
+	pSectionAP->getProperty(_PN("top-thickness"), pszBorderWidth);
 
 	s_border_properties (pszBorderColor, pszBorderStyle, pszBorderWidth, pszColor, m_lineTop);
 
@@ -1048,16 +1048,16 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	const gchar * pszBgColor = NULL;
 	const gchar * pszBackgroundColor = NULL;
 
-	pSectionAP->getProperty ("bg-style",    pszBgStyle);
-	pSectionAP->getProperty ("bgcolor",     pszBgColor);
-	pSectionAP->getProperty ("background-color", pszBackgroundColor);
+	pSectionAP->getProperty(_PN("bg-style"), pszBgStyle);
+	pSectionAP->getProperty(_PN("bgcolor"), pszBgColor);
+	pSectionAP->getProperty(_PN("background-color"), pszBackgroundColor);
 
 	s_background_properties (pszBgStyle, pszBgColor, pszBackgroundColor, m_background);
 
 //
 // Bounding Space
 //
-	if(!pSectionAP || !pSectionAP->getProperty("bounding-space",pszBoundingSpace))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("bounding-space"), pszBoundingSpace))
 	{
 		m_iBoundingSpace = UT_convertToLogicalUnits("0.05in");
 	}
@@ -1068,7 +1068,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	//
 	// Preferred Page
 	//
-	if(!pSectionAP || !pSectionAP->getProperty("frame-pref-page",pszPrefPage))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-pref-page"), pszPrefPage))
 	{
 		m_iPrefPage = -1;
 	}
@@ -1082,7 +1082,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	//
 	// Preferred column
 	//
-	if(!pSectionAP || !pSectionAP->getProperty("frame-pref-column",pszPrefColumn))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-pref-column"), pszPrefColumn))
 	{
 		m_iPrefColumn = 0;
 	}
@@ -1096,7 +1096,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	// 
 	// Percent Width
 	//
-	if(pSectionAP && pSectionAP->getProperty("frame-rel-width",pszPercentWidth))
+	if(pSectionAP && pSectionAP->getProperty(_PN("frame-rel-width"), pszPercentWidth))
 	{
 		if(pszPercentWidth && (m_iWidth <= (m_pLayout->getGraphics()->tlu(2)+3)))
 		{
@@ -1109,7 +1109,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	//
 	// Min Height
 	//
-	if(pSectionAP && pSectionAP->getProperty("frame-min-height",pszMinHeight))
+	if(pSectionAP && pSectionAP->getProperty(_PN("frame-min-height"), pszMinHeight))
 	{
 		if(pszMinHeight)
 		{
@@ -1121,7 +1121,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	//
 	// Expandable Height
 	//
-	if(pSectionAP && pSectionAP->getProperty("frame-expand-height",pszExpandHeight))
+	if(pSectionAP && pSectionAP->getProperty(_PN("frame-expand-height"), pszExpandHeight))
 	{
 		m_iMinHeight = m_iHeight;
 		m_bExpandHeight = true;
@@ -1131,7 +1131,7 @@ void fl_FrameLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	// left/right aligned
 	//
 	const char * pszAlign = NULL;
-	if(pSectionAP && pSectionAP->getProperty("frame-horiz-align",pszAlign))
+	if(pSectionAP && pSectionAP->getProperty(_PN("frame-horiz-align"), pszAlign))
 	{
 		if(pszAlign && (strcmp(pszAlign,"right") == 0) && (m_iXpos == 0))
 		{
@@ -1188,7 +1188,7 @@ void fl_FrameLayout::_lookupMarginProperties(const PP_AttrProp* pSectionAP)
 
 		// Position-to
 
-		if(!pSectionAP || !pSectionAP->getProperty("position-to",pszPositionTo))
+		if(!pSectionAP || !pSectionAP->getProperty(_PN("position-to"), pszPositionTo))
 		{
 			m_iFramePositionTo = FL_FRAME_POSITIONED_TO_BLOCK;
 		}
@@ -1214,7 +1214,7 @@ void fl_FrameLayout::_lookupMarginProperties(const PP_AttrProp* pSectionAP)
 
 		// wrap-mode
 
-		if(!pSectionAP || !pSectionAP->getProperty("wrap-mode",pszWrapMode))
+		if(!pSectionAP || !pSectionAP->getProperty(_PN("wrap-mode"), pszWrapMode))
 		{
 			m_iFrameWrapMode = FL_FRAME_ABOVE_TEXT;
 		}
@@ -1251,7 +1251,7 @@ void fl_FrameLayout::_lookupMarginProperties(const PP_AttrProp* pSectionAP)
 		//
 		// Wrap type
 		//
-		if(!pSectionAP || !pSectionAP->getProperty("tight-wrap",pszTightWrapped))
+		if(!pSectionAP || !pSectionAP->getProperty(_PN("tight-wrap"), pszTightWrapped))
 		{
 			m_bIsTightWrap = false;
 		}
@@ -1266,7 +1266,7 @@ void fl_FrameLayout::_lookupMarginProperties(const PP_AttrProp* pSectionAP)
 
 		// Xpos
 
-		if(!pSectionAP || !pSectionAP->getProperty("xpos",pszXpos))
+		if(!pSectionAP || !pSectionAP->getProperty(_PN("xpos"), pszXpos))
 		{
 			m_iXpos = 0;
 		}
@@ -1277,7 +1277,7 @@ void fl_FrameLayout::_lookupMarginProperties(const PP_AttrProp* pSectionAP)
 		UT_DEBUGMSG(("xpos for frame is %s \n",pszXpos));
 		// Ypos
 
-		if(!pSectionAP || !pSectionAP->getProperty("ypos",pszYpos))
+		if(!pSectionAP || !pSectionAP->getProperty(_PN("ypos"), pszYpos))
 		{
 			m_iYpos = 0;
 		}
@@ -1289,7 +1289,7 @@ void fl_FrameLayout::_lookupMarginProperties(const PP_AttrProp* pSectionAP)
 
 		// ColXpos
 
-		if(!pSectionAP || !pSectionAP->getProperty("frame-col-xpos",pszColXpos))
+		if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-col-xpos"), pszColXpos))
 		{
 			m_iXColumn = 0;
 		}
@@ -1300,7 +1300,7 @@ void fl_FrameLayout::_lookupMarginProperties(const PP_AttrProp* pSectionAP)
 		UT_DEBUGMSG(("ColXpos for frame is %s \n",pszColXpos));
 		// colYpos
 
-		if(!pSectionAP || !pSectionAP->getProperty("frame-col-ypos",pszColYpos))
+		if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-col-ypos"), pszColYpos))
 		{
 			m_iYColumn = 0;
 		}
@@ -1313,7 +1313,7 @@ void fl_FrameLayout::_lookupMarginProperties(const PP_AttrProp* pSectionAP)
 
 		// PageXpos
 
-		if(!pSectionAP || !pSectionAP->getProperty("frame-page-xpos",pszPageXpos))
+		if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-page-xpos"), pszPageXpos))
 		{
 			m_iXPage = 0;
 		}
@@ -1324,7 +1324,7 @@ void fl_FrameLayout::_lookupMarginProperties(const PP_AttrProp* pSectionAP)
 		UT_DEBUGMSG(("PageXpos for frame is %s \n",pszPageXpos));
 		// PageYpos
 
-		if(!pSectionAP || !pSectionAP->getProperty("frame-page-ypos",pszPageYpos))
+		if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-page-ypos"),pszPageYpos))
 		{
 			m_iYPage = 0;
 		}

@@ -34,7 +34,7 @@ public:
   PP_AttrProp *      getAttrProp(void);
   const PP_AttrProp *      getAttrProp(void) const;
 
-  bool      getProperty(const gchar * szName, const gchar *& szValue) const;
+  bool      getProperty(PP_PropName szName, const gchar *& szValue) const;
   UT_sint32          getAuthorInt(void) const;
 
 private:

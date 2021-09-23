@@ -2,6 +2,7 @@
 
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (c) 2021 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -484,7 +485,7 @@ protected:
                                                     pf_Frag_Strux*& pfsContainer,
                                                     pf_Frag*& pfNewEnd,
                                                     UT_uint32& fragOffsetNewEnd,
-                                                    const char* startAttrCSTR );
+                                                    PP_PropName startAttrCSTR);
 
 	bool					_deleteComplexSpan(PT_DocPosition & dpos1,
 											   PT_DocPosition & dpos2,
@@ -522,7 +523,7 @@ protected:
 
 	void                    _deleteHdrFtrStruxWithNotify( pf_Frag_Strux * pfFragStruxHdrFtr);
 
-	bool                    _fixHdrFtrReferences(const gchar * pType, const gchar * pId, bool bNotional = false);
+	bool                    _fixHdrFtrReferences(const char* pType, const gchar * pId, bool bNotional = false);
 
 	bool					_fmtChangeStrux(pf_Frag_Strux * pfs,
 											PT_AttrPropIndex indexNewAP);

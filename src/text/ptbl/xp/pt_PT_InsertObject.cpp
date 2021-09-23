@@ -205,23 +205,20 @@ bool pt_PieceTable::_realInsertObject(PT_DocPosition dpos,
 	std::string sProps;
 	if(!properties.empty())
 	{
-	    for(PP_PropertyVector::const_iterator iter = properties.begin();
+		for (PP_PropertyVector::const_iterator iter = properties.begin();
 			iter != properties.end(); ++iter)
-	    {
-	        UT_DEBUGMSG(("Object: szProps = |%s| \n",iter->c_str()));
-	        sProps += *iter + ":";
-	        ++iter;
-	        sProps += *iter;
-	        if(iter + 1 != properties.end())
-	        {
-	            sProps += ";";
-	        }
-	    }
+		{
+			UT_DEBUGMSG(("Object: szProps = |%s| \n",iter->name.c_str()));
+			sProps += iter->name;
+			sProps += ":" + iter->value;
+			if (iter + 1 != properties.end()) {
+				sProps += ";";
+			}
+		}
 	}
 	PP_PropertyVector atts(attributes);
 	if (!sProps.empty())	{
-	    atts.push_back("props");
-	    atts.push_back(sProps);
+	    atts.push_back({ "props", sProps });
 	}
 	PT_AttrPropIndex indexAP;
 	if (!m_varset.storeAP(atts, &indexAP)) {

@@ -652,21 +652,21 @@ void FV_FrameEdit::setDragType(UT_sint32 x, UT_sint32 y, bool bDrawFrame)
 	const char * pszPercentWidth = NULL;
 	const char * pszMinHeight = NULL;
 	const char * pszExpandHeight = NULL;
-	if(pAP && pAP->getProperty("frame-rel-width",pszPercentWidth))
+	if(pAP && pAP->getProperty(_PN("frame-rel-width"), pszPercentWidth))
 	{
 		if(pszPercentWidth)
 		{
 		     m_sRelWidth = pszPercentWidth;
 		}
 	}
-	if(pAP && pAP->getProperty("frame-min-height",pszMinHeight))
+	if(pAP && pAP->getProperty(_PN("frame-min-height"), pszMinHeight))
 	{
 		if(pszMinHeight)
 		{
 		     m_sMinHeight = pszMinHeight;
 		}
 	}
-	if(pAP && pAP->getProperty("frame-expand-height",pszExpandHeight))
+	if(pAP && pAP->getProperty(_PN("frame-expand-height"), pszExpandHeight))
 	{
 	        m_sExpandHeight = pszExpandHeight;
 	}	
@@ -1069,29 +1069,29 @@ void FV_FrameEdit::mouseRelease(UT_sint32 x, UT_sint32 y)
 		//				 reverted to on every change.
 		// TODO: if(pAP->getProperty("*-thickness", somePropHolder)) sLeftThickness = gchar_strdup(somePropHolder); else sLeftThickness = "1px";
 		PP_PropertyVector props = {
-			"frame-type", "textbox",
-			"wrap-mode", "wrapped-both",
-			"position-to", "column-above-text",
-			"xpos", FrameStrings.sXpos.c_str(),
-			"ypos", FrameStrings.sYpos.c_str(),
-			"frame-width", FrameStrings.sWidth.c_str(),
-			"frame-height", FrameStrings.sHeight.c_str(),
-			"frame-col-xpos", FrameStrings.sColXpos.c_str(),
-			"frame-col-ypos", FrameStrings.sColYpos.c_str(),
-			"frame-page-xpos", FrameStrings.sPageXpos.c_str(),
-			"frame-page-ypos", FrameStrings.sPageYpos.c_str(),
-			"frame-pref-page", FrameStrings.sPrefPage.c_str(),
-			"frame-pref-column", FrameStrings.sPrefColumn.c_str(),
-			"background-color", "ffffff",
-			"left-style", "1",
-			"right-style", "1",
-			"top-style", "1",
-			"bot-style", "1",
-			"bg-style", "1",
-			"tight-wrap", "0",
-			"frame-rel-width", m_sRelWidth.c_str(),
-			"frame-min-height", m_sMinHeight.c_str(),
-			"frame-expand-height", m_sExpandHeight.c_str(),
+			{"frame-type", "textbox"},
+			{"wrap-mode", "wrapped-both"},
+			{"position-to", "column-above-text"},
+			{"xpos", FrameStrings.sXpos.c_str()},
+			{"ypos", FrameStrings.sYpos.c_str()},
+			{"frame-width", FrameStrings.sWidth.c_str()},
+			{"frame-height", FrameStrings.sHeight.c_str()},
+			{"frame-col-xpos", FrameStrings.sColXpos.c_str()},
+			{"frame-col-ypos", FrameStrings.sColYpos.c_str()},
+			{"frame-page-xpos", FrameStrings.sPageXpos.c_str()},
+			{"frame-page-ypos", FrameStrings.sPageYpos.c_str()},
+			{"frame-pref-page", FrameStrings.sPrefPage.c_str()},
+			{"frame-pref-column", FrameStrings.sPrefColumn.c_str()},
+			{"background-color", "ffffff"},
+			{"left-style", "1"},
+			{"right-style", "1"},
+			{"top-style", "1"},
+			{"bot-style", "1"},
+			{"bg-style", "1"},
+			{"tight-wrap", "0"},
+			{"frame-rel-width", m_sRelWidth.c_str()},
+			{"frame-min-height", m_sMinHeight.c_str()},
+			{"frame-expand-height", m_sExpandHeight.c_str()},
 		};
 //
 // This should place the the frame strux immediately after the block containing
@@ -1219,16 +1219,16 @@ void FV_FrameEdit::mouseRelease(UT_sint32 x, UT_sint32 y)
 		posAtXY = pCloseBL->getPosition();
 
 		const PP_PropertyVector props = {
-			"xpos", FrameStrings.sXpos.c_str(),
-			"ypos", FrameStrings.sYpos.c_str(),
-			"frame-col-xpos", FrameStrings.sColXpos.c_str(),
-			"frame-col-ypos", FrameStrings.sColYpos.c_str(),
-			"frame-page-xpos", FrameStrings.sPageXpos.c_str(),
-			"frame-page-ypos", FrameStrings.sPageYpos.c_str(),
-			"frame-pref-page", FrameStrings.sPrefPage.c_str(),
-			"frame-pref-column", FrameStrings.sPrefColumn.c_str(),
-			"frame-width", FrameStrings.sWidth.c_str(),
-			"frame-height", FrameStrings.sHeight.c_str()
+			{"xpos", FrameStrings.sXpos.c_str()},
+			{"ypos", FrameStrings.sYpos.c_str()},
+			{"frame-col-xpos", FrameStrings.sColXpos.c_str()},
+			{"frame-col-ypos", FrameStrings.sColYpos.c_str()},
+			{"frame-page-xpos", FrameStrings.sPageXpos.c_str()},
+			{"frame-page-ypos", FrameStrings.sPageYpos.c_str()},
+			{"frame-pref-page", FrameStrings.sPrefPage.c_str()},
+			{"frame-pref-column", FrameStrings.sPrefColumn.c_str()},
+			{"frame-width", FrameStrings.sWidth.c_str()},
+			{"frame-height", FrameStrings.sHeight.c_str()}
 		};
 		// Signal PieceTable Change
 		m_pView->_saveAndNotifyPieceTableChange();

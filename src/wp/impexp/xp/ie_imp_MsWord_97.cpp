@@ -985,7 +985,7 @@ static void _errorMessage (XAP_Frame * pFrame, int id)
 
 static const struct {
   const char * metadata_key;
-  const char * abi_metadata_name;
+  PP_PropName abi_metadata_name;
 } metadata_names[] = {
   { GSF_META_NAME_TITLE, PD_META_KEY_TITLE },
   { GSF_META_NAME_DESCRIPTION, PD_META_KEY_DESCRIPTION },
@@ -994,48 +994,48 @@ static const struct {
   { GSF_META_NAME_DATE_CREATED, PD_META_KEY_DATE },
   { GSF_META_NAME_KEYWORDS, PD_META_KEY_KEYWORDS },
   { GSF_META_NAME_LANGUAGE, PD_META_KEY_LANGUAGE },
-  { GSF_META_NAME_REVISION_COUNT, NULL },
-  { GSF_META_NAME_EDITING_DURATION, NULL },
-  { GSF_META_NAME_TABLE_COUNT, NULL },
-  { GSF_META_NAME_IMAGE_COUNT, NULL },
-  { GSF_META_NAME_OBJECT_COUNT, NULL },
-  { GSF_META_NAME_PAGE_COUNT, NULL },
-  { GSF_META_NAME_PARAGRAPH_COUNT, NULL },
-  { GSF_META_NAME_WORD_COUNT, NULL },
-  { GSF_META_NAME_CHARACTER_COUNT, NULL },
-  { GSF_META_NAME_CELL_COUNT, NULL },
-  { GSF_META_NAME_SPREADSHEET_COUNT, NULL },
+  { GSF_META_NAME_REVISION_COUNT, PP_PropName() },
+  { GSF_META_NAME_EDITING_DURATION, PP_PropName() },
+  { GSF_META_NAME_TABLE_COUNT, PP_PropName() },
+  { GSF_META_NAME_IMAGE_COUNT, PP_PropName() },
+  { GSF_META_NAME_OBJECT_COUNT, PP_PropName() },
+  { GSF_META_NAME_PAGE_COUNT, PP_PropName() },
+  { GSF_META_NAME_PARAGRAPH_COUNT, PP_PropName() },
+  { GSF_META_NAME_WORD_COUNT, PP_PropName() },
+  { GSF_META_NAME_CHARACTER_COUNT, PP_PropName() },
+  { GSF_META_NAME_CELL_COUNT, PP_PropName() },
+  { GSF_META_NAME_SPREADSHEET_COUNT, PP_PropName() },
   { GSF_META_NAME_CREATOR, PD_META_KEY_CREATOR },
-  { GSF_META_NAME_TEMPLATE, NULL },
-  { GSF_META_NAME_LAST_SAVED_BY, NULL },
-  { GSF_META_NAME_LAST_PRINTED, NULL },
-  { GSF_META_NAME_SECURITY, NULL },
-  { GSF_META_NAME_CATEGORY, NULL },
-  { GSF_META_NAME_PRESENTATION_FORMAT, NULL },
-  { GSF_META_NAME_THUMBNAIL, NULL },
+  { GSF_META_NAME_TEMPLATE, PP_PropName() },
+  { GSF_META_NAME_LAST_SAVED_BY, PP_PropName() },
+  { GSF_META_NAME_LAST_PRINTED, PP_PropName() },
+  { GSF_META_NAME_SECURITY, PP_PropName() },
+  { GSF_META_NAME_CATEGORY, PP_PropName() },
+  { GSF_META_NAME_PRESENTATION_FORMAT, PP_PropName() },
+  { GSF_META_NAME_THUMBNAIL, PP_PropName() },
   { GSF_META_NAME_GENERATOR, PD_META_KEY_GENERATOR },
-  { GSF_META_NAME_LINE_COUNT, NULL },
-  { GSF_META_NAME_SLIDE_COUNT, NULL },
-  { GSF_META_NAME_NOTE_COUNT, NULL },
-  { GSF_META_NAME_HIDDEN_SLIDE_COUNT, NULL },
-  { GSF_META_NAME_MM_CLIP_COUNT, NULL },
-  { GSF_META_NAME_BYTE_COUNT, NULL },
-  { GSF_META_NAME_SCALE, NULL },
-  { GSF_META_NAME_HEADING_PAIRS, NULL },
-  { GSF_META_NAME_DOCUMENT_PARTS, NULL },
+  { GSF_META_NAME_LINE_COUNT, PP_PropName() },
+  { GSF_META_NAME_SLIDE_COUNT, PP_PropName() },
+  { GSF_META_NAME_NOTE_COUNT, PP_PropName() },
+  { GSF_META_NAME_HIDDEN_SLIDE_COUNT, PP_PropName() },
+  { GSF_META_NAME_MM_CLIP_COUNT, PP_PropName() },
+  { GSF_META_NAME_BYTE_COUNT, PP_PropName() },
+  { GSF_META_NAME_SCALE, PP_PropName() },
+  { GSF_META_NAME_HEADING_PAIRS, PP_PropName() },
+  { GSF_META_NAME_DOCUMENT_PARTS, PP_PropName() },
   { GSF_META_NAME_MANAGER, PD_META_KEY_CONTRIBUTOR },
   { GSF_META_NAME_COMPANY, PD_META_KEY_PUBLISHER },
-  { GSF_META_NAME_LINKS_DIRTY, NULL },
-  { GSF_META_NAME_MSOLE_UNKNOWN_17, NULL },
-  { GSF_META_NAME_MSOLE_UNKNOWN_18, NULL },
-  { GSF_META_NAME_MSOLE_UNKNOWN_19, NULL },
-  { GSF_META_NAME_MSOLE_UNKNOWN_20, NULL },
-  { GSF_META_NAME_MSOLE_UNKNOWN_21, NULL },
-  { GSF_META_NAME_MSOLE_UNKNOWN_22, NULL },
-  { GSF_META_NAME_MSOLE_UNKNOWN_23, NULL },
-  { GSF_META_NAME_DICTIONARY, NULL },
-  { GSF_META_NAME_LOCALE_SYSTEM_DEFAULT, NULL },
-  { GSF_META_NAME_CASE_SENSITIVE, NULL }
+  { GSF_META_NAME_LINKS_DIRTY, PP_PropName() },
+  { GSF_META_NAME_MSOLE_UNKNOWN_17, PP_PropName() },
+  { GSF_META_NAME_MSOLE_UNKNOWN_18, PP_PropName() },
+  { GSF_META_NAME_MSOLE_UNKNOWN_19, PP_PropName() },
+  { GSF_META_NAME_MSOLE_UNKNOWN_20, PP_PropName() },
+  { GSF_META_NAME_MSOLE_UNKNOWN_21, PP_PropName() },
+  { GSF_META_NAME_MSOLE_UNKNOWN_22, PP_PropName() },
+  { GSF_META_NAME_MSOLE_UNKNOWN_23, PP_PropName() },
+  { GSF_META_NAME_DICTIONARY, PP_PropName() },
+  { GSF_META_NAME_LOCALE_SYSTEM_DEFAULT, PP_PropName() },
+  { GSF_META_NAME_CASE_SENSITIVE, PP_PropName() }
 };
 static const gsize nr_metadata_names = G_N_ELEMENTS(metadata_names);
 
@@ -1055,9 +1055,9 @@ cb_print_property (char const *name, GsfDocProp const *prop, DocAndLid * doc)
 	  // just scan over the table. consider optimizing if we really care to.
 	  for(gsize i = 0; i < nr_metadata_names; i++) {
 		  if(strcmp(metadata_names[i].metadata_key, name) == 0) {
-			  char const * abi_metadata_name = metadata_names[i].abi_metadata_name;
+			  PP_PropName abi_metadata_name = metadata_names[i].abi_metadata_name;
 			
-			  if(abi_metadata_name != NULL) {
+			  if(!!abi_metadata_name) {
 				  const char * encoding = NULL;
 				  if (doc->lid >> 8 != 0x04) {
 					// header is not utf8 encoded
@@ -1266,8 +1266,8 @@ void IE_Imp_MsWord_97::_flush ()
 			  if(pObject->objType == PTO_Bookmark)
 			  {
 				  PP_PropertyVector propsArray = {
-					  "name", pObject->props1.c_str(),
-					  "type", pObject->props2.c_str()
+					  { "name", pObject->props1.c_str() },
+					  { "type", pObject->props2.c_str() }
 				  };
 				  _appendObject (PTO_Bookmark, propsArray);
 			  }
@@ -1330,13 +1330,12 @@ void IE_Imp_MsWord_97::_flush ()
 		  prop_rtl += "dir-override:rtl";
 
 		  PP_PropertyVector propsArray = {
-			  pProps, prop_basic.c_str()
+			  { pProps, prop_basic.c_str() }
 		  };
 
 		  if(m_charRevs.size())
 		  {
-			  propsArray.push_back("revision");
-			  propsArray.push_back(m_charRevs.c_str());
+			  propsArray.push_back({ "revision", m_charRevs.c_str() });
 		  }
 		  
 		  const UT_UCS4Char * p;
@@ -1377,7 +1376,7 @@ void IE_Imp_MsWord_97::_flush ()
 							  return;
 					  }
 					  iOverride = UT_BIDI_LTR;
-					  propsArray[1] = prop_ltr.c_str();
+					  propsArray[0].value = prop_ltr.c_str();
 					  iLast = i;
 				  }
 				  else if(!m_bLTRCharContext
@@ -1394,7 +1393,7 @@ void IE_Imp_MsWord_97::_flush ()
 							  return;
 					  }
 					  iOverride = UT_BIDI_RTL;
-					  propsArray[1] = prop_rtl.c_str();
+					  propsArray[0].value = prop_rtl.c_str();
 					  iLast = i;
 				  }
 			  }
@@ -1414,7 +1413,7 @@ void IE_Imp_MsWord_97::_flush ()
 							  return;
 					  }
 					  iOverride = UT_BIDI_UNSET;
-					  propsArray[1] = prop_basic.c_str();
+					  propsArray[0].value = prop_basic.c_str();
 					  iLast = i;
 				  }
 			  }
@@ -1666,16 +1665,16 @@ bool IE_Imp_MsWord_97::_insertBookmark(bookmark * bm)
 	bool error = false;
 
 	PP_PropertyVector propsArray = {
-		"name", bm->name,
-		"type", bm->start ? "start" : "end"
+		{ "name", bm->name },
+		{ "type", bm->start ? "start" : "end" }
 	};
 
 	if(m_bInTable && !m_bCellOpen)
 	{
 		emObject * pObject = new emObject;
-		pObject->props1 = propsArray[1];
+		pObject->props1 = propsArray[0].value;
 		pObject->objType = PTO_Bookmark;
-		pObject->props2 = propsArray[3];
+		pObject->props2 = propsArray[1].value;
 		m_vecEmObjects.addItem(pObject);
 	}
 	else
@@ -2074,7 +2073,7 @@ int IE_Imp_MsWord_97::_specCharProc (wvParseStruct *ps, U16 eachchar, CHP *achp)
 					const char * atts[] = {NULL,NULL,NULL,NULL,NULL,NULL};
 					if(bPositionObject && sImageName.size())
 					{
-					  atts[0] =  PT_STRUX_IMAGE_DATAID;
+					  atts[0] = PT_STRUX_IMAGE_DATAID.c_str();
 					  atts[1] = sImageName.c_str();
 					  atts[2] = "props";
 					}
@@ -3050,13 +3049,13 @@ int IE_Imp_MsWord_97::_beginPara (wvParseStruct *ps, UT_uint32 /*tag*/,
 		sListId = UT_std_string_sprintf("%d", iAWListId);
 		sParentId = UT_std_string_sprintf("%d", myParentID);
 		const PP_PropertyVector list_atts = {
-			"id", sListId,
-			"parentid", sParentId,
-			"type", s_mapDocToAbiListId (static_cast<MSWordListIdType>(apap->linfo.format)),
-			"start-value", startValue,
-			"list-delim", std::move(sDlm),
-			"level", sLevel,
-			"props", szNumberProps.c_str()
+			{ "id", sListId },
+			{ "parentid", sParentId },
+			{ "type", s_mapDocToAbiListId (static_cast<MSWordListIdType>(apap->linfo.format)) },
+			{ "start-value", startValue },
+			{ "list-delim", std::move(sDlm) },
+			{ "level", sLevel },
+			{ "props", szNumberProps.c_str() }
 		};
 
 		// now add this to our vector of lists
@@ -3091,18 +3090,15 @@ int IE_Imp_MsWord_97::_beginPara (wvParseStruct *ps, UT_uint32 /*tag*/,
 
  	// props
 	PP_PropertyVector propsArray = {
-		"props", m_paraProps.c_str()
+		{ "props", m_paraProps.c_str() }
 	};
 
 	// level, or 0 for default, normal level
 	if (myListId > 0)
 	{
-		propsArray.push_back("level");
-		propsArray.push_back(sLevel);
-		propsArray.push_back("listid");
-		propsArray.push_back(sListId);
-		propsArray.push_back("parentid");
-		propsArray.push_back(sParentId);
+		propsArray.push_back({ "level", sLevel });
+		propsArray.push_back({ "listid", sListId });
+		propsArray.push_back({ "parentid", sParentId });
 	}
 
 	// handle style
@@ -3116,7 +3112,6 @@ int IE_Imp_MsWord_97::_beginPara (wvParseStruct *ps, UT_uint32 /*tag*/,
 
 		if(apap->istd != istdNil && apap->istd < iCount)
 		{
-			propsArray.push_back("style");
 
 			char * t = NULL;
 			const gchar * pName = NULL;
@@ -3134,7 +3129,7 @@ int IE_Imp_MsWord_97::_beginPara (wvParseStruct *ps, UT_uint32 /*tag*/,
 			}
 
 			FREEP(t);
-			propsArray.push_back(m_paraStyle.c_str());
+			propsArray.push_back({ "style", m_paraStyle.c_str() });
 		}
 	}
 
@@ -3162,14 +3157,14 @@ int IE_Imp_MsWord_97::_beginPara (wvParseStruct *ps, UT_uint32 /*tag*/,
 	  {
 		// TODO: honor more props
 		PP_PropertyVector list_field_fmt = {
-			"type", "list_label",
-			"props", "text-decoration:none",
+			{ "type", "list_label" },
+			{ "props", "text-decoration:none" },
 		};
 		_appendObject(PTO_Field, list_field_fmt);
 		m_bInPara = true;
 
 		PP_PropertyVector attribs = {
-			"props", "text-decoration:none"
+			{ "props", "text-decoration:none" }
 		};
 		// the character following the list label - 0=tab, 1=space, 2=none
 		if(apap->linfo.ixchFollow == 0) // tab
@@ -3593,8 +3588,8 @@ bool IE_Imp_MsWord_97::_handleFieldEnd (char *command, UT_uint32 /*iDocPosition*
 		    case F_MERGEFIELD:
 			{
 				PP_PropertyVector atts = {
-					"type", "mail_merge",
-					"param"
+					{ "type", "mail_merge" },
+					{ "param", "" }
 				};
 
 				token = strtok (NULL, "\"\" ");
@@ -3622,11 +3617,11 @@ bool IE_Imp_MsWord_97::_handleFieldEnd (char *command, UT_uint32 /*iDocPosition*
 						a++;
 					}
 
-				atts.push_back(param.utf8_str());
+				atts[1].value = param.utf8_str();
 
 				if (!_appendObject (PTO_Field, atts))
 					{
-						UT_DEBUGMSG(("Dom: couldn't append field (type = '%s')\n", atts[1].c_str()));
+						UT_DEBUGMSG(("Dom: couldn't append field (type = '%s')\n", atts[0].value.c_str()));
 					}
 			}
 			break;
@@ -4036,7 +4031,7 @@ bool IE_Imp_MsWord_97::_handleCommandField (char *command)
 	xxx_UT_DEBUGMSG(("DOM: handleCommandField '%s'\n", command));
 
 	PP_PropertyVector atts = {
-		"type"
+		{ "type", "" }
 	};
 
 	if (*command != 0x13)
@@ -4062,46 +4057,42 @@ bool IE_Imp_MsWord_97::_handleCommandField (char *command)
 		{
 			case F_EDITTIME:
 			case F_TIME:
-				atts.push_back("time");
+				atts[0].value = "time";
 				break;
 
 			case F_DateTimePicture:
 				//seems similar to a creation date
-				atts.push_back("meta_date");
+				atts[0].value = "meta_date";
 				break;
 
 			case F_DATE:
-				atts.push_back("date");
+				atts[0].value = "date";
 				break;
 
 			case F_PAGE:
-				atts.push_back("page_number");
+				atts[0].value = "page_number";
 				break;
 
 			case F_NUMCHARS:
-				atts.push_back("char_count");
+				atts[0].value = "char_count";
 				break;
 
 			case F_NUMPAGES:
-				atts.push_back("page_count");
+				atts[0].value = "page_count";
 				break;
 
 			case F_NUMWORDS:
-				atts.push_back("word_count");
+				atts[0].value = "word_count";
 				break;
 
 			case F_FILENAME:
-				atts.push_back("file_name");
+				atts[0].value = "file_name";
 				break;
 
 			case F_PAGEREF:
 				token = strtok (NULL, "\"\" ");
-				atts.push_back("page_ref");
-				atts.push_back("param");
-				if(token)
-					atts.push_back(token);
-				else
-					atts.push_back("no_bookmark_given");
+				atts[0].value = "page_ref";
+				atts.push_back({ "param", token ? token : "no_bookmark_given" });
 				break;
 
 			case F_HYPERLINK:
@@ -4122,7 +4113,7 @@ bool IE_Imp_MsWord_97::_handleCommandField (char *command)
 						  href = token;
 					    }
 					  PP_PropertyVector new_atts = {
-						  "xlink:href", href
+						  { "xlink:href", href }
 					  };
 					  this->_flush();
 
@@ -4169,7 +4160,7 @@ bool IE_Imp_MsWord_97::_handleCommandField (char *command)
 
 		if (!_appendObject (PTO_Field, atts))
 		{
-			UT_DEBUGMSG(("Dom: couldn't append field (type = '%s')\n", atts[1].c_str()));
+			UT_DEBUGMSG(("Dom: couldn't append field (type = '%s')\n", atts[0].value.c_str()));
 		}
 
 		token = strtok(NULL, "\t, ");
@@ -4345,8 +4336,8 @@ UT_Error IE_Imp_MsWord_97::_handleImage (Blip * b, long width, long height, long
 
 	{
 		PP_PropertyVector propsArray = {
-			"props", propBuffer,
-			"dataid", propsName
+			{ "props", propBuffer },
+			{ "dataid", propsName }
 		};
 
 		if (!_appendObject (PTO_Image, propsArray)) {
@@ -5368,7 +5359,7 @@ void IE_Imp_MsWord_97::_handleStyleSheet(const wvParseStruct *ps)
 
 		//UT_DEBUGMSG(("Style name: [%s], id: %d\n", pSTD->xstzName, pSTD->sti));
 
-		attribs[iOffset++] = PT_NAME_ATTRIBUTE_NAME;
+		attribs[iOffset++] = PT_NAME_ATTRIBUTE_NAME.c_str();
 
 		// make sure we use standard names for standard styles
 		const gchar * pName = s_translateStyleId(pSTD->sti);
@@ -5386,7 +5377,7 @@ void IE_Imp_MsWord_97::_handleStyleSheet(const wvParseStruct *ps)
 		UT_DEBUGMSG(("Style name: [%s], id: %d\n", attribs[iOffset-1], pSTD->sti));
 
 		
-		attribs[iOffset++] = PT_TYPE_ATTRIBUTE_NAME;
+		attribs[iOffset++] = PT_TYPE_ATTRIBUTE_NAME.c_str();
 		if(pSTD->sgc == sgcChp)
 		{
 			attribs[iOffset++] = "C";
@@ -5399,7 +5390,7 @@ void IE_Imp_MsWord_97::_handleStyleSheet(const wvParseStruct *ps)
 			// paragraph style
 			if(pSTD->istdNext != istdNil && pSTD->istdNext<iCount)
 			{
-				attribs[iOffset++] = PT_FOLLOWEDBY_ATTRIBUTE_NAME;
+				attribs[iOffset++] = PT_FOLLOWEDBY_ATTRIBUTE_NAME.c_str();
 				const char * t = s_translateStyleId(pSTD->istdNext);
 				if(!t)
 				{
@@ -5411,7 +5402,7 @@ void IE_Imp_MsWord_97::_handleStyleSheet(const wvParseStruct *ps)
 
 		if(pSTD->istdBase != istdNil)
 		{
-			attribs[iOffset++] = PT_BASEDON_ATTRIBUTE_NAME;
+			attribs[iOffset++] = PT_BASEDON_ATTRIBUTE_NAME.c_str();
 			const char * t = s_translateStyleId(pSTD->istdBase);
 			if(!t)
 				t = b = s_convert_to_utf8(ps,(pSTDBase + pSTD->istdBase)->xstzName);
@@ -5446,7 +5437,7 @@ void IE_Imp_MsWord_97::_handleStyleSheet(const wvParseStruct *ps)
 
 		if(props.size())
 		{
-			attribs[iOffset++] = PT_PROPS_ATTRIBUTE_NAME;
+			attribs[iOffset++] = PT_PROPS_ATTRIBUTE_NAME.c_str();
 			attribs[iOffset++] = props.c_str();
 		}
 		
@@ -5645,25 +5636,25 @@ void IE_Imp_MsWord_97::_handleNotes(const wvParseStruct *ps)
 
 		// next, deal footnote formatting matters
 		PP_PropertyVector props = {
-			"document-footnote-type",            "",
-			"document-footnote-initial", UT_std_string_sprintf("%d", ps->dop.nFtn),
-			"document-footnote-restart-section", "",
-			"document-footnote-restart-page",    "",
+			{ "document-footnote-type",            "" },
+			{ "document-footnote-initial", UT_std_string_sprintf("%d", ps->dop.nFtn) },
+			{ "document-footnote-restart-section", "" },
+			{ "document-footnote-restart-page",    "" },
 		};
 
 		switch(ps->dop.rncFtn)
 		{
 			case 0:
-				props[5] = "0";
-				props[7] = "0";
+				props[2].value = "0";
+				props[3].value = "0";
 				break;
 			case 1:
-				props[5] = "1";
-				props[7] = "0";
+				props[2].value = "1";
+				props[3].value = "0";
 				break;
 			case 2:
-				props[5] = "0";
-				props[7] = "1";
+				props[2].value = "0";
+				props[3].value = "1";
 				break;
 			default:
 				UT_ASSERT_HARMLESS(UT_NOT_REACHED);
@@ -5672,23 +5663,23 @@ void IE_Imp_MsWord_97::_handleNotes(const wvParseStruct *ps)
 		switch(ps->dop.nfcFtnRef)
 		{
 			case 0:
-				props[1] = "numeric";
+				props[0].value = "numeric";
 				break;
 			case 1:
-				props[1] = "upper-roman";
+				props[0].value = "upper-roman";
 				break;
 			case 2:
-				props[1] = "lower-roman";
+				props[0].value = "lower-roman";
 				break;
 			case 3:
-				props[1] = "upper";
+				props[0].value = "upper";
 				break;
 			case 4:
-				props[1] = "lower";
+				props[0].value = "lower";
 				break;
 			default:
 				UT_ASSERT_HARMLESS(UT_NOT_REACHED);
-				props[1] = "";
+				props[0].value = "";
 				break;
 		}
 
@@ -5754,27 +5745,27 @@ void IE_Imp_MsWord_97::_handleNotes(const wvParseStruct *ps)
 		}
 		// next, deal endnote formatting matters
 		PP_PropertyVector props = {
-			"document-endnote-type",            "",
-			"document-endnote-initial", UT_std_string_sprintf("%d", ps->dop.nEdn),
-			"document-endnote-restart-section", "",
-			"document-endnote-restart-page",    "",
-			"document-endnote-place-endsection","",
-			"document-endnote-place-enddoc",    "",
+			{ "document-endnote-type",            "" },
+			{ "document-endnote-initial", UT_std_string_sprintf("%d", ps->dop.nEdn) },
+			{ "document-endnote-restart-section", "" },
+			{ "document-endnote-restart-page",    "" },
+			{ "document-endnote-place-endsection","" },
+			{ "document-endnote-place-enddoc",    "" },
 		};
 
 		switch(ps->dop.rncEdn)
 		{
 			case 0:
-				props[5] = "0";
-				props[7] = "0";
+				props[2].value = "0";
+				props[3].value = "0";
 				break;
 			case 1:
-				props[5] = "1";
-				props[7] = "0";
+				props[2].value = "1";
+				props[3].value = "0";
 				break;
 			case 2:
-				props[5] = "0";
-				props[7] = "1";
+				props[2].value = "0";
+				props[3].value = "1";
 				break;
 
 			default:
@@ -5784,19 +5775,19 @@ void IE_Imp_MsWord_97::_handleNotes(const wvParseStruct *ps)
 		switch(ps->dop.nfcEdnRef)
 		{
 			case 0:
-				props[1] = "numeric";
+				props[0].value = "numeric";
 				break;
 			case 1:
-				props[1] = "upper-roman";
+				props[0].value = "upper-roman";
 				break;
 			case 2:
-				props[1] = "lower-roman";
+				props[0].value = "lower-roman";
 				break;
 			case 3:
-				props[1] = "upper";
+				props[0].value = "upper";
 				break;
 			case 4:
-				props[1] = "lower";
+				props[0].value = "lower";
 				break;
 
 			default:
@@ -5806,12 +5797,12 @@ void IE_Imp_MsWord_97::_handleNotes(const wvParseStruct *ps)
 		switch(ps->dop.epc)
 		{
 			case 0:
-				props[9]  = "1";
-				props[11] = "0";
+				props[4].value = "1";
+				props[5].value = "0";
 				break;
 			case 3:
-				props[9]  = "0";
-				props[11] = "1";
+				props[4].value = "0";
+				props[5].value = "1";
 				break;
 			default:
 				UT_ASSERT_HARMLESS(UT_NOT_REACHED);
@@ -5940,19 +5931,20 @@ bool IE_Imp_MsWord_97::_insertFootnote(const footnote * f, UT_UCS4Char c)
 	bool res = true;
 
 	std::string footpid = UT_std_string_sprintf("%i", f->pid);
-	const PP_PropertyVector attribsS = { "footnote-id", footpid };
+	const PP_PropertyVector attribsS = {
+		{"footnote-id", footpid }
+	};
 
 	// for attribsR we need to set props and style in order to
 	// preserve any formating set by a previous call to _beginChar()
 	PP_PropertyVector attribsR = {
-		"type", "footnote_ref",
-		"footnote-id", footpid,
-		"props", m_charProps.c_str()
+		{ "type", "footnote_ref" },
+		{ "footnote-id", footpid },
+		{ "props", m_charProps.c_str() }
 	};
 	if(!m_charStyle.empty())
 	{
-		attribsR.push_back("style");
-		attribsR.push_back(m_charStyle.c_str());
+		attribsR.push_back({ "style", m_charStyle.c_str() });
 	}
 
 	if(f->type)
@@ -5994,14 +5986,15 @@ bool IE_Imp_MsWord_97::_insertEndnote(const footnote * f, UT_UCS4Char c)
 
 	std::string footpid = UT_std_string_sprintf("%i", f->pid);
 	const PP_PropertyVector attribsS = {
-		"endnote-id", footpid
+		{ "endnote-id", footpid }
 	};
 	// for attribsR we need to set props and style in order to
 	// preserve any formating set by a previous call to _beginChar()
 	const PP_PropertyVector attribsR = {
-		"type", "endnote_ref", "endnote-id", footpid,
-		"props", m_charProps.c_str(),
-		"style", m_charStyle.c_str()
+		{ "type", "endnote_ref" },
+		{ "endnote-id", footpid },
+		{ "props", m_charProps.c_str() },
+		{ "style", m_charStyle.c_str() }
 	};
 
 	if(f->type)
@@ -6100,15 +6093,15 @@ bool IE_Imp_MsWord_97::_handleNotesText(UT_uint32 iDocPosition)
 			std::string footpid =
 				UT_std_string_sprintf("%i", m_pFootnotes[m_iNextFNote].pid);
 			const PP_PropertyVector attribsA = {
-				"type", "footnote_anchor",
-				"footnote-id", footpid,
-				"props",       m_charProps.c_str(),
-				"style",       m_charStyle.c_str()
+				{ "type", "footnote_anchor" },
+				{ "footnote-id", footpid },
+				{ "props",       m_charProps.c_str() },
+				{ "style",       m_charStyle.c_str() }
 			};
 
 			const PP_PropertyVector attribsB = {
-				"props", m_paraProps.c_str(),
-				"style", m_paraStyle.c_str()
+				{ "props", m_paraProps.c_str() },
+				{ "style", m_paraStyle.c_str() }
 			};
 
 			_appendStrux(PTX_Block, attribsB);
@@ -6171,15 +6164,15 @@ bool IE_Imp_MsWord_97::_handleNotesText(UT_uint32 iDocPosition)
 				UT_std_string_sprintf("%i", m_pEndnotes[m_iNextENote].pid);
 
 			const PP_PropertyVector attribsA = {
-				"type", "endnote_anchor",
-				"endnote-id", footpid,
-				"props", m_charProps.c_str(),
-				"style", m_charStyle.c_str()
+				{ "type", "endnote_anchor" },
+				{ "endnote-id", footpid },
+				{ "props", m_charProps.c_str() },
+				{ "style", m_charStyle.c_str() }
 			};
 
 			const PP_PropertyVector attribsB = {
-				"props", m_paraProps.c_str(),
-				"style", m_paraStyle.c_str()
+				{ "props", m_paraProps.c_str() },
+				{ "style", m_paraStyle.c_str() }
 			};
 
 			_appendStrux(PTX_Block, attribsB);
@@ -6829,52 +6822,48 @@ bool IE_Imp_MsWord_97::_insertHeaderSection(bool bDoBlockIns)
 		PP_PropertyVector attribsB;
 		if(m_paraProps.size())
 		{
-			attribsB.push_back("props");
-			attribsB.push_back(m_paraProps.c_str());
+			attribsB.push_back({ "props", m_paraProps.c_str() });
 		}
 		if(m_paraStyle.size())
 		{
-			attribsB.push_back("style");
-			attribsB.push_back(m_paraStyle.c_str());
+			attribsB.push_back({ "style", m_paraStyle.c_str() });
 		}
 
 		PP_PropertyVector attribsC;
 		if(m_charProps.size())
 		{
-			attribsC.push_back("props");
-			attribsC.push_back(m_charProps.c_str());
+			attribsC.push_back({ "props", m_charProps.c_str() });
 		}
 		if(m_charStyle.size())
 		{
-			attribsC.push_back("style");
-			attribsC.push_back(m_charStyle.c_str());
+			attribsC.push_back({ "style", m_charStyle.c_str() });
 		}
 
 		std::string id = UT_std_string_sprintf("%d", m_pHeaders[m_iCurrentHeader].pid);
 		PP_PropertyVector attribsS = {
-			"type", "",
-			"id",  id
+			{ "type", "" },
+			{ "id",  id }
 		};
 		UT_DEBUGMSG(("Appending Current Header %d pid %s \n",m_iCurrentHeader,id.c_str()));
 		switch(m_pHeaders[m_iCurrentHeader].type)
 		{
 			case HF_HeaderEven:
-				attribsS[1] = "header-even";
+				attribsS[0].value = "header-even";
 				break;
 			case HF_FooterEven:
-				attribsS[1] = "footer-even";
+				attribsS[0].value = "footer-even";
 				break;
 			case HF_HeaderOdd:
-				attribsS[1] = "header";
+				attribsS[0].value = "header";
 				break;
 			case HF_FooterOdd:
-				attribsS[1] = "footer";
+				attribsS[0].value = "footer";
 				break;
 			case HF_HeaderFirst:
-				attribsS[1] = "header-first";
+				attribsS[0].value = "header-first";
 				break;
 			case HF_FooterFirst:
-				attribsS[1] = "footer-first";
+				attribsS[0].value = "footer-first";
 				break;
 			default:
 				UT_ASSERT_HARMLESS(UT_NOT_REACHED);
@@ -6914,27 +6903,27 @@ bool IE_Imp_MsWord_97::_insertHeaderSection(bool bDoBlockIns)
 			}
 
 			id = UT_std_string_sprintf("%d", pH->pid);
-			attribsS[3] = id;
+			attribsS[1].value = id;
 
 			switch(pH->type)
 			{
 				case HF_HeaderEven:
-					attribsS[1] = "header-even";
+					attribsS[0].value = "header-even";
 					break;
 				case HF_FooterEven:
-					attribsS[1] = "footer-even";
+					attribsS[0].value = "footer-even";
 					break;
 				case HF_HeaderOdd:
-					attribsS[1] = "header";
+					attribsS[0].value = "header";
 					break;
 				case HF_FooterOdd:
-					attribsS[1] = "footer";
+					attribsS[0].value = "footer";
 					break;
 				case HF_HeaderFirst:
-					attribsS[1] = "header-first";
+					attribsS[0].value = "header-first";
 					break;
 				case HF_FooterFirst:
-					attribsS[1] = "footer-first";
+					attribsS[0].value = "footer-first";
 					break;
 				default:
 					UT_ASSERT_HARMLESS(UT_NOT_REACHED);

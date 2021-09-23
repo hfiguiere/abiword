@@ -35,6 +35,7 @@
 #include "ut_types.h"
 #include "ut_debugmsg.h"
 #include "ut_assert.h"
+#include "ut_std_string.h"
 #include "fl_FrameLayout.h"
 #include "fp_TableContainer.h"
 #include "fv_View.h"
@@ -192,13 +193,9 @@ void fp_FrameContainer::setPreferedPageNo(UT_sint32 i)
      if(pDL->isLayoutFilling())
        return;
      PD_Document * pDoc = pDL->getDocument();
-     UT_UTF8String sVal;
-     UT_UTF8String_sprintf(sVal,"%d",i);
-     const char * attr = PT_PROPS_ATTRIBUTE_NAME;
-     UT_UTF8String sAttVal = "frame-pref-page:";
-     sAttVal += sVal.utf8_str();
-     
-     pDoc->changeStruxAttsNoUpdate(pFL->getStruxDocHandle(),attr,sAttVal.utf8_str());
+     std::string sVal = UT_std_string_sprintf("frame-pref-page:%d", i);
+
+     pDoc->changeStruxAttsNoUpdate(pFL->getStruxDocHandle(), PT_PROPS_ATTRIBUTE_NAME.c_str(), sVal.c_str());
 }
 
 void fp_FrameContainer::setPreferedColumnNo(UT_sint32 i)
@@ -211,13 +208,9 @@ void fp_FrameContainer::setPreferedColumnNo(UT_sint32 i)
      if(pDL->isLayoutFilling())
        return;
      PD_Document * pDoc = pDL->getDocument();
-     UT_UTF8String sVal;
-     UT_UTF8String_sprintf(sVal,"%d",i);
-     const char * attr = PT_PROPS_ATTRIBUTE_NAME;
-     UT_UTF8String sAttVal = "frame-pref-column:";
-     sAttVal += sVal.utf8_str();
-     
-     pDoc->changeStruxAttsNoUpdate(pFL->getStruxDocHandle(),attr,sAttVal.utf8_str());
+     std::string sVal = UT_std_string_sprintf("frame-pref-column:%d", i);
+
+     pDoc->changeStruxAttsNoUpdate(pFL->getStruxDocHandle(), PT_PROPS_ATTRIBUTE_NAME.c_str(), sVal.c_str());
 }
 
 /*!

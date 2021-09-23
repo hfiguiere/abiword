@@ -15,6 +15,7 @@ libxp_la_SOURCES = \
 	@top_srcdir@/src/af/util/xp/t/ut_stack.t.cpp \
 	@top_srcdir@/src/af/util/xp/t/ut_string_class.t.cpp \
 	@top_srcdir@/src/af/util/xp/t/ut_std_string.t.cpp \
+	@top_srcdir@/src/af/util/xp/t/ut_static_string.t.cpp \
 	@top_srcdir@/src/af/util/xp/t/ut_types.t.cpp \
 	@top_srcdir@/src/af/util/xp/t/ut_vector.t.cpp \
 	@top_srcdir@/src/af/util/xp/t/ut_string.t.cpp \

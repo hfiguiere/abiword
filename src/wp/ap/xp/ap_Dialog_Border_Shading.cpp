@@ -193,10 +193,10 @@ void AP_Dialog_Border_Shading::setCurBlockProps(void)
 
 		fl_BlockLayout* current_block = pView->getCurrentBlock();
 
-		const char* style_left	= current_block->getProperty("left-style");
-		const char* style_right	= current_block->getProperty("right-style");
-		const char* style_top	= current_block->getProperty("top-style");
-		const char* style_bot	= current_block->getProperty("bot-style");
+		const char* style_left	= current_block->getProperty(_PN("left-style"));
+		const char* style_right	= current_block->getProperty(_PN("right-style"));
+		const char* style_top	= current_block->getProperty(_PN("top-style"));
+		const char* style_bot	= current_block->getProperty(_PN("bot-style"));
 
 
 		// Update the border styles.
@@ -204,52 +204,52 @@ void AP_Dialog_Border_Shading::setCurBlockProps(void)
 		std::string default_style = m_sDefaultStyle;
 
 		if (style_left)	{
-			PP_addOrSetAttribute("left-style", style_left, m_vecProps);
+			PP_addOrSetAttribute(_PN("left-style"), style_left, m_vecProps);
 			if (active_style == default_style) {
 				active_style = style_left;
 			}
 		} else {
-			PP_removeAttribute("left-style", m_vecProps);
+			PP_removeAttribute(_PN("left-style"), m_vecProps);
 		}
 
 		if (style_right) {
-			PP_addOrSetAttribute("right-style", style_right, m_vecProps);
+			PP_addOrSetAttribute(_PN("right-style"), style_right, m_vecProps);
 			if (active_style == default_style) {
 				active_style = style_right;
 			}
 		} else {
-			PP_removeAttribute("right-style", m_vecProps);
+			PP_removeAttribute(_PN("right-style"), m_vecProps);
 		}
 
 		if (style_top) {
-			PP_addOrSetAttribute("top-style", style_top, m_vecProps);
+			PP_addOrSetAttribute(_PN("top-style"), style_top, m_vecProps);
 			if (active_style == default_style) {
 				active_style = style_top;
 			}
 		} else {
-			PP_removeAttribute("top-style", m_vecProps);
+			PP_removeAttribute(_PN("top-style"), m_vecProps);
 		}
 
 		if (style_bot) {
-			PP_addOrSetAttribute("bot-style", style_bot, m_vecProps);
+			PP_addOrSetAttribute(_PN("bot-style"), style_bot, m_vecProps);
 			if (active_style == default_style) {
 				active_style = style_bot;
 			}
 		} else {
-			PP_removeAttribute("bot-style", m_vecProps);
+			PP_removeAttribute(_PN("bot-style"), m_vecProps);
 		}
 
 		setBorderStyleInGUI(active_style);
 
-		const char* color_left	= current_block->getProperty("left-color");
-		const char* thickness_left	= current_block->getProperty("left-thickness");
+		const char* color_left	= current_block->getProperty(_PN("left-color"));
+		const char* thickness_left	= current_block->getProperty(_PN("left-thickness"));
 
 		if (color_left)
 		{
-			PP_addOrSetAttribute("left-color", color_left, m_vecProps);
-			PP_addOrSetAttribute("right-color", color_left, m_vecProps);
-			PP_addOrSetAttribute("top-color", color_left, m_vecProps);
-			PP_addOrSetAttribute("bot-color", color_left, m_vecProps);
+			PP_addOrSetAttribute(_PN("left-color"), color_left, m_vecProps);
+			PP_addOrSetAttribute(_PN("right-color"), color_left, m_vecProps);
+			PP_addOrSetAttribute(_PN("top-color"), color_left, m_vecProps);
+			PP_addOrSetAttribute(_PN("bot-color"), color_left, m_vecProps);
 
 			UT_RGBColor clr;
 			clr.setColor(color_left);
@@ -257,55 +257,55 @@ void AP_Dialog_Border_Shading::setCurBlockProps(void)
 		}
 		else
 		{
-			PP_removeAttribute("left-color", m_vecProps);
-			PP_removeAttribute("right-color", m_vecProps);
-			PP_removeAttribute("top-color", m_vecProps);
-			PP_removeAttribute("bot-color", m_vecProps);
+			PP_removeAttribute(_PN("left-color"), m_vecProps);
+			PP_removeAttribute(_PN("right-color"), m_vecProps);
+			PP_removeAttribute(_PN("top-color"), m_vecProps);
+			PP_removeAttribute(_PN("bot-color"), m_vecProps);
 		}
 
 		if (thickness_left)
 		{
-			PP_addOrSetAttribute("left-thickness", thickness_left, m_vecProps);
-			PP_addOrSetAttribute("right-thickness", thickness_left, m_vecProps);
-			PP_addOrSetAttribute("top-thickness", thickness_left, m_vecProps);
-			PP_addOrSetAttribute("bot-thickness", thickness_left, m_vecProps);
+			PP_addOrSetAttribute(_PN("left-thickness"), thickness_left, m_vecProps);
+			PP_addOrSetAttribute(_PN("right-thickness"), thickness_left, m_vecProps);
+			PP_addOrSetAttribute(_PN("top-thickness"), thickness_left, m_vecProps);
+			PP_addOrSetAttribute(_PN("bot-thickness"), thickness_left, m_vecProps);
 
 			setBorderThicknessInGUI(thickness_left);
 		}
 		else
 		{
-			PP_removeAttribute("left-thickness", m_vecProps);
-			PP_removeAttribute("right-thickness", m_vecProps);
-			PP_removeAttribute("top-thickness", m_vecProps);
-			PP_removeAttribute("bot-thickness", m_vecProps);
+			PP_removeAttribute(_PN("left-thickness"), m_vecProps);
+			PP_removeAttribute(_PN("right-thickness"), m_vecProps);
+			PP_removeAttribute(_PN("top-thickness"), m_vecProps);
+			PP_removeAttribute(_PN("bot-thickness"), m_vecProps);
 		}
 
 		// Update shading.
 
-		const char* shading_pattern	= current_block->getProperty("shading-pattern");
-		const char* shading_color	= current_block->getProperty("shading-foreground-color");
+		const char* shading_pattern	= current_block->getProperty(_PN("shading-pattern"));
+		const char* shading_color	= current_block->getProperty(_PN("shading-foreground-color"));
 
 		if (shading_pattern)
 		{
-			PP_addOrSetAttribute("shading-pattern", shading_pattern, m_vecProps);
+			PP_addOrSetAttribute(_PN("shading-pattern"), shading_pattern, m_vecProps);
 			setShadingPatternInGUI(shading_pattern);
 		}
 		else
 		{
-			PP_removeAttribute("shading-pattern", m_vecProps);
+			PP_removeAttribute(_PN("shading-pattern"), m_vecProps);
 			setShadingPatternInGUI(BORDER_SHADING_SHADING_DISABLE);
 		}
 
 		if (shading_color)
 		{
-			PP_addOrSetAttribute("shading-foreground-color", shading_color, m_vecProps);
+			PP_addOrSetAttribute(_PN("shading-foreground-color"), shading_color, m_vecProps);
 			UT_RGBColor clr;
 			clr.setColor(shading_color);
 			setShadingColorInGUI(clr);
 		}
 		else
 		{
-			PP_removeAttribute("shading-foreground-color", m_vecProps);
+			PP_removeAttribute(_PN("shading-foreground-color"), m_vecProps);
 			setShadingColorInGUI(UT_RGBColor(255, 255, 255));
 		}
 
@@ -351,24 +351,24 @@ void AP_Dialog_Border_Shading::toggleLineType(toggle_button btn, bool enabled)
 	switch (btn)
 	{
 		case toggle_left:
-			PP_addOrSetAttribute("left-style", sTmp, m_vecProps);
-			PP_addOrSetAttribute("left-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("left-thickness", m_sBorderThickness, m_vecProps);
+			PP_addOrSetAttribute(_PN("left-style"), sTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("left-color"), cTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("left-thickness"), m_sBorderThickness, m_vecProps);
 			break;
 		case toggle_right:
-			PP_addOrSetAttribute("right-style", sTmp, m_vecProps);
-			PP_addOrSetAttribute("right-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("right-thickness", m_sBorderThickness, m_vecProps);
+			PP_addOrSetAttribute(_PN("right-style"), sTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("right-color"), cTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("right-thickness"), m_sBorderThickness, m_vecProps);
 			break;
 		case toggle_top:
-			PP_addOrSetAttribute("top-style", sTmp, m_vecProps);
-			PP_addOrSetAttribute("top-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("top-thickness",m_sBorderThickness, m_vecProps);
+			PP_addOrSetAttribute(_PN("top-style"), sTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("top-color"), cTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("top-thickness"),m_sBorderThickness, m_vecProps);
 			break;
 		case toggle_bottom:
-			PP_addOrSetAttribute("bot-style", sTmp, m_vecProps);
-			PP_addOrSetAttribute("bot-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("bot-thickness", m_sBorderThickness, m_vecProps);
+			PP_addOrSetAttribute(_PN("bot-style"), sTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("bot-color"), cTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("bot-thickness"), m_sBorderThickness, m_vecProps);
 			break;
 	}
 	m_bSettingsChanged = true;
@@ -379,10 +379,10 @@ void AP_Dialog_Border_Shading::setBorderThickness(const std::string & sThick)
 {
 	m_sBorderThickness = sThick;
 
-	PP_addOrSetAttribute("left-thickness", m_sBorderThickness, m_vecProps);
-	PP_addOrSetAttribute("right-thickness", m_sBorderThickness, m_vecProps);
-	PP_addOrSetAttribute("top-thickness", m_sBorderThickness, m_vecProps);
-	PP_addOrSetAttribute("bot-thickness", m_sBorderThickness, m_vecProps);
+	PP_addOrSetAttribute(_PN("left-thickness"), m_sBorderThickness, m_vecProps);
+	PP_addOrSetAttribute(_PN("right-thickness"), m_sBorderThickness, m_vecProps);
+	PP_addOrSetAttribute(_PN("top-thickness"), m_sBorderThickness, m_vecProps);
+	PP_addOrSetAttribute(_PN("bot-thickness"), m_sBorderThickness, m_vecProps);
 
 	guint index			= _findClosestThickness(sThick.c_str());
 	double space		= m_dThickness[index] + 0.02;
@@ -392,10 +392,10 @@ void AP_Dialog_Border_Shading::setBorderThickness(const std::string & sThick)
 		str_space = UT_std_string_sprintf("%fin", space);
 	}
 
-	PP_addOrSetAttribute("left-space", str_space, m_vecProps);
-	PP_addOrSetAttribute("right-space", str_space, m_vecProps);
-	PP_addOrSetAttribute("top-space", str_space, m_vecProps);
-	PP_addOrSetAttribute("bot-space", str_space, m_vecProps);
+	PP_addOrSetAttribute(_PN("left-space"), str_space, m_vecProps);
+	PP_addOrSetAttribute(_PN("right-space"), str_space, m_vecProps);
+	PP_addOrSetAttribute(_PN("top-space"), str_space, m_vecProps);
+	PP_addOrSetAttribute(_PN("bot-space"), str_space, m_vecProps);
 
 	m_bSettingsChanged = true;
 	xxx_UT_DEBUGMSG(("Maleesh ======================= setBorderThickness\n"));
@@ -403,10 +403,10 @@ void AP_Dialog_Border_Shading::setBorderThickness(const std::string & sThick)
 
 void AP_Dialog_Border_Shading::setBorderStyle(const std::string & sStyle)
 {
-	PP_addOrSetAttribute("left-style", sStyle, m_vecProps);
-	PP_addOrSetAttribute("right-style", sStyle, m_vecProps);
-	PP_addOrSetAttribute("top-style", sStyle, m_vecProps);
-	PP_addOrSetAttribute("bot-style", sStyle, m_vecProps);
+	PP_addOrSetAttribute(_PN("left-style"), sStyle, m_vecProps);
+	PP_addOrSetAttribute(_PN("right-style"), sStyle, m_vecProps);
+	PP_addOrSetAttribute(_PN("top-style"), sStyle, m_vecProps);
+	PP_addOrSetAttribute(_PN("bot-style"), sStyle, m_vecProps);
 
 	m_bSettingsChanged = true;
 //	UT_DEBUGMSG(("Maleesh ======================= setBorderStyle %s: \n", sStyle.c_str()));
@@ -418,10 +418,10 @@ void AP_Dialog_Border_Shading::setBorderColor(const UT_RGBColor& clr)
 
 	std::string s = UT_std_string_sprintf("%02x%02x%02x", clr.m_red, clr.m_grn, clr.m_blu);
 
-	PP_addOrSetAttribute("left-color", s, m_vecProps);
-	PP_addOrSetAttribute("right-color", s, m_vecProps);
-	PP_addOrSetAttribute("top-color", s, m_vecProps);
-	PP_addOrSetAttribute("bot-color", s, m_vecProps);
+	PP_addOrSetAttribute(_PN("left-color"), s, m_vecProps);
+	PP_addOrSetAttribute(_PN("right-color"), s, m_vecProps);
+	PP_addOrSetAttribute(_PN("top-color"), s, m_vecProps);
+	PP_addOrSetAttribute(_PN("bot-color"), s, m_vecProps);
 
 	m_bSettingsChanged = true;
 	xxx_UT_DEBUGMSG(("Maleesh ======================= setBorderColor\n"));
@@ -429,7 +429,7 @@ void AP_Dialog_Border_Shading::setBorderColor(const UT_RGBColor& clr)
 
 void AP_Dialog_Border_Shading::setShadingPattern(const std::string & sPattern)
 {
-	PP_addOrSetAttribute ("shading-pattern", sPattern, m_vecProps);
+	PP_addOrSetAttribute(_PN("shading-pattern"), sPattern, m_vecProps);
 	m_bSettingsChanged = true;
 	xxx_UT_DEBUGMSG(("Maleesh ======================= setShadingPattern\n"));
 }
@@ -437,9 +437,9 @@ void AP_Dialog_Border_Shading::setShadingPattern(const std::string & sPattern)
 void AP_Dialog_Border_Shading::setShadingColor(const UT_RGBColor & clr)
 {
 	if (clr.isTransparent ()) {
-		PP_removeAttribute ("shading-foreground-color", m_vecProps);
+		PP_removeAttribute(_PN("shading-foreground-color"), m_vecProps);
 	} else {
-		PP_addOrSetAttribute ("shading-foreground-color",
+		PP_addOrSetAttribute(_PN("shading-foreground-color"),
 							  UT_std_string_sprintf("%02x%02x%02x", clr.m_red,
 													clr.m_grn, clr.m_blu),
 							  m_vecProps);
@@ -466,7 +466,7 @@ void AP_Dialog_Border_Shading::_createPreviewFromGC(GR_Graphics * gc,
 	m_pBorderShadingPreview->setWindowSize(width, height);
 }
 
-bool AP_Dialog_Border_Shading::_getToggleButtonStatus(const char * lineStyle) const
+bool AP_Dialog_Border_Shading::_getToggleButtonStatus(PP_PropName lineStyle) const
 {
 	std::string lsOff = UT_std_string_sprintf("%d", LS_OFF);
 
@@ -481,22 +481,22 @@ bool AP_Dialog_Border_Shading::_getToggleButtonStatus(const char * lineStyle) co
 
 bool AP_Dialog_Border_Shading::getTopToggled() const
 {
-	return _getToggleButtonStatus("top-style");
+	return _getToggleButtonStatus(_PN("top-style"));
 }
 
 bool AP_Dialog_Border_Shading::getBottomToggled() const
 {
-	return _getToggleButtonStatus("bot-style");
+	return _getToggleButtonStatus(_PN("bot-style"));
 }
 
 bool AP_Dialog_Border_Shading::getRightToggled() const
 {
-	return _getToggleButtonStatus("right-style");
+	return _getToggleButtonStatus(_PN("right-style"));
 }
 
 bool AP_Dialog_Border_Shading::getLeftToggled() const
 {
-	return _getToggleButtonStatus("left-style");
+	return _getToggleButtonStatus(_PN("left-style"));
 }
 
 guint AP_Dialog_Border_Shading::_findClosestThickness(const char *sthickness) const
@@ -577,10 +577,10 @@ void AP_Border_Shading_preview::draw(const UT_Rect *clip)
 //
 //  Draw the cell background (Shading)
 //
-	const std::string & shadingPattern = PP_getAttribute("shading-pattern", props);
+	const std::string & shadingPattern = PP_getAttribute(_PN("shading-pattern"), props);
 
 	if(shadingPattern != BORDER_SHADING_SHADING_DISABLE) {
-		const std::string & shadingColor = PP_getAttribute("shading-foreground-color", props);
+		const std::string & shadingColor = PP_getAttribute(_PN("shading-foreground-color"), props);
 		if (!shadingColor.empty())
 		{
 			UT_parseColor(shadingColor.c_str(), tmpCol);
@@ -624,14 +624,14 @@ void AP_Border_Shading_preview::draw(const UT_Rect *clip)
 	// top border
 	if (m_pBorderShading->getTopToggled())
 	{
-		const std::string & topColor = PP_getAttribute("top-color", props);
+		const std::string & topColor = PP_getAttribute(_PN("top-color"), props);
 		if (!topColor.empty()) {
 			UT_parseColor(topColor.c_str(), tmpCol);
 			m_gc->setColor(tmpCol);
 		} else {
 			m_gc->setColor(black);
 		}
-		const std::string & topThickness = PP_getAttribute("top-thickness", props);
+		const std::string & topThickness = PP_getAttribute(_PN("top-thickness"), props);
 		if(!topThickness.empty()) {
 			UT_sint32 iTopThickness = UT_convertToLogicalUnits(topThickness.c_str());
 			m_gc->setLineWidth(iTopThickness);
@@ -646,14 +646,14 @@ void AP_Border_Shading_preview::draw(const UT_Rect *clip)
 	// left border
 	if (m_pBorderShading->getLeftToggled())
 	{
-		const std::string & leftColor = PP_getAttribute("left-color", props);
+		const std::string & leftColor = PP_getAttribute(_PN("left-color"), props);
 		if (!leftColor.empty())	{
 			UT_parseColor(leftColor.c_str(), tmpCol);
 			m_gc->setColor(tmpCol);
 		} else {
 			m_gc->setColor(black);
 		}
-		const std::string & leftThickness = PP_getAttribute("left-thickness", props);
+		const std::string & leftThickness = PP_getAttribute(_PN("left-thickness"), props);
 		if(!leftThickness.empty()) {
 			UT_sint32 iLeftThickness = UT_convertToLogicalUnits(leftThickness.c_str());
 			m_gc->setLineWidth(iLeftThickness);
@@ -667,14 +667,14 @@ void AP_Border_Shading_preview::draw(const UT_Rect *clip)
 	// right border
 	if (m_pBorderShading->getRightToggled())
 	{
-		const std::string & rightColor = PP_getAttribute("right-color", props);
+		const std::string & rightColor = PP_getAttribute(_PN("right-color"), props);
 		if (!rightColor.empty()) {
 			UT_parseColor(rightColor.c_str(), tmpCol);
 			m_gc->setColor(tmpCol);
 		} else {
 			m_gc->setColor(black);
 		}
-		const std::string & rightThickness = PP_getAttribute("right-thickness", props);
+		const std::string & rightThickness = PP_getAttribute(_PN("right-thickness"), props);
 		if(!rightThickness.empty()) {
 			UT_sint32 iRightThickness = UT_convertToLogicalUnits(rightThickness.c_str());
 			m_gc->setLineWidth(iRightThickness);
@@ -688,14 +688,14 @@ void AP_Border_Shading_preview::draw(const UT_Rect *clip)
 	// bottom border
 	if (m_pBorderShading->getBottomToggled())
 	{
-		const std::string & bottomColor = PP_getAttribute("bot-color", props);
+		const std::string & bottomColor = PP_getAttribute(_PN("bot-color"), props);
 		if (!bottomColor.empty()) {
 			UT_parseColor(bottomColor.c_str(), tmpCol);
 			m_gc->setColor(tmpCol);
 		} else {
 			m_gc->setColor(black);
 		}
-		const std::string & botThickness = PP_getAttribute("bot-thickness", props);
+		const std::string & botThickness = PP_getAttribute(_PN("bot-thickness"), props);
 		if(!botThickness.empty()) {
 			UT_sint32 iBotThickness = UT_convertToLogicalUnits(botThickness.c_str());
 			m_gc->setLineWidth(iBotThickness);

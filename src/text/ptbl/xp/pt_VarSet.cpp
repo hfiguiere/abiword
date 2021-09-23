@@ -268,15 +268,15 @@ bool pt_VarSet::mergeAP(PTChangeFmt ptc, PT_AttrPropIndex apiOld,
 				// OK, old style is a list, is the new style?
 				// (the following function cares not whether we are dealing
 				//	with attributes or properties)
-				bool has_style = PP_hasAttribute("list-style", properties);
+				bool has_style = PP_hasAttribute(_PN("list-style"), properties);
 				if(has_style)
 				{
 					UT_DEBUGMSG(("new style is not a list style\n"));
 
 					PP_PropertyVector listAttrs = {
-						"listid", "",
-						"parentid", "",
-						"level", ""
+						{ "listid", "" },
+						{ "parentid", "" },
+						{ "level", "" }
 					};
 
 					// we also need to explicitely clear the list formating
@@ -284,15 +284,15 @@ bool pt_VarSet::mergeAP(PTChangeFmt ptc, PT_AttrPropIndex apiOld,
 					// of the style definition, so that cloneWithEliminationIfEqual
 					// which we call later will not get rid off them
 					PP_PropertyVector listProps = {
-						"start-value", "",
-						"list-style", "",
-						"margin-left", "",
-						"text-indent", "",
-						"field-color", "",
-						"list-delim", "",
-						"field-font", "",
-						"list-decimal", "",
-						"list-tag", ""
+						{ "start-value", "" },
+						{ "list-style", "" },
+						{ "margin-left", "" },
+						{ "text-indent", "" },
+						{ "field-color", "" },
+						{ "list-delim", "" },
+						{ "field-font", "" },
+						{ "list-decimal", "" },
+						{ "list-tag", "" }
 					};
 
 					pNew1 = papOld->cloneWithElimination(listAttrs, listProps);

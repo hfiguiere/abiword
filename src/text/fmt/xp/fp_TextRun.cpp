@@ -148,7 +148,7 @@ void fp_TextRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 
 	PD_Document * pDoc = getBlock()->getDocument();
 
-	auto prop = PP_evalPropertyType("color",pSpanAP,pBlockAP,pSectionAP, Property_type_color, pDoc, true);
+	auto prop = PP_evalPropertyType(_PN("color"),pSpanAP,pBlockAP,pSectionAP, Property_type_color, pDoc, true);
 	const PP_PropertyTypeColor *p_color = static_cast<const PP_PropertyTypeColor *>(prop.get());
 	UT_ASSERT(p_color);
 	_setColorFG(p_color->getColor());
@@ -162,10 +162,10 @@ void fp_TextRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 	}
 
 
-	const gchar *pszFontStyle = PP_evalProperty("font-style",pSpanAP,pBlockAP,pSectionAP, pDoc, true);
+	const gchar *pszFontStyle = PP_evalProperty(_PN("font-style"),pSpanAP,pBlockAP,pSectionAP, pDoc, true);
 	m_bIsOverhanging = (pszFontStyle && !strcmp(pszFontStyle, "italic"));
 
-	const gchar *pszDecor = PP_evalProperty("text-decoration",pSpanAP,pBlockAP,pSectionAP, pDoc, true);
+	const gchar *pszDecor = PP_evalProperty(_PN("text-decoration"),pSpanAP,pBlockAP,pSectionAP, pDoc, true);
 
 	/*
 	  TODO map line width to a property, not a hard-coded value
@@ -213,7 +213,7 @@ void fp_TextRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 
 	bChanged |= (_getDecorations() != oldDecors);
 
-	const gchar * pszPosition = PP_evalProperty("text-position",pSpanAP,pBlockAP,pSectionAP, pDoc, true);
+	const gchar * pszPosition = PP_evalProperty(_PN("text-position"),pSpanAP,pBlockAP,pSectionAP, pDoc, true);
 
 	UT_Byte oldPos = m_fPosition;
 
@@ -262,7 +262,7 @@ void fp_TextRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 	}
 	//set the language member
 	UT_Language lls;
-	const gchar * pszLanguage = PP_evalProperty("lang",pSpanAP,pBlockAP,pSectionAP, pDoc, true);
+	const gchar * pszLanguage = PP_evalProperty(_PN("lang"),pSpanAP,pBlockAP,pSectionAP, pDoc, true);
 
 	// NB: m_pLanguage is a pointer into static tables inside UT_Language class and as
 	// such has a guaranteed life-span same as the application; hence no g_strdup here and
@@ -290,7 +290,7 @@ void fp_TextRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 
 	UT_BidiCharType iOldOverride = m_iDirOverride;
 	UT_BidiCharType iNewOverride;
-	const gchar *pszDirection = PP_evalProperty("dir-override",pSpanAP,pBlockAP,pSectionAP, pDoc, true);
+	const gchar *pszDirection = PP_evalProperty(_PN("dir-override"),pSpanAP,pBlockAP,pSectionAP, pDoc, true);
 	// the way MS Word handles bidi is peculiar and requires that we allow
 	// temporarily a non-standard value for the dir-override property
 	// called "nobidi"
@@ -333,7 +333,7 @@ void fp_TextRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 	else
 		setDirection(UT_BIDI_UNSET, iNewOverride);
 
-	const gchar *pszTextTransform = PP_evalProperty("text-transform",pSpanAP,pBlockAP,
+	const gchar *pszTextTransform = PP_evalProperty(_PN("text-transform"),pSpanAP,pBlockAP,
 													pSectionAP, pDoc, true);
 
 	GR_ShapingInfo::TextTransform oldTextTransform = getTextTransform();
@@ -2991,15 +2991,15 @@ void fp_TextRun::setDirOverride(UT_BidiCharType dir)
 		return;
 
 	PP_PropertyVector prop = {
-		"dir-override", ""
+		{"dir-override", ""}
 	};
 	switch(dir)
 	{
 		case UT_BIDI_LTR:
-			prop[1] = "ltr";
+			prop[0].value = "ltr";
 			break;
 		case UT_BIDI_RTL:
-			prop[1] = "rtl";
+			prop[0].value = "rtl";
 			break;
 		default:
 			UT_ASSERT(UT_SHOULD_NOT_HAPPEN);
@@ -3010,7 +3010,7 @@ void fp_TextRun::setDirOverride(UT_BidiCharType dir)
 	UT_uint32 offset = getBlock()->getPosition() + getBlockOffset();
 	getBlock()->getDocument()->changeSpanFmt(PTC_AddFmt,offset,offset + getLength(), PP_NOPROPS, prop);
 
-	UT_DEBUGMSG(("fp_TextRun::setDirOverride: offset=%d, len=%d, dir=\"%s\"\n", offset,getLength(),prop[1].c_str()));
+	UT_DEBUGMSG(("fp_TextRun::setDirOverride: offset=%d, len=%d, dir=\"%s\"\n", offset,getLength(),prop[0].value.c_str()));
 }
 
 /*! A word of explanaiton of the break*AtDirBoundaries() functions.

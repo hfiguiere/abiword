@@ -154,7 +154,7 @@ protected:
 	void				_rtf_nl(void);
 	const gchar *    _getStyleProp(s_RTF_AttrPropAdapter_Style * pADStyle,
 									  const s_RTF_AttrPropAdapter * apa,
-									  const char * szProp);
+									  PP_PropName szProp);
 
 	bool				_write_rtf_header(void);
 	bool				_write_rtf_trailer(void);
@@ -164,8 +164,8 @@ protected:
 	UT_uint32                       _getStyleNumber(const PD_Style * pStyle);
 	UT_uint32                       _getStyleNumber(const gchar * szStyleName);
 
-	void                            _write_prop_ifnotdefault(const PD_Style * pStyle, const gchar * szPropName, const char * szRTFName);
-	void                            _write_prop_ifyes(const PD_Style * pStyle, const gchar * szPropName, const char * szRTFName);
+	void                            _write_prop_ifnotdefault(const PD_Style * pStyle, PP_PropName szPropName, const char * szRTFName);
+	void                            _write_prop_ifyes(const PD_Style * pStyle, PP_PropName szPropName, const char * szRTFName);
 	void                            _write_tabdef(const char * szTabStops);
 	void                            _write_charfmt(const s_RTF_AttrPropAdapter &);
 

@@ -53,7 +53,7 @@ bool IE_Exp_HTML_BookmarkListener::populate(fl_ContainerLayout* /*sfh*/,
                 return true;
 
             const gchar * szType = nullptr;
-            pAP->getAttribute("type", szType);
+            pAP->getAttribute(_PN("type"), szType);
 
             if (szType == nullptr)
                 return true; // ??
@@ -61,7 +61,7 @@ bool IE_Exp_HTML_BookmarkListener::populate(fl_ContainerLayout* /*sfh*/,
             if (g_ascii_strcasecmp(szType, "start") == 0)
             {
                 const gchar * szName = nullptr;
-                pAP->getAttribute("name", szName);
+                pAP->getAttribute(_PN("name"), szName);
 
                 if (szName)
                 {

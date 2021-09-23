@@ -1,8 +1,8 @@
 /* -*- mode: C++; tab-width: 4; c-basic-offset: 4;  indent-tabs-mode: t -*- */
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (c) 2009-2016 Hubert Figuiere
- * 
+ * Copyright (c) 2009-2021 Hubert Figuière
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -1126,7 +1126,7 @@ void AP_UnixDialog_Styles::new_styleName(void)
 void AP_UnixDialog_Styles::event_RemoveProperty(void)
 {
 	const gchar * psz = XAP_gtk_entry_get_text( GTK_ENTRY(m_wDeletePropEntry));
-	PP_removeAttribute(psz, m_vecAllProps);
+	PP_removeAttribute(UT_StaticString::Interned(psz), m_vecAllProps);
 	rebuildDeleteProps();
 	updateCurrentStyle();
 }
@@ -1142,11 +1142,9 @@ void AP_UnixDialog_Styles::rebuildDeleteProps(void)
 	for(auto iter = m_vecAllProps.cbegin(); iter != m_vecAllProps.cend();
 		++iter, ++i) {
 
-		if ((i % 2) == 0) {
-			GtkTreeIter gtkiter;
-			gtk_list_store_append(model, &gtkiter);
-			gtk_list_store_set(model, &gtkiter, 0, iter->c_str(), -1);
-		}
+		GtkTreeIter gtkiter;
+		gtk_list_store_append(model, &gtkiter);
+		gtk_list_store_set(model, &gtkiter, 0, iter->name.c_str(), -1);
 	}
 }
 
@@ -1162,7 +1160,7 @@ void AP_UnixDialog_Styles::event_basedOn(void)
 	else
 		psz = pt_PieceTable::s_getUnlocalisedStyleName(psz);
 	g_snprintf(static_cast<gchar *>(m_basedonName),40,"%s",psz);
-	PP_addOrSetAttribute("basedon", getBasedonName(), m_vecAllAttribs);
+	PP_addOrSetAttribute(_PN("basedon"), getBasedonName(), m_vecAllAttribs);
 	updateCurrentStyle();
 }
 
@@ -1179,7 +1177,7 @@ void AP_UnixDialog_Styles::event_followedBy(void)
 	else
 		psz = pt_PieceTable::s_getUnlocalisedStyleName(psz);
 	g_snprintf(static_cast<gchar *>(m_followedbyName),40,"%s",psz);
-	PP_addOrSetAttribute("followedby",getFollowedbyName(), m_vecAllAttribs);
+	PP_addOrSetAttribute(_PN("followedby"), getFollowedbyName(), m_vecAllAttribs);
 }
 
 
@@ -1197,7 +1195,7 @@ void AP_UnixDialog_Styles::event_styleType(void)
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Styles_ModifyCharacter,s);
 	if (strstr(m_styleType, s.c_str()) != nullptr)
 		pszSt = "C";
-	PP_addOrSetAttribute("type", pszSt, m_vecAllAttribs);
+	PP_addOrSetAttribute(_PN("type"), pszSt, m_vecAllAttribs);
 }
 
 void AP_UnixDialog_Styles::event_Modify_Cancel(void)

@@ -75,9 +75,9 @@ void fp_EmbedRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 	UT_DEBUGMSG(("fp_EmbedRun _lookupProperties span %p \n", (void*)pSpanAP));
 	m_pSpanAP = pSpanAP;
 	m_bNeedsSnapshot = true;
-	pSpanAP->getAttribute("dataid", m_pszDataID);
+	pSpanAP->getAttribute(_PN("dataid"), m_pszDataID);
 	const gchar * pszEmbedType = NULL;
-	pSpanAP->getProperty("embed-type", pszEmbedType);
+	pSpanAP->getProperty(_PN("embed-type"), pszEmbedType);
 	UT_ASSERT(pszEmbedType);
 	UT_DEBUGMSG(("Embed Type %s \n",pszEmbedType));
 	bool bFontChanged = false;
@@ -126,7 +126,7 @@ void fp_EmbedRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 	if(pG == NULL)
 	  pG = getGraphics();
 	m_iPointHeight = pG->getFontAscent(pFont) + pG->getFontDescent(pFont);
-	const char* pszSize = PP_evalProperty("font-size",pSpanAP,pBlockAP,pSectionAP,
+	const char* pszSize = PP_evalProperty(_PN("font-size"), pSpanAP, pBlockAP, pSectionAP,
 					      getBlock()->getDocument(), true);
 
 	// LUCA: It is fundamental to do this before the EmbedView object
@@ -147,18 +147,18 @@ void fp_EmbedRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 		bFontChanged = getEmbedManager()->setFont(m_iEmbedUID,pFont);
 	if(getEmbedManager()->isDefault())
 	{
-	  iWidth = _getLayoutPropFromObject("width");
-	  iAscent = _getLayoutPropFromObject("ascent");
-	  iDescent = _getLayoutPropFromObject("descent");
+		iWidth = _getLayoutPropFromObject(_PN("width"));
+		iAscent = _getLayoutPropFromObject(_PN("ascent"));
+		iDescent = _getLayoutPropFromObject(_PN("descent"));
 	}
 	else
 	{
 	  const char * pszHeight = NULL;
-	  bool bFoundHeight = pSpanAP->getProperty("height", pszHeight) && !bFontChanged;
+	  bool bFoundHeight = pSpanAP->getProperty(_PN("height"), pszHeight) && !bFontChanged;
 	  const char * pszWidth = NULL;
-	  bool bFoundWidth = pSpanAP->getProperty("width", pszWidth) && !bFontChanged;
+	  bool bFoundWidth = pSpanAP->getProperty(_PN("width"), pszWidth) && !bFontChanged;
 	  const char * pszAscent = NULL;
-	  bool bFoundAscent = pSpanAP->getProperty("ascent", pszAscent);
+	  bool bFoundAscent = pSpanAP->getProperty(_PN("ascent"), pszAscent);
 
 	  if(!bFoundWidth || pszWidth == NULL)
 	  {
@@ -189,7 +189,7 @@ void fp_EmbedRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 		  {
 			  UT_sint32 iHeight = UT_convertToLogicalUnits(pszHeight);
 			  const char * pszDescent = NULL;
-			  bool bFoundDescent = pSpanAP->getProperty("descent", pszDescent);
+			  bool bFoundDescent = pSpanAP->getProperty(_PN("descent"), pszDescent);
 			  if (bFoundDescent && pszDescent != NULL && iHeight >= 0)
 			  {
 				  iDescent = UT_convertToLogicalUnits(pszDescent);
@@ -463,7 +463,7 @@ void fp_EmbedRun::_draw(dg_DrawArgs* pDA)
 	rec.width = getWidth();
 	if(getEmbedManager()->isDefault())
 	{
-	  rec.top -= _getLayoutPropFromObject("ascent");
+		rec.top -= _getLayoutPropFromObject(_PN("ascent"));
 	}
 	UT_DEBUGMSG(("Draw Embed object top %d \n",rec.top));
 	getEmbedManager()->render(m_iEmbedUID,rec);
@@ -494,7 +494,7 @@ void fp_EmbedRun::_draw(dg_DrawArgs* pDA)
  * The properties are "height","width","ascent","decent".
  * If the propeties are not defined return -1
  */
-UT_sint32  fp_EmbedRun::_getLayoutPropFromObject(const char * szProp) const
+UT_sint32  fp_EmbedRun::_getLayoutPropFromObject(PP_PropName szProp) const
 {
   PT_AttrPropIndex api = getBlock()->getDocument()->getAPIFromSOH(m_OH);
   const PP_AttrProp * pAP = NULL;
@@ -526,7 +526,7 @@ bool fp_EmbedRun::_updatePropValuesIfNeeded(void)
   const char * szPropVal = NULL;
   getBlock()->getDocument()->getAttrProp(api, &pAP);
   UT_return_val_if_fail(pAP,false);
-  bool bFound = pAP->getProperty("height", szPropVal);
+  bool bFound = pAP->getProperty(_PN("height"), szPropVal);
   bool bDoUpdate = false;
   if(bFound)
     {
@@ -537,7 +537,7 @@ bool fp_EmbedRun::_updatePropValuesIfNeeded(void)
     {
       bDoUpdate = true;
     }
-  bFound = pAP->getProperty("width", szPropVal);
+  bFound = pAP->getProperty(_PN("width"), szPropVal);
   if(bFound && !bDoUpdate)
     {
       iVal = UT_convertToLogicalUnits(szPropVal);
@@ -547,7 +547,7 @@ bool fp_EmbedRun::_updatePropValuesIfNeeded(void)
     {
       bDoUpdate = true;
     }
-  bFound = pAP->getProperty("ascent", szPropVal);
+  bFound = pAP->getProperty(_PN("ascent"), szPropVal);
   if(bFound && !bDoUpdate)
     {
       iVal = UT_convertToLogicalUnits(szPropVal);
@@ -557,7 +557,7 @@ bool fp_EmbedRun::_updatePropValuesIfNeeded(void)
     {
       bDoUpdate = true;
     }
-  bFound = pAP->getProperty("descent", szPropVal);
+  bFound = pAP->getProperty(_PN("descent"), szPropVal);
   if(bFound && !bDoUpdate)
     {
       iVal = UT_convertToLogicalUnits(szPropVal);
@@ -572,10 +572,10 @@ bool fp_EmbedRun::_updatePropValuesIfNeeded(void)
 	  UT_LocaleTransactor t(LC_NUMERIC, "C");
 
       const PP_PropertyVector props = {
-          "height", UT_std_string_sprintf("%fin", static_cast<double>(getHeight())/1440.),
-          "width", UT_std_string_sprintf("%fin", static_cast<double>(getWidth())/1440.),
-          "ascent", UT_std_string_sprintf("%fin", static_cast<double>(getAscent())/1440.),
-          "descent", UT_std_string_sprintf("%fin", static_cast<double>(getDescent())/1440.)
+          { "height", UT_std_string_sprintf("%fin", static_cast<double>(getHeight())/1440.) },
+          { "width", UT_std_string_sprintf("%fin", static_cast<double>(getWidth())/1440.) },
+          { "ascent", UT_std_string_sprintf("%fin", static_cast<double>(getAscent())/1440.) },
+          { "descent", UT_std_string_sprintf("%fin", static_cast<double>(getDescent())/1440.) }
       };
       getBlock()->getDocument()->changeObjectFormatNoUpdate(PTC_AddFmt,m_OH,
                                 PP_NOPROPS,

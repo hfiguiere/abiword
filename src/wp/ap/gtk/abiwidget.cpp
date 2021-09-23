@@ -585,19 +585,19 @@ public:
 			// NB: maybe *no* properties are consistent across the selection
 			if (!props_in.empty())
 			{
-				FIRE_BOOL_CHARFMT("font-weight", "bold", false, bold_, bold);
-				FIRE_BOOL_CHARFMT("font-style", "italic", false, italic_, italic);
-				FIRE_BOOL_CHARFMT("text-decoration", "underline", true, underline_, underline);
-				FIRE_BOOL_CHARFMT("text-decoration", "overline", true, overline_, overline);
-				FIRE_BOOL_CHARFMT("text-decoration", "line-through", true, line_through_, line_through);
-				FIRE_BOOL_CHARFMT("text-decoration", "topline", true, topline_, topline);
-				FIRE_BOOL_CHARFMT("text-decoration", "bottomline", true, bottomline_, bottomline);
-				FIRE_BOOL_CHARFMT("text-position", "superscript", true, superscript_, superscript);
-				FIRE_BOOL_CHARFMT("text-position", "subscript", true, subscript_, subscript);
-				FIRE_COLOR_CHARFMT("color", color_, color);
+				FIRE_BOOL_CHARFMT(_PN("font-weight"), "bold", false, bold_, bold);
+				FIRE_BOOL_CHARFMT(_PN("font-style"), "italic", false, italic_, italic);
+				FIRE_BOOL_CHARFMT(_PN("text-decoration"), "underline", true, underline_, underline);
+				FIRE_BOOL_CHARFMT(_PN("text-decoration"), "overline", true, overline_, overline);
+				FIRE_BOOL_CHARFMT(_PN("text-decoration"), "line-through", true, line_through_, line_through);
+				FIRE_BOOL_CHARFMT(_PN("text-decoration"), "topline", true, topline_, topline);
+				FIRE_BOOL_CHARFMT(_PN("text-decoration"), "bottomline", true, bottomline_, bottomline);
+				FIRE_BOOL_CHARFMT(_PN("text-position"), "superscript", true, superscript_, superscript);
+				FIRE_BOOL_CHARFMT(_PN("text-position"), "subscript", true, subscript_, subscript);
+				FIRE_COLOR_CHARFMT(_PN("color"), color_, color);
 
-				FIRE_DOUBLE_CHARFMT("font-size", font_size_, font_size);
-				FIRE_STRING_CHARFMT("font-family", font_family_, font_family);
+				FIRE_DOUBLE_CHARFMT(_PN("font-size"), font_size_, font_size);
+				FIRE_STRING_CHARFMT(_PN("font-family"), font_family_, font_family);
 			}
 		}
 
@@ -631,10 +631,10 @@ public:
 			// NB: maybe *no* properties are consistent across the selection
 			if (!props_in.empty())
 			{
-				FIRE_BOOL_CHARFMT("text-align", "left", false, leftAlign_, leftAlign);
-				FIRE_BOOL_CHARFMT("text-align", "right", false, rightAlign_, rightAlign);
-				FIRE_BOOL_CHARFMT("text-align", "center", false, centerAlign_, centerAlign);
-				FIRE_BOOL_CHARFMT("text-align", "justify", false, justifyAlign_, justifyAlign);
+				FIRE_BOOL_CHARFMT(_PN("text-align"), "left", false, leftAlign_, leftAlign);
+				FIRE_BOOL_CHARFMT(_PN("text-align"), "right", false, rightAlign_, rightAlign);
+				FIRE_BOOL_CHARFMT(_PN("text-align"), "center", false, centerAlign_, centerAlign);
+				FIRE_BOOL_CHARFMT(_PN("text-align"), "justify", false, justifyAlign_, justifyAlign);
 			}
 		}
 
@@ -1612,7 +1612,7 @@ abi_widget_set_text_color(AbiWidget * w, guint8 red, guint8 green, guint8 blue)
 
 	// create the color property
 	const PP_PropertyVector properties = {
-		"color", UT_std_string_sprintf("%02x%02x%02x", red, green, blue)
+		{ "color", UT_std_string_sprintf("%02x%02x%02x", red, green, blue) }
 	};
 	// set the color
 	return pView->setCharFormat(properties);

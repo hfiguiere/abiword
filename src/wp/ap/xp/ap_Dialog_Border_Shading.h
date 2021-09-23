@@ -153,7 +153,7 @@ protected:
 	double      						m_dShadingOffset[BORDER_SHADING_NUMOFFSETS];
 
 private:
-	bool								_getToggleButtonStatus(const char * lineStyle) const;
+	bool								_getToggleButtonStatus(PP_PropName lineStyle) const;
 
 	bool								m_bSettingsChanged;
 	PT_DocPosition                      m_iOldPos;

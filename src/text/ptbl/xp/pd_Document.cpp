@@ -254,16 +254,16 @@ PD_Document::~PD_Document()
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
 
-void PD_Document::setMetaDataProp ( const std::string & key,
+void PD_Document::setMetaDataProp ( PP_PropName key,
 									const std::string & value )
 {
 	m_metaDataMap[key] = value;
 
 	const PP_PropertyVector atts = {
-		PT_DOCPROP_ATTRIBUTE_NAME,"metadata"
+		{ PT_DOCPROP_ATTRIBUTE_NAME, "metadata" }
 	};
 	const PP_PropertyVector props = {
-		key, value
+		{ key, value }
 	};
 	createAndSendDocPropCR(atts,props);
 }
@@ -274,7 +274,7 @@ UT_sint32 PD_Document::getNextCRNumber(void) const
 	return m_iCRCounter;
 }
 
-bool PD_Document::getMetaDataProp (const std::string & key, std::string & outProp) const
+bool PD_Document::getMetaDataProp (PP_PropName key, std::string & outProp) const
 {
 	auto iter = m_metaDataMap.find(key);
 	bool found = (iter != m_metaDataMap.end());
@@ -418,7 +418,7 @@ pp_Author *  PD_Document::addAuthor(UT_sint32 iAuthor)
 bool PD_Document::_sendAuthorCR(const char *attrName, pp_Author *pAuthor)
 {
 	const PP_PropertyVector atts = {
-		PT_DOCPROP_ATTRIBUTE_NAME, attrName
+		{ PT_DOCPROP_ATTRIBUTE_NAME, attrName }
 	};
 	PP_PropertyVector props;
 
@@ -444,16 +444,14 @@ bool PD_Document::_buildAuthorProps(pp_Author * pAuthor, PP_PropertyVector & pro
 	UT_uint32 iCnt = pAP->getPropertyCount();
 	props.clear();
 	UT_DEBUGMSG(("_buildAuthorProps getAuthorInt %d \n",pAuthor->getAuthorInt()));
-	props.push_back("id");
-	props.push_back(UT_std_string_sprintf("%d",pAuthor->getAuthorInt()));
-	const gchar * szName = NULL;
+	props.push_back({ "id", UT_std_string_sprintf("%d",pAuthor->getAuthorInt()) });
+	PP_PropName szName;
 	const gchar * szValue = NULL;
 
 	for (UT_uint32 i = 0; i < iCnt; i++) {
 		pAP->getNthProperty(i, szName, szValue);
 		if (*szValue) {
-			props.push_back(szName);
-			props.push_back(szValue);
+			props.push_back({ szName, szValue });
 		}
 	}
 	return true;
@@ -534,8 +532,7 @@ bool PD_Document:: addAuthorAttributeIfBlank(PP_PropertyVector & atts)
 	}
 
 	m_iLastAuthorInt = getMyAuthorInt();
-	atts.push_back(PT_AUTHOR_NAME);
-	atts.push_back(UT_std_string_sprintf("%d", getMyAuthorInt()));
+	atts.push_back({ PT_AUTHOR_NAME, UT_std_string_sprintf("%d", getMyAuthorInt()) });
 
 	return false;
 }
@@ -831,12 +828,12 @@ UT_Error PD_Document::_importFile(GsfInput * input, int ieft,
 
 		// TODO this should probably be stored as an attribute of the
 		// styles section rather then the whole doc ...
-		if(pAP->getAttribute("styles", pA))
+		if(pAP->getAttribute(_PN("styles"), pA))
 		{
 			m_bLockedStyles = !(strcmp(pA, "locked"));
 		}
 
-		if(pAP->getAttribute("xid-max", pA))
+		if(pAP->getAttribute(_PN("xid-max"), pA))
 		{
 			UT_uint32 i = (UT_uint32)atoi(pA);
 			m_pPieceTable->setXIDThreshold(i);
@@ -1342,38 +1339,38 @@ bool PD_Document::insertSpan(PT_DocPosition dpos, const UT_UCSChar * pbuf,
 					result &= m_pPieceTable->insertSpan(cur_pos, pStart, p - pStart);
 					cur_pos += p - pStart;
 				}
-				
-				AP.setProperty("dir-override", "ltr");
+
+				AP.setProperty(_PN("dir-override"), "ltr");
 				result &= m_pPieceTable->insertFmtMark(PTC_AddFmt, cur_pos, &AP);
 				pStart = p + 1;
 				m_iLastDirMarker = *p;
 				newLength--;
 				break;
-				
+
 			case UCS_RLO:
 				if((p - pStart) > 0)
 				{
 					result &= m_pPieceTable->insertSpan(cur_pos, pStart, p - pStart);
 					cur_pos += p - pStart;
 				}
-				
-				AP.setProperty("dir-override", "rtl");
+
+				AP.setProperty(_PN("dir-override"), "rtl");
 				result &= m_pPieceTable->insertFmtMark(PTC_AddFmt, cur_pos, &AP);
 				pStart = p + 1;
 				m_iLastDirMarker = *p;
 				newLength--;
 				break;
-				
+
 			case UCS_PDF:
 				if((p - pStart) > 0)
 				{
 					result &= m_pPieceTable->insertSpan(cur_pos, pStart, p - pStart);
 					cur_pos += p - pStart;
 				}
-				
+
 				if((m_iLastDirMarker == UCS_RLO) || (m_iLastDirMarker == UCS_LRO))
 				{
-					AP.setProperty("dir-override", "");
+					AP.setProperty(_PN("dir-override"), "");
 					result &= m_pPieceTable->insertFmtMark(PTC_RemoveFmt, cur_pos, &AP);
 				}
 
@@ -1381,7 +1378,7 @@ bool PD_Document::insertSpan(PT_DocPosition dpos, const UT_UCSChar * pbuf,
 				m_iLastDirMarker = *p;
 				newLength--;
 				break;
-				
+
 			case UCS_LRE:
 			case UCS_RLE:
 				if((p - pStart) > 0)
@@ -1756,14 +1753,14 @@ bool PD_Document::repairDoc(void)
 	for(i = 0; i< vecSections.getItemCount(); i++)
 	{
 		pfs = vecSections.getNthItem(i);
-		bRepaired = bRepaired | _pruneSectionAPI(pfs,"header",&vecHdrFtrs);
-		bRepaired = bRepaired | _pruneSectionAPI(pfs,"header-even",&vecHdrFtrs);
-		bRepaired = bRepaired | _pruneSectionAPI(pfs,"header-first",&vecHdrFtrs);
-		bRepaired = bRepaired | _pruneSectionAPI(pfs,"header-last",&vecHdrFtrs);
-		bRepaired = bRepaired | _pruneSectionAPI(pfs,"footer",&vecHdrFtrs);
-		bRepaired = bRepaired | _pruneSectionAPI(pfs,"footer-even",&vecHdrFtrs);
-		bRepaired = bRepaired | _pruneSectionAPI(pfs,"footer-first",&vecHdrFtrs);
-		bRepaired = bRepaired | _pruneSectionAPI(pfs,"footer-last",&vecHdrFtrs);
+		bRepaired = bRepaired | _pruneSectionAPI(pfs, _PN("header"), &vecHdrFtrs);
+		bRepaired = bRepaired | _pruneSectionAPI(pfs, _PN("header-even"), &vecHdrFtrs);
+		bRepaired = bRepaired | _pruneSectionAPI(pfs, _PN("header-first"), &vecHdrFtrs);
+		bRepaired = bRepaired | _pruneSectionAPI(pfs, _PN("header-last"), &vecHdrFtrs);
+		bRepaired = bRepaired | _pruneSectionAPI(pfs, _PN("footer"), &vecHdrFtrs);
+		bRepaired = bRepaired | _pruneSectionAPI(pfs, _PN("footer-even"), &vecHdrFtrs);
+		bRepaired = bRepaired | _pruneSectionAPI(pfs, _PN("footer-first"), &vecHdrFtrs);
+		bRepaired = bRepaired | _pruneSectionAPI(pfs, _PN("footer-last"), &vecHdrFtrs);
 	}
 	for(i = 0; i< vecHdrFtrs.getItemCount(); i++)
 	{
@@ -1873,15 +1870,15 @@ bool PD_Document::_removeRepeatedHdrFtr(pf_Frag_Strux * pfs ,UT_GenericVector<pf
 	const char * pszThisHdrFtr = NULL;
 	UT_sint32 i=0;
 	pf_Frag_Strux * pfsS = NULL;
-	getAttributeFromSDH(pfs,false,0,"type",&pszMyHdrFtr);
-	getAttributeFromSDH(pfs,false,0,"id",&pszMyID);
+	getAttributeFromSDH(pfs, false, 0, _PN("type"), &pszMyHdrFtr);
+	getAttributeFromSDH(pfs, false, 0, _PN("id"), &pszMyID);
 	if(pszMyHdrFtr && *pszMyHdrFtr && pszMyID && *pszMyID)
 	{
 		for(i = iStart; i<vecHdrFtrs->getItemCount(); i++)
 		{
 			pfsS = vecHdrFtrs->getNthItem(i);
-			getAttributeFromSDH(pfsS,false,0,"type",&pszThisHdrFtr);
-			getAttributeFromSDH(pfsS,false,0,"id",&pszThisID);
+			getAttributeFromSDH(pfsS, false, 0, _PN("type"), &pszThisHdrFtr);
+			getAttributeFromSDH(pfsS, false, 0, _PN("id"), &pszThisID);
 			if(pszThisHdrFtr && *pszThisHdrFtr && pszThisID && *pszThisID)
 			{
 				if((strcmp(pszMyHdrFtr,pszThisHdrFtr) == 0) &&
@@ -1956,7 +1953,7 @@ bool PD_Document::_checkAndFixTable(pf_Frag_Strux * pfs)
  * in the section strux pfs.
  * Return true of a prune happened
  */
-bool PD_Document::_pruneSectionAPI(pf_Frag_Strux * pfs,const char * szHType, UT_GenericVector<pf_Frag_Strux *> *vecHdrFtrs)
+bool PD_Document::_pruneSectionAPI(pf_Frag_Strux * pfs, PP_PropName szHType, UT_GenericVector<pf_Frag_Strux *> *vecHdrFtrs)
 {
 	const char * pszHdrFtr = NULL;
 	const char * pszHFID = NULL;
@@ -1970,18 +1967,18 @@ bool PD_Document::_pruneSectionAPI(pf_Frag_Strux * pfs,const char * szHType, UT_
 	for(i= 0; i< vecHdrFtrs->getItemCount(); i++)
 	{
 		pf_Frag_Strux * pfsS = vecHdrFtrs->getNthItem(i);
-		getAttributeFromSDH(pfsS,false,0,"type",&pszHdrFtr);
+		getAttributeFromSDH(pfsS, false, 0, _PN("type"), &pszHdrFtr);
 		if(pszHdrFtr && *pszHdrFtr)
 		{
-			if(strcmp(szHType,pszHdrFtr) == 0)
+			if(szHType == pszHdrFtr)
 			{
-				getAttributeFromSDH(pfsS,false,0,"id",&pszHFID);
+				getAttributeFromSDH(pfsS, false, 0, _PN("id"), &pszHFID);
 				if(pszHFID && *pszHFID)
 				{
 					if(strcmp(pszHFID,pszID) == 0)
 					{
 						return false;
-					} 
+					}
 				}
 			}
 		}
@@ -1990,9 +1987,9 @@ bool PD_Document::_pruneSectionAPI(pf_Frag_Strux * pfs,const char * szHType, UT_
 	// No matching HdrFtr was found. Remove the property.
 	//
 	const PP_PropertyVector atts = {
-		szHType, pszID
+		{ szHType, pszID }
 	};
-	UT_DEBUGMSG(("Pruning HdrFtr %s ID %s From section \n",szHType,pszID));
+	UT_DEBUGMSG(("Pruning HdrFtr %s ID %s From section \n", szHType.c_str(), pszID));
 	m_pPieceTable->changeStruxFormatNoUpdate(PTC_RemoveFmt, pfs, atts);
 	return true;
 }
@@ -2036,12 +2033,12 @@ bool PD_Document::_matchSection(pf_Frag_Strux * pfs, UT_GenericVector<pf_Frag_St
 	const char * pszHFID = NULL;
 	const char * pszID = NULL;
 	UT_sint32 i = 0;
-	getAttributeFromSDH(pfs,false,0,"type",&pszHdrFtr);
+	getAttributeFromSDH(pfs, false, 0, _PN("type"), &pszHdrFtr);
 	if(!pszHdrFtr)
 		return false;
 	if(!(*pszHdrFtr))
 		return false;
-	getAttributeFromSDH(pfs,false,0,"id",&pszHFID);
+	getAttributeFromSDH(pfs, false, 0, _PN("id"), &pszHFID);
 	if(!pszHFID)
 		return false;
 	if(!(*pszHFID))
@@ -2049,7 +2046,8 @@ bool PD_Document::_matchSection(pf_Frag_Strux * pfs, UT_GenericVector<pf_Frag_St
 	for(i= 0; i< vecSections->getItemCount(); i++)
 	{
 		pf_Frag_Strux * pfsS = vecSections->getNthItem(i);
-		getAttributeFromSDH(pfsS,false,0,pszHdrFtr,&pszID);
+		PP_PropName name = UT_StaticString::Interned(pszHdrFtr);
+		getAttributeFromSDH(pfsS, false, 0, name, &pszID);
 		if(pszID && *pszID)
 		{
 			if(strcmp(pszID,pszHFID) == 0)
@@ -2113,7 +2111,7 @@ bool PD_Document::appendSpan(const UT_UCSChar * pbuf, UT_uint32 length)
 	// * we replace LRO/RLO with our dir-override property
 
 	PP_PropertyVector attrs = {
-		"props", ""
+		{ "props", "" }
 	};
 
 	bool result = true;
@@ -2127,7 +2125,7 @@ bool PD_Document::appendSpan(const UT_UCSChar * pbuf, UT_uint32 length)
 				if((p - pStart) > 0)
 					result &= m_pPieceTable->appendSpan(pStart,p - pStart);
 
-				attrs[1] = "dir-override:ltr";
+				attrs[0].value = "dir-override:ltr";
 				result &= m_pPieceTable->appendFmt(attrs);
 				pStart = p + 1;
 				m_iLastDirMarker = *p;
@@ -2137,7 +2135,7 @@ bool PD_Document::appendSpan(const UT_UCSChar * pbuf, UT_uint32 length)
 				if((p - pStart) > 0)
 					result &= m_pPieceTable->appendSpan(pStart,p - pStart);
 
-				attrs[1] = "dir-override:rtl";
+				attrs[0].value = "dir-override:rtl";
 				result &= m_pPieceTable->appendFmt(attrs);
 
 				pStart = p + 1;
@@ -2150,7 +2148,7 @@ bool PD_Document::appendSpan(const UT_UCSChar * pbuf, UT_uint32 length)
 
 				if((m_iLastDirMarker == UCS_RLO) || (m_iLastDirMarker == UCS_LRO))
 				{
-					attrs[1] = "dir-override:";
+					attrs[0].value = "dir-override:";
 					result &= m_pPieceTable->appendFmt(attrs);
 				}
 				
@@ -2223,7 +2221,7 @@ bool PD_Document::appendFmtMark(void)
  Don't FREEP *pszRetValue!!!
 */
 bool PD_Document::getAttributeFromSDH(pf_Frag_Strux* sdh, bool bShowRevisions, UT_uint32 iRevisionLevel,
-									  const char * szAttribute, const char ** pszRetValue)
+									  PP_PropName szAttribute, const char ** pszRetValue)
 {
 	const pf_Frag_Strux * pfStrux = static_cast<const pf_Frag_Strux *>(sdh);
 	PT_AttrPropIndex indexAP = pfStrux->getIndexAP();
@@ -2235,7 +2233,7 @@ bool PD_Document::getAttributeFromSDH(pf_Frag_Strux* sdh, bool bShowRevisions, U
 	getAttrProp(indexAP, &pAP, unused, bShowRevisions, iRevisionLevel, bHiddenRevision);
 
 	UT_return_val_if_fail (pAP, false);
-	(pAP)->getAttribute(szAttribute, pszValue);
+	pAP->getAttribute(szAttribute, pszValue);
 	if(pszValue == NULL)
 	{
 		*pszRetValue = NULL;
@@ -2273,7 +2271,7 @@ PT_AttrPropIndex PD_Document::getAPIFromSDH( pf_Frag_Strux* sdh)
  Don't FREEP *pszRetValue!!!
 */
 bool PD_Document::getPropertyFromSDH(const pf_Frag_Strux* sdh, bool bShowRevisions, UT_uint32 iRevisionLevel,
-									 const char * szProperty, const char ** pszRetValue) const
+									 PP_PropName szProperty, const char ** pszRetValue) const
 {
 	const pf_Frag_Strux * pfStrux = static_cast<const pf_Frag_Strux *>(sdh);
 	PT_AttrPropIndex indexAP = pfStrux->getIndexAP();
@@ -2406,34 +2404,32 @@ bool PD_Document::changeDocPropeties(const PP_PropertyVector & pAtts, const PP_P
 	else if(strcmp(szLCValue,"metadata") == 0)
     {
 		UT_DEBUGMSG(("metadata docprop received \n"));
-		ASSERT_PV_SIZE(pProps);
-		for (auto iter = pProps.cbegin(); iter != pProps.cend(); iter += 2) {
-			const std::string & sName = *iter;
-			const std::string & sValue = *(iter + 1);
-			UT_DEBUGMSG(("property %s value %s \n", sName.c_str(), sValue.c_str()));
-			setMetaDataProp(sName, sValue);
+
+		for (auto elem : pProps) {
+			UT_DEBUGMSG(("property %s value %s \n", elem.name.c_str(), elem.value.c_str()));
+			setMetaDataProp(elem.name, elem.value);
 		}
 
 	}
 	else if(strcmp(szLCValue,"addauthor") == 0)
 	{
 		const gchar * szInt=NULL;
-		AP.getProperty("id",szInt);
+		AP.getProperty(_PN("id"), szInt);
 		UT_DEBUGMSG(("addauthor docprop CR received int %s \n",szInt));
 		if(szInt)
 		{
 			UT_sint32 iAuthor = atoi(szInt);
 			pp_Author * pA = addAuthor(iAuthor);
 			UT_uint32 j = 0;
-			const gchar * szName = NULL;
+			PP_PropName name;
 			szValue = NULL;
 			PP_AttrProp * pAP = pA->getAttrProp();
-			while(AP.getNthProperty(j++,szName,szValue))
+			while(AP.getNthProperty(j++, name, szValue))
 			{
-				if(strcmp(szName,"id") == 0)
+				if (name == "id")
 					continue;
 				if(*szValue)
-					pAP->setProperty(szName,szValue);
+					pAP->setProperty(name, szValue);
 			}
 			sendAddAuthorCR(pA);
 		}
@@ -2442,7 +2438,7 @@ bool PD_Document::changeDocPropeties(const PP_PropertyVector & pAtts, const PP_P
 	{
 		const gchar * szInt=NULL;
 		pp_Author * pA = NULL;
-		if(AP.getProperty("id",szInt) && szInt && *szInt)
+		if(AP.getProperty(_PN("id"), szInt) && szInt && *szInt)
 	    {
 			UT_sint32 iAuthor = atoi(szInt);
 			pA = getAuthorByInt(iAuthor);
@@ -2451,13 +2447,13 @@ bool PD_Document::changeDocPropeties(const PP_PropertyVector & pAtts, const PP_P
 		{
 			PP_AttrProp * pAP = pA->getAttrProp();
 			UT_uint32 j = 0;
-			const gchar * szName = NULL;
-			while(AP.getNthProperty(j++,szName,szValue))
+			PP_PropName name;
+			while(AP.getNthProperty(j++, name, szValue))
 			{
-				if(strcmp(szName,"id") == 0)
+				if (name == "id")
 					continue;
 				if(*szValue)
-					pAP->setProperty(szName,szValue);
+					pAP->setProperty(name, szValue);
 			}
 			sendChangeAuthorCR(pA);
 		}
@@ -2714,35 +2710,35 @@ bool PD_Document::verifySectionID(const gchar * pszId)
 				 m_pPieceTable->getAttrProp(indexAP,&pAP);
 				 UT_return_val_if_fail (pAP,false);
 				 const gchar * pszIDName = NULL;
-				 (pAP)->getAttribute("header", pszIDName);
+				 (pAP)->getAttribute(_PN("header"), pszIDName);
 				 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 					 return true;
-				 (pAP)->getAttribute("header-first", pszIDName);
+				 (pAP)->getAttribute(_PN("header-first"), pszIDName);
 				 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 					 return true;
-				 (pAP)->getAttribute("header-last", pszIDName);
+				 (pAP)->getAttribute(_PN("header-last"), pszIDName);
 				 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 					 return true;
-				 (pAP)->getAttribute("header-even", pszIDName);
+				 (pAP)->getAttribute(_PN("header-even"), pszIDName);
 				 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 					 return true;
-				 (pAP)->getAttribute("footer", pszIDName);
+				 (pAP)->getAttribute(_PN("footer"), pszIDName);
 				 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 					 return true;
-				 (pAP)->getAttribute("footer-first", pszIDName);
+				 (pAP)->getAttribute(_PN("footer-first"), pszIDName);
 				 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 					 return true;
-				 (pAP)->getAttribute("footer-last", pszIDName);
+				 (pAP)->getAttribute(_PN("footer-last"), pszIDName);
 				 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 					 return true;
-				 (pAP)->getAttribute("footer-even", pszIDName);
+				 (pAP)->getAttribute(_PN("footer-even"), pszIDName);
 				 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 					 return true;
 
 				 // the id could also be hidden in a revision attribute ...
 				 const gchar * pszRevisionAttr = NULL;
-				 
-				 if((pAP)->getAttribute("revision", pszRevisionAttr))
+
+				 if((pAP)->getAttribute(_PN("revision"), pszRevisionAttr))
 				 {
 					 PP_RevisionAttr RA(pszRevisionAttr);
 
@@ -2755,28 +2751,28 @@ bool PD_Document::verifySectionID(const gchar * pszId)
 							 continue;
 						 }
 
-						 (pRev)->getAttribute("header", pszIDName);
+						 (pRev)->getAttribute(_PN("header"), pszIDName);
 						 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 							 return true;
-						 (pRev)->getAttribute("header-first", pszIDName);
+						 (pRev)->getAttribute(_PN("header-first"), pszIDName);
 						 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 							 return true;
-						 (pRev)->getAttribute("header-last", pszIDName);
+						 (pRev)->getAttribute(_PN("header-last"), pszIDName);
 						 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 							 return true;
-						 (pRev)->getAttribute("header-even", pszIDName);
+						 (pRev)->getAttribute(_PN("header-even"), pszIDName);
 						 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 							 return true;
-						 (pRev)->getAttribute("footer", pszIDName);
+						 (pRev)->getAttribute(_PN("footer"), pszIDName);
 						 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 							 return true;
-						 (pRev)->getAttribute("footer-first", pszIDName);
+						 (pRev)->getAttribute(_PN("footer-first"), pszIDName);
 						 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 							 return true;
-						 (pRev)->getAttribute("footer-last", pszIDName);
+						 (pRev)->getAttribute(_PN("footer-last"), pszIDName);
 						 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 							 return true;
-						 (pRev)->getAttribute("footer-even", pszIDName);
+						 (pRev)->getAttribute(_PN("footer-even"), pszIDName);
 						 if(pszIDName && strcmp(pszIDName,pszId) == 0)
 							 return true;
 					 }
@@ -3317,11 +3313,11 @@ bool PD_Document::getRowsColsFromTableSDH(pf_Frag_Strux* tableSDH, bool bShowRev
 			else if(pfSec->getStruxType() == PTX_SectionCell)
 			{
 				cellSDH = pfSec;
-				UT_DebugOnly<bool> bres = getPropertyFromSDH(cellSDH,bShowRevisions, iRevisionLevel,"right-attach",&szRight);
+				UT_DebugOnly<bool> bres = getPropertyFromSDH(cellSDH,bShowRevisions, iRevisionLevel, _PN("right-attach"), &szRight);
 				UT_ASSERT(bres);
 				if(szRight && *szRight)
 					iRight = atoi(szRight);
-				bres = getPropertyFromSDH(cellSDH,bShowRevisions, iRevisionLevel,"bot-attach",&szBot);
+				bres = getPropertyFromSDH(cellSDH,bShowRevisions, iRevisionLevel, _PN("bot-attach"),&szBot);
 				UT_ASSERT(bres);
 				if(szBot && *szBot)
 					iBot = atoi(szBot);
@@ -3411,10 +3407,10 @@ void  PD_Document::miniDump(pf_Frag_Strux* sdh, UT_sint32 nstruxes)
 		const char * szRight=NULL;
 		const char * szTop=NULL;
 		const char * szBot = NULL;
-		getPropertyFromSDH(pfs,true, PD_MAX_REVISION,"left-attach",&szLeft);
-		getPropertyFromSDH(pfs,true, PD_MAX_REVISION,"right-attach",&szRight);
-		getPropertyFromSDH(pfs,true, PD_MAX_REVISION,"top-attach",&szTop);
-		getPropertyFromSDH(pfs,true, PD_MAX_REVISION,"bot-attach",&szBot);
+		getPropertyFromSDH(pfs,true, PD_MAX_REVISION, _PN("left-attach"), &szLeft);
+		getPropertyFromSDH(pfs,true, PD_MAX_REVISION, _PN("right-attach"), &szRight);
+		getPropertyFromSDH(pfs,true, PD_MAX_REVISION, _PN("top-attach"), &szTop);
+		getPropertyFromSDH(pfs,true, PD_MAX_REVISION, _PN("bot-attach"), &szBot);
 		if(szLeft != NULL)
 		{
 			UT_DEBUGMSG(("left-attach %s right-attach %s top-attach %s bot-attach %s \n",szLeft,szRight,szTop,szBot));
@@ -3495,19 +3491,24 @@ pf_Frag_Strux* PD_Document::getCellSDHFromRowCol(pf_Frag_Strux* tableSDH,
 				Top = -1;
 				Right = -1;
 				Bot = -1;
-				UT_DebugOnly<bool> bres = getPropertyFromSDH(cellSDH,bShowRevisions,iRevisionLevel,"left-attach",&szLeft);
+				UT_DebugOnly<bool> bres = getPropertyFromSDH(cellSDH, bShowRevisions,
+															 iRevisionLevel,
+															 _PN("left-attach"), &szLeft);
 				UT_ASSERT(bres);
 				if(szLeft && *szLeft)
 					Left = atoi(szLeft);
-				bres = getPropertyFromSDH(cellSDH,bShowRevisions,iRevisionLevel,"top-attach",&szTop);
+				bres = getPropertyFromSDH(cellSDH, bShowRevisions, iRevisionLevel,
+										  _PN("top-attach"), &szTop);
 				UT_ASSERT(bres);
 				if(szTop && *szTop)
 					Top = atoi(szTop);
-				bres = getPropertyFromSDH(cellSDH,bShowRevisions,iRevisionLevel,"right-attach",&szRight);
+				bres = getPropertyFromSDH(cellSDH, bShowRevisions, iRevisionLevel,
+										  _PN("right-attach"), &szRight);
 				UT_ASSERT(bres);
 				if(szRight && *szRight)
 					Right = atoi(szRight);
-				bres = getPropertyFromSDH(cellSDH,bShowRevisions,iRevisionLevel,"bot-attach",&szBot);
+				bres = getPropertyFromSDH(cellSDH, bShowRevisions, iRevisionLevel,
+										  _PN("bot-attach"), &szBot);
 				UT_ASSERT(bres);
 				if(szBot && *szBot)
 					Bot = atoi(szBot);
@@ -3797,20 +3798,16 @@ bool PD_Document::removeStyle(const gchar * pszName)
 
 		if( bDoBasedOn && bDoFollowedby)
 		{
-			nAtts.push_back("basedon");
-			nAtts.push_back(szBack);
-			nAtts.push_back("followedby");
-			nAtts.push_back("Current Settings");
+			nAtts.push_back({ "basedon", szBack });
+			nAtts.push_back({ "followedby", "Current Settings" });
 		}
 		else if ( bDoBasedOn && ! bDoFollowedby)
 		{
-			nAtts.push_back("basedon");
-			nAtts.push_back(szBack);
+			nAtts.push_back({ "basedon", szBack });
 		}
 		else if ( !bDoBasedOn && bDoFollowedby)
 		{
-			nAtts.push_back("followedby");
-			nAtts.push_back("Current Settings");
+			nAtts.push_back({ "followedby", "Current Settings" });
 		}
 		if( bDoBasedOn || bDoFollowedby)
 		{
@@ -4406,7 +4403,7 @@ const PP_AttrProp * PD_Document::explodeRevisions(std::unique_ptr<PP_RevisionAtt
 
 	bool bMark = isMarkRevisions();
 
-	if(pAP && pAP->getAttribute("revision", pRevision))
+	if(pAP && pAP->getAttribute(_PN("revision"), pRevision))
 	{
 		if(!pRevisions)
 			pRevisions.reset(new PP_RevisionAttr(pRevision));
@@ -5080,7 +5077,7 @@ bool PD_Document::createDataItem(const char * szName, bool bBase64,
 	}
 	{
 		const PP_PropertyVector attributes = {
-			PT_DATAITEM_ATTRIBUTE_NAME, szName
+			{ PT_DATAITEM_ATTRIBUTE_NAME, szName }
 		};
 		PT_AttrPropIndex iAP= 0;
 		m_pPieceTable->getVarSet().storeAP(attributes, &iAP);
@@ -5360,7 +5357,7 @@ bool PD_Document::enumStyles(UT_GenericVector<PD_Style*> * & pStyles) const
 	return m_pPieceTable->enumStyles(pStyles);
 }
 
-bool PD_Document::getStyleProperty(const char * szStyleName, const char * szPropertyName, const char *& szPropertyValue)
+bool PD_Document::getStyleProperty(const char * szStyleName, PP_PropName szPropertyName, const char *& szPropertyValue)
 {
 	PD_Style * pS;
 	PD_Style ** ppS = &pS;
@@ -5949,59 +5946,52 @@ void PD_Document::StopList(pf_Frag_Strux* sdh )
 
 bool PD_Document::appendList(const PP_PropertyVector & attributes)
 {
-	const std::string *szID = NULL;
-	const std::string *szPid = NULL;
-	const std::string *szType = NULL;
-	const std::string *szStart = NULL;
-	const std::string *szDelim = NULL;
+	std::string szID;
+	std::string szPid;
+	std::string szType;
+	std::string szStart;
+	std::string szDelim;
 	std::string szDec;
 	UT_uint32 id, parent_id, start;
 	FL_ListType type;
 
-	for (auto iter = attributes.cbegin();
-		 iter != attributes.cend(); ++iter) {
-
-		const std::string & key = *iter;
-		++iter;
-		if (iter == attributes.cend()) {
-			break;
-		}
-		if (key == "id") {
-			szID = &(*iter);
-		} else if (key == "parentid") {
-			szPid = &(*iter);
-		} else if (key == "type") {
-			szType = &(*iter);
-		} else if (key == "start-value") {
-			szStart = &(*iter);
-		} else if (key == "list-delim") {
-			szDelim = &(*iter);
-		} else if (key == "list-decimal") {
-			szDec = *iter;
+	for (auto elem : attributes) {
+		if (elem.name == "id") {
+			szID = elem.value;
+		} else if (elem.name == "parentid") {
+			szPid = elem.value;
+		} else if (elem.name == "type") {
+			szType = elem.value;
+		} else if (elem.name == "start-value") {
+			szStart = elem.value;
+		} else if (elem.name == "list-delim") {
+			szDelim = elem.value;
+		} else if (elem.name == "list-decimal") {
+			szDec = elem.value;
 		}
 	}
 
-	if(!szID || !szPid || !szType || !szStart || !szDelim) {
+	if(szID.empty() || szPid.empty() || szType.empty() || szStart.empty() || szDelim.empty()) {
 		return false;
 	}
 	if(szDec.empty()) {
 		szDec = ".";
 	}
-	id = atoi(szID->c_str());
+	id = atoi(szID.c_str());
 
 	auto iter = m_mapLists.find(id);
 	if (iter != m_mapLists.end()) {
 		// already present.
 		return true;
 	}
-	parent_id = atoi(szPid->c_str());
-	type = static_cast<FL_ListType>(atoi(szType->c_str()));
-	start = atoi(szStart->c_str());
+	parent_id = atoi(szPid.c_str());
+	type = static_cast<FL_ListType>(atoi(szType.c_str()));
+	start = atoi(szStart.c_str());
 
 	// this is bad design -- layout items should not be created by the document, only by the view
 	// (the props and attrs of layout items are view-specific due to possible revisions settings !!!)
 	fl_AutoNumPtr pAutoNum = std::make_shared<fl_AutoNum>(id, parent_id, type, start,
-														  szDelim->c_str(), szDec.c_str(),
+														  szDelim.c_str(), szDec.c_str(),
 														  this, nullptr);
 	addList(pAutoNum);
 
@@ -6143,8 +6133,8 @@ bool PD_Document::convertPercentToInches(const char * szPercent, UT_UTF8String &
 	const char * szRightMargin = NULL;
 
 	// TODO -- probably needs to get revision settings from some view ...
-	getPropertyFromSDH(sdhSec,true,PD_MAX_REVISION,"page-margin-left",&szLeftMargin);
-	getPropertyFromSDH(sdhSec,true,PD_MAX_REVISION,"page-margin-right",&szRightMargin);
+	getPropertyFromSDH(sdhSec, true, PD_MAX_REVISION, _PN("page-margin-left"), &szLeftMargin);
+	getPropertyFromSDH(sdhSec, true, PD_MAX_REVISION, _PN("page-margin-right"), &szRightMargin);
 	if(szLeftMargin == NULL)
 	{
 		szLeftMargin = "0.5in";
@@ -6170,7 +6160,7 @@ bool PD_Document:: setPageSizeFromFile(const PP_PropertyVector & props)
 	if(!m_bLoading)
 	{
 		const PP_PropertyVector atts = {
-			PT_DOCPROP_ATTRIBUTE_NAME,"pagesize"
+			{ PT_DOCPROP_ATTRIBUTE_NAME, "pagesize" }
 		};
 		UT_DEBUGMSG(("Sending page size CR \n"));
 		b &= createAndSendDocPropCR(atts, props);
@@ -6283,22 +6273,21 @@ bool PD_Document::setAttrProp(const PP_PropertyVector & ppAttr)
 
 		// now set standard attributes
 		PP_PropertyVector attr = {
-			"xmlns", "http://www.abisource.com/awml.dtd",
-			"xml:space", "preserve",
-			"xmlns:awml", "http://www.abisource.com/awml.dtd",
-			"xmlns:xlink", "http://www.w3.org/1999/xlink",
-			"xmlns:svg", "http://www.w3.org/2000/svg",
-			"xmlns:fo",	"http://www.w3.org/1999/XSL/Format",
-			"xmlns:math", "http://www.w3.org/1998/Math/MathML",
-			"xmlns:dc",	"http://purl.org/dc/elements/1.1/",
-			"xmlns:ct", "http://www.abisource.com/changetracking.dtd",
-			"fileformat", ABIWORD_FILEFORMAT_VERSION
+			{ "xmlns", "http://www.abisource.com/awml.dtd" },
+			{ "xml:space", "preserve" },
+			{ "xmlns:awml", "http://www.abisource.com/awml.dtd" },
+			{ "xmlns:xlink", "http://www.w3.org/1999/xlink" },
+			{ "xmlns:svg", "http://www.w3.org/2000/svg" },
+			{ "xmlns:fo",	"http://www.w3.org/1999/XSL/Format" },
+			{ "xmlns:math", "http://www.w3.org/1998/Math/MathML" },
+			{ "xmlns:dc",	"http://purl.org/dc/elements/1.1/" },
+			{ "xmlns:ct", "http://www.abisource.com/changetracking.dtd" },
+			{ "fileformat", ABIWORD_FILEFORMAT_VERSION }
 		};
 
 		if (XAP_App::s_szBuild_Version && XAP_App::s_szBuild_Version[0])
 		{
-			attr.push_back("version");
-			attr.push_back(XAP_App::s_szBuild_Version);
+			attr.push_back({ "version", XAP_App::s_szBuild_Version });
 		}
 
 		bRet =  setAttributes(attr);
@@ -6312,10 +6301,10 @@ bool PD_Document::setAttrProp(const PP_PropertyVector & ppAttr)
 		XAP_App::getApp()->getPrefs()->getPrefsValueBool(AP_PREF_KEY_DefaultDirectionRtl, bRTL);
 
 		PP_PropertyVector props = {
-			"dom-dir", bRTL ? "rtl" : "ltr"
+			{ "dom-dir", bRTL ? "rtl" : "ltr" }
 		};
 
-		UT_DEBUGMSG(( "pd_Document::setAttrProp: setting dom-dir to %s\n", props[1].c_str()));
+		UT_DEBUGMSG(( "pd_Document::setAttrProp: setting dom-dir to %s\n", props[0].value.c_str()));
 		bRet = setProperties(props);
 
 		if(!bRet)
@@ -6330,8 +6319,7 @@ bool PD_Document::setAttrProp(const PP_PropertyVector & ppAttr)
 			lang += locale.getTerritory();
 		}
 
-		props[0] = "lang";
-		props[1] = lang;
+		props[0] = { "lang", lang };
 		bRet = setProperties(props);
 
 		if(!bRet)
@@ -6388,33 +6376,33 @@ bool PD_Document::setAttrProp(const PP_PropertyVector & ppAttr)
 		// should be fixed up, but that has nothing to do with this code. Tomas
 
 			// Endnotes
-		props[0] = "document-endnote-type";
-		props[1] = "numeric";
+		props[0].name = _PN("document-endnote-type");
+		props[0].value = "numeric";
 		if(!setProperties(props)) return false;
-		props[0] = "document-endnote-place-enddoc";
-		props[1] = "1";
+		props[0].name = _PN("document-endnote-place-enddoc");
+		props[0].value = "1";
 		if(!setProperties(props)) return false;
-		props[0] = "document-endnote-place-endsection";
-		props[1] = "0";
+		props[0].name = _PN("document-endnote-place-endsection");
+		props[0].value = "0";
 		if(!setProperties(props)) return false;
-		props[0] = "document-endnote-initial";
-		props[1] = "1";
+		props[0].name = _PN("document-endnote-initial");
+		props[0].value = "1";
 		if(!setProperties(props)) return false;
-		props[0] = "document-endnote-restart-section";
-		props[1] = "0";
+		props[0].name = _PN("document-endnote-restart-section");
+		props[0].value = "0";
 		if(!setProperties(props)) return false;
 			// Footnotes
-		props[0] = "document-footnote-type";
-		props[1] = "numeric";
+		props[0].name = _PN("document-footnote-type");
+		props[0].value = "numeric";
 		if(!setProperties(props)) return false;
-		props[0] = "document-footnote-initial";
-		props[1] = "1";
+		props[0].name = _PN("document-footnote-initial");
+		props[0].value = "1";
 		if(!setProperties(props)) return false;
-		props[0] = "document-footnote-restart-page";
-		props[1] = "0";
+		props[0].name = _PN("document-footnote-restart-page");
+		props[0].value = "0";
 		if(!setProperties(props)) return false;
-		props[0] = "document-footnote-restart-section";
-		props[1] = "0";
+		props[0].name  = _PN("document-footnote-restart-section");
+		props[0].value = "0";
 		if(!setProperties(props)) return false;
 
 		// now overlay the attribs we were passed ...
@@ -6429,7 +6417,7 @@ bool PD_Document::setAttrProp(const PP_PropertyVector & ppAttr)
 	{
 		// have an AP and given something to add to it
 		// first, we need to take care of the top-xid attribute
-		const std::string & pXID = PP_getAttribute("top-xid", ppAttr);
+		const std::string & pXID = PP_getAttribute(_PN("top-xid"), ppAttr);
 		if(!pXID.empty())
 		{
 			UT_uint32 iXID = atoi(pXID.c_str());
@@ -6459,7 +6447,7 @@ bool PD_Document::setProperties(const PP_PropertyVector & ppProps)
 void PD_Document::lockStyles(bool b)
 {
 	PP_PropertyVector attr = {
-		"styles", b ? "locked" : "unlocked"
+		{ "styles", b ? "locked" : "unlocked" }
 	};
 
 	setAttributes(attr);
@@ -6654,7 +6642,7 @@ bool PD_Document::insertSpanBeforeFrag(pf_Frag * pF, const UT_UCSChar * pbuf, UT
 	// * we replace LRO/RLO with our dir-override property
 
 	PP_PropertyVector attrs = {
-		"props", ""
+		{ "props", "" }
 	};
 
 	bool result = true;
@@ -6668,7 +6656,7 @@ bool PD_Document::insertSpanBeforeFrag(pf_Frag * pF, const UT_UCSChar * pbuf, UT
 				if((p - pStart) > 0)
 					result &= m_pPieceTable->insertSpanBeforeFrag(pF,pStart,p - pStart);
 
-				attrs[1] = "dir-override:ltr";
+				attrs[0].value = "dir-override:ltr";
 				result &= m_pPieceTable->appendFmt(attrs);
 				pStart = p + 1;
 				m_iLastDirMarker = *p;
@@ -6678,7 +6666,7 @@ bool PD_Document::insertSpanBeforeFrag(pf_Frag * pF, const UT_UCSChar * pbuf, UT
 				if((p - pStart) > 0)
 					result &= m_pPieceTable->insertSpanBeforeFrag(pF,pStart,p - pStart);
 
-				attrs[1] = "dir-override:rtl";
+				attrs[0].value = "dir-override:rtl";
 				result &= m_pPieceTable->appendFmt(attrs);
 
 				pStart = p + 1;
@@ -6691,7 +6679,7 @@ bool PD_Document::insertSpanBeforeFrag(pf_Frag * pF, const UT_UCSChar * pbuf, UT
 
 				if((m_iLastDirMarker == UCS_RLO) || (m_iLastDirMarker == UCS_LRO))
 				{
-					attrs[1] = "dir-override:";
+					attrs[0].value = "dir-override:";
 					result &= m_pPieceTable->appendFmt(attrs);
 				}
 
@@ -6956,9 +6944,9 @@ bool PD_Document::_acceptRejectRevision(bool bReject, UT_uint32 iStart, UT_uint3
 	bDeleted = false;
 
 	UT_uint32 iRealDeleteCount;
-	const std::string rev = "revision";
+	PP_PropName rev("revision");
 	PP_PropertyVector ppAttr = {
-		rev, ""
+		{ rev, "" }
 	};
 
 	PP_PropertyVector ppProps;
@@ -7047,8 +7035,7 @@ bool PD_Document::_acceptRejectRevision(bool bReject, UT_uint32 iStart, UT_uint3
 				RevAttr.removeAllHigherOrEqualIds(pRev->getId());
 				pRev = NULL;
 				
-				ppAttr[0] = rev;
-				ppAttr[1] = RevAttr.getXMLstring();
+				ppAttr[0] = PP_PropertyVectorElem(rev, RevAttr.getXMLstring());
 
 				if(pf->getType() == pf_Frag::PFT_Strux)
 				{
@@ -7068,8 +7055,7 @@ bool PD_Document::_acceptRejectRevision(bool bReject, UT_uint32 iStart, UT_uint3
 				RevAttr.removeAllHigherOrEqualIds(pRev->getId());
 				pRev = NULL;
 				
-				ppAttr[0] = rev;
-				ppAttr[1] = RevAttr.getXMLstring();
+				ppAttr[0] = PP_PropertyVectorElem(rev, RevAttr.getXMLstring());
 
 				if(pf->getType() == pf_Frag::PFT_Strux)
 				{
@@ -7143,20 +7129,20 @@ bool PD_Document::_acceptRejectRevision(bool bReject, UT_uint32 iStart, UT_uint3
 				// from the revision attribute
 				for(i = 0; i < pRev->getPropertyCount(); i++)
 				{
-					const char* props, *value;
-					pRev->getNthProperty(i, props, value);
+					PP_PropName prop;
+					const char* value;
+					pRev->getNthProperty(i, prop, value);
 
-					ppProps.push_back(props);
-					ppProps.push_back(value ? value : "");
+					ppProps.push_back({ prop, value ? value : "" });
 				}
 
 				for(i = 0; i < pRev->getAttributeCount(); i++)
 				{
-					const char* props, *value;
-					pRev->getNthAttribute(i, props, value);
+					PP_PropName prop;
+					const char* value;
+					pRev->getNthAttribute(i, prop, value);
 
-					ppAttr2.push_back(props);
-					ppAttr2.push_back(value ? value : "");
+					ppAttr2.push_back({ prop, value ? value : "" });
 				}
 
 				if(pRev->getType() != PP_REVISION_ADDITION_AND_FMT)	{
@@ -7185,8 +7171,7 @@ bool PD_Document::_acceptRejectRevision(bool bReject, UT_uint32 iStart, UT_uint3
 						else
 							bRet &= changeSpanFmt(PTC_RemoveFmt, iStart, iEnd, ppAttr, PP_NOPROPS);
 					} else {
-						ppAttr2.push_back(rev);
-						ppAttr2.push_back(revision);
+						ppAttr2.push_back({ rev, revision });
 					}
 				}
 
@@ -7244,10 +7229,10 @@ bool PD_Document::acceptAllRevisions()
 			notifyPieceTableChangeEnd();
 			return false;
 		}
-		
+
 		const gchar * pszRevision = NULL;
-		pAP->getAttribute("revision", pszRevision);
-		
+		pAP->getAttribute(_PN("revision"), pszRevision);
+
 		if(pszRevision == NULL)
 		{
 			// no revisions on this fragment
@@ -7326,10 +7311,10 @@ bool PD_Document::rejectAllHigherRevisions(UT_uint32 iLevel)
 			notifyPieceTableChangeEnd();
 			return false;
 		}
-		
+
 		const gchar * pszRevision = NULL;
-		pAP->getAttribute("revision", pszRevision);
-		
+		pAP->getAttribute(_PN("revision"), pszRevision);
+
 		if(pszRevision == NULL)
 		{
 			// no revisions on this fragment
@@ -7437,10 +7422,10 @@ bool PD_Document::acceptRejectRevision(bool bReject, UT_uint32 iPos1,
 			notifyPieceTableChangeEnd();
 			return false;
 		}
-		
+
 		const gchar * pszRevision = NULL;
-		pAP->getAttribute("revision", pszRevision);
-		
+		pAP->getAttribute(_PN("revision"), pszRevision);
+
 		if(pszRevision == NULL)
 		{
 			// no revisions on this fragment
@@ -8059,7 +8044,7 @@ bool PD_Document::getAttrProp(PT_AttrPropIndex apIndx, const PP_AttrProp ** ppAP
 
 		const gchar* pRevision = NULL;
 
-		if(bRevisionAttrNeeded && pAP->getAttribute("revision", pRevision))
+		if(bRevisionAttrNeeded && pAP->getAttribute(_PN("revision"), pRevision))
 		{
 			pRevisions.unwrap_ref().reset(new PP_RevisionAttr(pRevision));
 			UT_return_val_if_fail(pRevisions, false);
@@ -8120,7 +8105,7 @@ bool PD_Document::getSpanAttrProp(pf_Frag_Strux* sdh, UT_uint32 offset, bool bLe
 		const gchar* pRevision = NULL;
 
 		// only do this if the pRevisions pointer is set to NULL
-		if(bRevisionAttrNeeded && pAP->getAttribute("revision", pRevision))
+		if(bRevisionAttrNeeded && pAP->getAttribute(_PN("revision"), pRevision))
 		{
 			pRevisions.unwrap_ref().reset(new PP_RevisionAttr(pRevision));
 			UT_return_val_if_fail(pRevisions, false);

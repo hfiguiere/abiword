@@ -139,7 +139,7 @@ fl_BlockLayout::_getSpellChecker (UT_uint32 blockPos) const
 	getSpanAP(blockPos, false, pSpanAP);
 	getAP(pBlockAP);
 
-	const char * pszLang = static_cast<const char *>(PP_evalProperty("lang",pSpanAP,pBlockAP,NULL,m_pDoc,true));
+	const char * pszLang = static_cast<const char *>(PP_evalProperty(_PN("lang"), pSpanAP, pBlockAP,NULL,m_pDoc,true));
 	if(!pszLang || !*pszLang)
 	{
 		// we just (dumbly) default to the last dictionary
@@ -469,6 +469,13 @@ void fl_BlockLayout::refreshRunProperties(void) const
 	}
 }
 
+
+struct MarginAndIndent_t
+{
+	PP_PropName szProp;
+	UT_sint32*	pVar;
+};
+
 /*!
     this function is only to be called by fl_ContainerLayout::lookupMarginProperties()
     all other code must call lookupMarginProperties() instead
@@ -492,18 +499,13 @@ void fl_BlockLayout::_lookupMarginProperties(const PP_AttrProp* pBlockAP)
 	UT_sint32 iRightMargin = m_iRightMargin;
 	UT_sint32 iTextIndent = getTextIndent();
 	
-	struct MarginAndIndent_t
+	const MarginAndIndent_t rgProps[] =
 	{
-		const char* szProp;
-		UT_sint32*	pVar;
-	}
-	const rgProps[] =
-	{
-		{ "margin-top", 	&m_iTopMargin    },
-		{ "margin-bottom",	&m_iBottomMargin },
-		{ "margin-left",	&m_iLeftMargin,  },
-		{ "margin-right",	&m_iRightMargin, },
-		{ "text-indent",	&m_iTextIndent,  }
+		{ _PN("margin-top"), 	&m_iTopMargin    },
+		{ _PN("margin-bottom"),	&m_iBottomMargin },
+		{ _PN("margin-left"),	&m_iLeftMargin,  },
+		{ _PN("margin-right"),	&m_iRightMargin, },
+		{ _PN("text-indent"),	&m_iTextIndent,  }
 	};
 	for (UT_uint32 iRg = 0; iRg < G_N_ELEMENTS(rgProps); ++iRg)
 	{
@@ -541,7 +543,7 @@ void fl_BlockLayout::_lookupMarginProperties(const PP_AttrProp* pBlockAP)
 	// but that is not very safe assumption, for there should be nothing stoping
 	// us to use 2 or 3 in place of 2.0 or 3.0, so I commented this this out
 	// Tomas 21/1/2002
-	const char * pszSpacing = getProperty("line-height");
+	const char * pszSpacing = getProperty(_PN("line-height"));
 	const char * pPlusFound = strrchr(pszSpacing, '+');
 	eSpacingPolicy spacingPolicy = m_eSpacingPolicy;
 	double dLineSpacing = m_dLineSpacing;
@@ -657,7 +659,7 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 	const gchar * pszFntId = NULL;
 	const gchar * pszDir = NULL;
 		
-	if (pBlockAP && pBlockAP->getAttribute("footnote-id", pszFntId ))
+	if (pBlockAP && pBlockAP->getAttribute(_PN("footnote-id"), pszFntId ))
 	{
 		if(pszFntId && *pszFntId)
 		{
@@ -668,14 +670,14 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 			
 			const PP_AttrProp * pSectionAP = NULL;
 			pDSL->getAP(pSectionAP);
-				
-			pszDir = PP_evalProperty("dom-dir",NULL,NULL,pSectionAP,m_pDoc,false);
+
+			pszDir = PP_evalProperty(_PN("dom-dir"), NULL, NULL, pSectionAP, m_pDoc, false);
 		}
 	}
 
 	if(!pszDir)
 	{
-		pszDir = getProperty("dom-dir", true);
+		pszDir = getProperty(_PN("dom-dir"), true);
 	}
 		
 	UT_BidiCharType iOldDirection = m_iDomDirection;
@@ -745,13 +747,13 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 		
 	}
 	{
-		auto orphans = getPropertyType("orphans", Property_type_int);
+		auto orphans = getPropertyType(_PN("orphans"), Property_type_int);
 		const PP_PropertyTypeInt *pOrphans = static_cast<const PP_PropertyTypeInt *>(orphans.get());
 		UT_ASSERT_HARMLESS(pOrphans);
 		if(pOrphans)
 			m_iOrphansProperty = pOrphans->getValue();
 
-		auto widows = getPropertyType("widows", Property_type_int);
+		auto widows = getPropertyType(_PN("widows"), Property_type_int);
 		const PP_PropertyTypeInt *pWidows = static_cast<const PP_PropertyTypeInt *>(widows.get());
 		UT_ASSERT_HARMLESS(pWidows);
 		if(pWidows)
@@ -768,7 +770,7 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 	}
 
 	{
-		const char* pszKeepTogether = getProperty("keep-together");
+		const char* pszKeepTogether = getProperty(_PN("keep-together"));
 		if (pszKeepTogether)
 		{
 			if (0 == strcmp("yes", pszKeepTogether))
@@ -782,7 +784,7 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 		}
 
 
-		const char* pszKeepWithNext = getProperty("keep-with-next");
+		const char* pszKeepWithNext = getProperty(_PN("keep-with-next"));
 		if (pszKeepWithNext)
 		{
 			if (0 == strcmp("yes", pszKeepWithNext))
@@ -798,18 +800,13 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 
 	GR_Graphics* pG = m_pLayout->getGraphics();
 
-	struct MarginAndIndent_t
+	const MarginAndIndent_t rgProps[] =
 	{
-		const char* szProp;
-		UT_sint32*	pVar;
-	}
-	const rgProps[] =
-	{
-		{ "margin-top", 	&m_iTopMargin    },
-		{ "margin-bottom",	&m_iBottomMargin },
-		{ "margin-left",	&m_iLeftMargin,  },
-		{ "margin-right",	&m_iRightMargin, },
-		{ "text-indent",	&m_iTextIndent,  }
+		{ _PN("margin-top"), 	&m_iTopMargin    },
+		{ _PN("margin-bottom"),	&m_iBottomMargin },
+		{ _PN("margin-left"),	&m_iLeftMargin,  },
+		{ _PN("margin-right"),	&m_iRightMargin, },
+		{ _PN("text-indent"),	&m_iTextIndent,  }
 	};
 	for (UT_uint32 iRg = 0; iRg < G_N_ELEMENTS(rgProps); ++iRg)
 	{
@@ -838,7 +835,7 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 	}
 	
 	{
-		const char* pszAlign = getProperty("text-align");
+		const char* pszAlign = getProperty(_PN("text-align"));
 
 		// we will only delete and reallocate the alignment if it is different
 		// than the current one
@@ -889,7 +886,7 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 	}
 
 	// parse any new tabstops
-	const char* pszTabStops = getProperty("tabstops");
+	const char* pszTabStops = getProperty(_PN("tabstops"));
 	buildTabStops(pszTabStops, m_vecTabs);
 
 
@@ -901,7 +898,7 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 				 pG->getZoomPercentage()));
 #endif
 
-	auto prop = getPropertyType("default-tab-interval", Property_type_size);
+	auto prop = getPropertyType(_PN("default-tab-interval"), Property_type_size);
 	const PP_PropertyTypeSize * pProp = static_cast<const PP_PropertyTypeSize *>(prop.get());
 	// TODO: this should probably change the stored property instead
 	m_iDefaultTabInterval = UT_convertSizeToLayoutUnits(pProp->getValue(), pProp->getDim());
@@ -910,7 +907,7 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 		m_iDefaultTabInterval = UT_convertToLogicalUnits("1pt");
 	}
 
-	const char * pszSpacing = getProperty("line-height");
+	const char * pszSpacing = getProperty(_PN("line-height"));
 
 	// NOTE : Parsing spacing strings:
 	// NOTE : - if spacing string ends with "+", it's marked as an "At Least" measurement
@@ -968,7 +965,7 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 		const gchar * sPattern = NULL;
 		const gchar * sShadingForeCol = NULL;
 		const gchar * sShadingBackCol = NULL;
-		sPattern = getProperty("shading-pattern",true);
+		sPattern = getProperty(_PN("shading-pattern"), true);
 		if(sPattern)
 		{
 			m_iPattern = atoi(sPattern);
@@ -977,7 +974,7 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 		{
 			m_iPattern = 0;
 		}
-		sShadingForeCol = getProperty("shading-foreground-color",true);
+		sShadingForeCol = getProperty(_PN("shading-foreground-color"), true);
 		if(sShadingForeCol)
 		{
 			m_ShadingForeColor.setColor(sShadingForeCol);
@@ -986,7 +983,7 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 		{
 			m_ShadingForeColor.setColor("white");
 		}
-		sShadingBackCol = getProperty("shading-background-color",true);
+		sShadingBackCol = getProperty(_PN("shading-background-color"), true);
 		if(sShadingBackCol)
 		{
 			m_ShadingBackColor.setColor(sShadingBackCol);
@@ -1008,7 +1005,7 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 		m_lineRight.m_t_linestyle =  PP_PropertyMap::linestyle_none;
 		m_bCanMergeBordersWithNext = true;
 		const gchar * pszCanMergeBorders = NULL;
-		pszCanMergeBorders = getProperty("border-merge");
+		pszCanMergeBorders = getProperty(_PN("border-merge"));
 		if(pszCanMergeBorders && !strcmp(pszCanMergeBorders,"false"))
 		{
 			m_bCanMergeBordersWithNext = false;
@@ -1022,11 +1019,11 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 		//
 		const gchar * pszColor= NULL;
 
-		pszBorderColor = getProperty ("bot-color");
-		pBlockAP->getProperty ("bot-style",pszBorderStyle);
-		pszBorderWidth = getProperty ("bot-thickness");
-		pszBorderSpacing= getProperty ("bot-space");
-		if(pBlockAP && pBlockAP->getProperty ("bot-style",pszBorderStyle) && pszBorderStyle)
+		pszBorderColor = getProperty (_PN("bot-color"));
+		pBlockAP->getProperty (_PN("bot-style"), pszBorderStyle);
+		pszBorderWidth = getProperty (_PN("bot-thickness"));
+		pszBorderSpacing= getProperty (_PN("bot-space"));
+		if(pBlockAP && pBlockAP->getProperty (_PN("bot-style"), pszBorderStyle) && pszBorderStyle)
 		{
 			s_border_properties (pszBorderColor, pszBorderStyle, pszBorderWidth, pszColor, pszBorderSpacing,m_lineBottom);
 			m_bHasBorders |= (m_lineBottom.m_t_linestyle > 1);  
@@ -1036,11 +1033,11 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 		pszBorderWidth = NULL;
 		pszBorderSpacing = NULL;
 
-		pszBorderColor = getProperty ("left-color");
-		pszBorderWidth = getProperty ("left-thickness");
-		pszBorderSpacing = getProperty ("left-space");
+		pszBorderColor = getProperty(_PN("left-color"));
+		pszBorderWidth = getProperty(_PN("left-thickness"));
+		pszBorderSpacing = getProperty(_PN("left-space"));
 
-		if(pBlockAP && pBlockAP->getProperty ("left-style",pszBorderStyle) && pszBorderStyle)
+		if(pBlockAP && pBlockAP->getProperty(_PN("left-style"), pszBorderStyle) && pszBorderStyle)
 		{
  			s_border_properties (pszBorderColor, pszBorderStyle, pszBorderWidth, pszColor, pszBorderSpacing,m_lineLeft);
 			m_bHasBorders |= (m_lineLeft.m_t_linestyle > 1);  
@@ -1050,12 +1047,12 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 		pszBorderWidth = NULL;
 		pszBorderSpacing = NULL;
 
-		pszBorderColor = getProperty ("right-color");
-		pszBorderStyle = getProperty ("right-style");
-		pszBorderWidth = getProperty ("right-thickness");
-		pszBorderSpacing = getProperty ("right-space");
+		pszBorderColor = getProperty(_PN("right-color"));
+		pszBorderStyle = getProperty(_PN("right-style"));
+		pszBorderWidth = getProperty(_PN("right-thickness"));
+		pszBorderSpacing = getProperty(_PN("right-space"));
 
-		if(pBlockAP && pBlockAP->getProperty ("right-style",pszBorderStyle) && pszBorderStyle)
+		if(pBlockAP && pBlockAP->getProperty(_PN("right-style"), pszBorderStyle) && pszBorderStyle)
 		{
 			s_border_properties (pszBorderColor, pszBorderStyle, pszBorderWidth, pszColor, pszBorderSpacing,m_lineRight);
 			m_bHasBorders |= (m_lineRight.m_t_linestyle > 1);  
@@ -1065,11 +1062,11 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 		pszBorderWidth = NULL;
 		pszBorderSpacing = NULL;
 
-		pszBorderColor = getProperty ("top-color");
-		pszBorderWidth = getProperty ("top-thickness");
-		pszBorderSpacing = getProperty ("top-space");
+		pszBorderColor = getProperty(_PN("top-color"));
+		pszBorderWidth = getProperty(_PN("top-thickness"));
+		pszBorderSpacing = getProperty(_PN("top-space"));
 	
-		if(pBlockAP && pBlockAP->getProperty ("top-style",pszBorderStyle) && pszBorderStyle)
+		if(pBlockAP && pBlockAP->getProperty(_PN("top-style"), pszBorderStyle) && pszBorderStyle)
 		{
 			s_border_properties (pszBorderColor, pszBorderStyle, pszBorderWidth, pszColor, pszBorderSpacing,m_lineTop);
 			m_bHasBorders |= (m_lineTop.m_t_linestyle > 1); 
@@ -1161,12 +1158,12 @@ void fl_BlockLayout::_lookupProperties(const PP_AttrProp* pBlockAP)
 		//
 		if(pAutoNum == NULL)
 		{
-			const gchar * pszStart = getProperty("start-value",true);
-			const gchar * lDelim =  getProperty("list-delim",true);
-			const gchar * lDecimal =  getProperty("list-decimal",true);
+			const gchar * pszStart = getProperty(_PN("start-value"), true);
+			const gchar * lDelim =  getProperty(_PN("list-delim"), true);
+			const gchar * lDecimal =  getProperty(_PN("list-decimal"), true);
 			UT_uint32 start = atoi(pszStart);
 			const gchar * style = NULL;
-			style = getProperty("list-style",true);
+			style = getProperty(_PN("list-style"), true);
 			if(!style)
 			{
 				pBlockAP->getAttribute(PT_STYLE_ATTRIBUTE_NAME,style);
@@ -4356,7 +4353,7 @@ void fl_BlockLayout::setNeedsRedraw(void)
 	getSectionLayout()->setNeedsRedraw();
 }
 
-const char* fl_BlockLayout::getProperty(const gchar * pszName, bool bExpandStyles) const
+const char* fl_BlockLayout::getProperty(PP_PropName name, bool bExpandStyles) const
 {
 	const PP_AttrProp * pSpanAP = NULL;
 	const PP_AttrProp * pBlockAP = NULL;
@@ -4369,7 +4366,7 @@ const char* fl_BlockLayout::getProperty(const gchar * pszName, bool bExpandStyle
 	// be added for the normal build too.
 	m_pSectionLayout->getAP(pSectionAP);
 
-	return PP_evalProperty(pszName,pSpanAP,pBlockAP,pSectionAP,m_pDoc,bExpandStyles);
+	return PP_evalProperty(name, pSpanAP, pBlockAP, pSectionAP, m_pDoc, bExpandStyles);
 }
 
 /*!
@@ -4412,7 +4409,7 @@ UT_sint32 fl_BlockLayout::getLength() const
 	return length;
 }
 
-std::unique_ptr<PP_PropertyType> fl_BlockLayout::getPropertyType(const gchar * pszName, tProperty_type Type, bool bExpandStyles) const
+std::unique_ptr<PP_PropertyType> fl_BlockLayout::getPropertyType(PP_PropName name, tProperty_type Type, bool bExpandStyles) const
 {
 	const PP_AttrProp * pSpanAP = NULL;
 	const PP_AttrProp * pBlockAP = NULL;
@@ -4420,7 +4417,7 @@ std::unique_ptr<PP_PropertyType> fl_BlockLayout::getPropertyType(const gchar * p
 
 	getAP(pBlockAP);
 
-	return PP_evalPropertyType(pszName,pSpanAP,pBlockAP,pSectionAP,Type,m_pDoc,bExpandStyles);
+	return PP_evalPropertyType(name, pSpanAP, pBlockAP, pSectionAP, Type, m_pDoc, bExpandStyles);
 }
 
 /*!
@@ -5361,12 +5358,7 @@ bool   fl_BlockLayout::itemizeSpan(PT_BlockOffset blockOffset, UT_uint32 len,GR_
 	const PP_AttrProp * pBlockAP = NULL;
 	getSpanAP(blockOffset, false, pSpanAP);
 	getAP(pBlockAP);
-	const char * szLang = static_cast<const char *>(PP_evalProperty("lang",
-																	pSpanAP,
-																	pBlockAP,
-																	NULL,
-																	m_pDoc,
-																	true));
+	const char * szLang = PP_evalProperty(_PN("lang"), pSpanAP, pBlockAP, NULL, m_pDoc, true);
 
 	const GR_Font * pFont = m_pLayout->findFont(pSpanAP,
 												pBlockAP,
@@ -5880,7 +5872,7 @@ bool	fl_BlockLayout::_doInsertFieldRun(PT_BlockOffset blockOffset, const PX_Chan
 #endif
 	
 	const gchar* pszType = NULL;
-	pSpanAP->getAttribute("type", pszType);
+	pSpanAP->getAttribute(_PN("type"), pszType);
 
 	// Create the field run.
 
@@ -7983,7 +7975,7 @@ bool fl_BlockLayout::doclistener_insertBlock(const PX_ChangeRecord_Strux * pcrx,
 					const gchar * pszYPos = NULL;
 					double ypos = 0.;
 					pFL->getAP(pAP);
-					if(!pAP || !pAP->getProperty("ypos",pszYPos))
+					if(!pAP || !pAP->getProperty(_PN("ypos"), pszYPos))
 					{
 						pszYPos = "0.0in";
 					}
@@ -8003,7 +7995,7 @@ bool fl_BlockLayout::doclistener_insertBlock(const PX_ChangeRecord_Strux * pcrx,
 					ypos = UT_convertToInches(pszYPos) - double(extraHeight)/UT_LAYOUT_RESOLUTION;
 					UT_String sValY = UT_formatDimensionString(DIM_IN,ypos);
 					PP_PropertyVector frameProperties = {
-						"ypos", sValY.c_str(),
+						{ "ypos", sValY.c_str() },
 					};
 					PT_DocPosition posStart = pFL->getPosition(true)+1;
 					PT_DocPosition posEnd = posStart;
@@ -8225,7 +8217,7 @@ bool fl_BlockLayout::doclistener_insertSection(const PX_ChangeRecord_Strux * pcr
 		bool bres = (m_pDoc->getAttrProp(indexAP, &pHFAP) && pHFAP);
 		UT_UNUSED(bres);
 		UT_ASSERT(bres);
-		pHFAP->getAttribute("id", pszNewID);
+		pHFAP->getAttribute(_PN("id"), pszNewID);
 //
 // pszHFID may not be defined yet. If not we can't do this stuff. If it is defined
 // this step is essential
@@ -8242,7 +8234,7 @@ bool fl_BlockLayout::doclistener_insertSection(const PX_ChangeRecord_Strux * pcr
 // Determine if this is a header or a footer.
 //
 			const gchar* pszSectionType = NULL;
-			pHFAP->getAttribute("type", pszSectionType);
+			pHFAP->getAttribute(_PN("type"), pszSectionType);
 
 			HdrFtrType hfType = FL_HDRFTR_NONE;
 			if (pszSectionType && *pszSectionType)
@@ -8309,7 +8301,7 @@ bool fl_BlockLayout::doclistener_insertSection(const PX_ChangeRecord_Strux * pcr
 		bool bres = (m_pDoc->getAttrProp(indexAP, &pAP) && pAP);
 		UT_UNUSED(bres);
 		UT_ASSERT(bres);
-		pAP->getAttribute("id", pszNewID);
+		pAP->getAttribute(_PN("id"), pszNewID);
 		break;
 	}
 	case FL_SECTION_TOC:
@@ -10045,10 +10037,10 @@ void fl_BlockLayout::remItemFromList(void)
 		{
 			getListPropertyVector(props);
 		}
-		PP_setAttribute("text-indent", "0.0000in", props);
+		PP_setAttribute(_PN("text-indent"), "0.0000in", props);
 		const PP_PropertyVector attribs = {
-			"listid", lid,
-			"level", buf
+			{ "listid", lid },
+			{ "level", buf }
 		};
 		if (currLevel == 0)
 		{
@@ -10101,18 +10093,18 @@ void	fl_BlockLayout::StartList( const gchar * style, pf_Frag_Strux* prevSDH)
 	{
 		xxx_UT_DEBUGMSG(("SEVIOR: Found list of style %s \n",style));
 		// Use the props in the style
-		pStyle->getProperty(static_cast<const gchar *>("list-delim"), szDelim);
-		pStyle->getProperty(static_cast<const gchar *>("list-decimal"), szDec);
-		pStyle->getProperty(static_cast<const gchar *>("start-value"), szStart);
+		pStyle->getProperty(_PN("list-delim"), szDelim);
+		pStyle->getProperty(_PN("list-decimal"), szDec);
+		pStyle->getProperty(_PN("start-value"), szStart);
 
 		if(m_iDomDirection == UT_BIDI_RTL)
-		   pStyle->getProperty(static_cast<const gchar *>("margin-right"), szAlign);
+		   pStyle->getProperty(_PN("margin-right"), szAlign);
 	    else
-		   pStyle->getProperty(static_cast<const gchar *>("margin-left"), szAlign);
+		   pStyle->getProperty(_PN("margin-left"), szAlign);
 
-		pStyle->getProperty(static_cast<const gchar *>("text-indent"), szIndent);
-		pStyle->getProperty(static_cast<const gchar *>("field-font"), szFont);
-		pStyle->getProperty(static_cast<const gchar *>("list-style"), szListStyle);
+		pStyle->getProperty(_PN("text-indent"), szIndent);
+		pStyle->getProperty(_PN("field-font"), szFont);
+		pStyle->getProperty(_PN("list-style"), szListStyle);
 		if (szStart)
 			startv = atoi(szStart);
 		else
@@ -10128,9 +10120,9 @@ void	fl_BlockLayout::StartList( const gchar * style, pf_Frag_Strux* prevSDH)
 			fIndent =  static_cast<float>(-LIST_DEFAULT_INDENT_LABEL);
 		double dLeft;
 		if(m_iDomDirection == UT_BIDI_LTR)
-			dLeft = UT_convertToInches(getProperty("margin-left",true));
+			dLeft = UT_convertToInches(getProperty(_PN("margin-left"), true));
 		else
-			dLeft = UT_convertToInches(getProperty("margin-right",true));
+			dLeft = UT_convertToInches(getProperty(_PN("margin-right"), true));
 
 		fAlign += static_cast<float>(dLeft);
 		if(!szListStyle)
@@ -10208,8 +10200,8 @@ void	fl_BlockLayout::getListAttributesVector(PP_PropertyVector & va) const
 
 	const PP_AttrProp * pBlockAP = NULL;
 	getAP(pBlockAP);
-	pBlockAP->getAttribute(PT_STYLE_ATTRIBUTE_NAME,style);
-	pBlockAP->getAttribute(static_cast<const gchar *>(PT_LISTID_ATTRIBUTE_NAME),lid);
+	pBlockAP->getAttribute(PT_STYLE_ATTRIBUTE_NAME, style);
+	pBlockAP->getAttribute(PT_LISTID_ATTRIBUTE_NAME, lid);
 	if(getAutoNum())
 	{
 		level = getAutoNum()->getLevel();
@@ -10222,15 +10214,12 @@ void	fl_BlockLayout::getListAttributesVector(PP_PropertyVector & va) const
 	//	pBlockAP->getAttribute("level",buf);
 	if(lid != NULL)
 	{
-		va.push_back("listid");
-		va.push_back(lid);
+		va.push_back({"listid", lid});
 	}
-	va.push_back("level");
-	va.push_back(buf);
+	va.push_back({"level", buf});
 	if(style != NULL)
 	{
-		va.push_back(PT_STYLE_ATTRIBUTE_NAME);
-		va.push_back(style);
+		va.push_back({PT_STYLE_ATTRIBUTE_NAME, style});
 	}
 }
 
@@ -10241,57 +10230,50 @@ void	fl_BlockLayout::getListPropertyVector(PP_PropertyVector & vp) const
 	// This function fills the vector vp with list properties. All vector
 	// quantities are const gchar *
 	//
-	const gchar * pszStart = getProperty("start-value",true);
-	const gchar * lDelim =  getProperty("list-delim",true);
-	const gchar * lDecimal =  getProperty("list-decimal",true);
+	const gchar * pszStart = getProperty(_PN("start-value"), true);
+	const gchar * lDelim =  getProperty(_PN("list-delim"), true);
+	const gchar * lDecimal =  getProperty(_PN("list-decimal"), true);
 
 	const gchar * pszAlign;
 	if(m_iDomDirection == UT_BIDI_RTL)
-		pszAlign =  getProperty("margin-right",true);
+		pszAlign =  getProperty(_PN("margin-right"), true);
 	else
-		pszAlign =  getProperty("margin-left",true);
+		pszAlign =  getProperty(_PN("margin-left"), true);
 
-	const gchar * pszIndent =  getProperty("text-indent",true);
-	const gchar * fFont =  getProperty("field-font",true);
-	const gchar * pszListStyle =  getProperty("list-style",true);
+	const gchar * pszIndent =  getProperty(_PN("text-indent"), true);
+	const gchar * fFont =  getProperty(_PN("field-font"), true);
+	const gchar * pszListStyle =  getProperty(_PN("list-style"), true);
 	if(pszStart != NULL)
 	{
-		vp.push_back("start-value");
-		vp.push_back(pszStart);
+		vp.push_back({"start-value", pszStart});
 	}
 	if(pszAlign != NULL)
 	{
-		if(m_iDomDirection == UT_BIDI_RTL)
-			vp.push_back("margin-right");
-		else
-			vp.push_back("margin-left");
-
-		vp.push_back(pszAlign);
+		if (m_iDomDirection == UT_BIDI_RTL) {
+			vp.push_back({"margin-right", pszAlign});
+		} else {
+			vp.push_back({"margin-left", pszAlign});
+		}
 	}
 	if(pszIndent != NULL)
 	{
-		vp.push_back("text-indent");
-		vp.push_back(pszIndent);
+		vp.push_back({"text-indent", pszIndent});
 	}
 	if(lDelim != NULL)
 	{
-		vp.push_back("list-delim");
-		vp.push_back(lDelim);
+		vp.push_back({"list-delim", lDelim});
 	}
 	if(lDecimal != NULL)
 	{
-		vp.push_back("list-decimal");
-		vp.push_back(lDecimal);
+		vp.push_back({"list-decimal", lDecimal});
 	}
 	if(fFont != NULL)
 	{
-		vp.push_back("field-font");
-		vp.push_back(fFont);
+		vp.push_back({"field-font", fFont});
 	}
 	if(pszListStyle != NULL)
 	{
-		vp.push_back("list-style");
-		vp.push_back(pszListStyle);
+		vp.push_back({"list-style", pszListStyle});
 	}
 }
 
@@ -10352,19 +10334,19 @@ void	fl_BlockLayout::StartList( FL_ListType lType, UT_uint32 start,const gchar *
 	pszIndent[sizeof(pszIndent) - 1] = 0;
 
 	const PP_PropertyVector attribs = {
-		"listid", lid,
-		"parentid", pid,
-		"level", buf
+		{ "listid", lid },
+		{ "parentid", pid },
+		{ "level", buf }
 	};
 
 	const PP_PropertyVector props = {
-		"start-value", pszStart,
-		(m_iDomDirection == UT_BIDI_RTL) ? "margin-right" : "margin-left", pszAlign,
-		"text-indent", pszIndent,
-		"field-font", fFont,
-		"list-style", style,
-		"list-delim", lDelim,
-		"list-decimal", lDecimal
+		{ "start-value", pszStart },
+		{ (m_iDomDirection == UT_BIDI_RTL) ? "margin-right" : "margin-left", pszAlign },
+		{ "text-indent", pszIndent },
+		{ "field-font", fFont },
+		{ "list-style", style },
+		{ "list-delim", lDelim },
+		{ "list-decimal", lDecimal}
 	};
 	xxx_UT_DEBUGMSG(("SEVIOR: Starting List with font %s \n",fFont));
 
@@ -10466,11 +10448,11 @@ void	fl_BlockLayout::StopListInBlock(void)
 			if (pStyle)
 			{
 				if(m_iDomDirection == UT_BIDI_RTL)
-					pStyle->getProperty(static_cast<const gchar *>("margin-right"), szAlign);
+					pStyle->getProperty(_PN("margin-right"), szAlign);
 				else
-					pStyle->getProperty(static_cast<const gchar *>("margin-left"), szAlign);
+					pStyle->getProperty(_PN("margin-left"), szAlign);
 
-				pStyle->getProperty(static_cast<const gchar *>("text-indent"), szIndent);
+				pStyle->getProperty(_PN("text-indent"), szIndent);
 				fAlign = static_cast<float>(UT_convertToInches(szAlign));
 				fAlign *= level;
 				strncpy(align,
@@ -10495,13 +10477,11 @@ void	fl_BlockLayout::StopListInBlock(void)
 			}
 
 			if(m_iDomDirection == UT_BIDI_RTL)
-				props.push_back("margin-right");
+				props.push_back({"margin-right", align});
 			else
-				props.push_back("margin-left");
+				props.push_back({"margin-left", align});
 
-			props.push_back(align);
-			props.push_back("text-indent");
-			props.push_back(indent);
+			props.push_back({"text-indent", indent});
 		}
 	}
 	else
@@ -10516,20 +10496,20 @@ void	fl_BlockLayout::StopListInBlock(void)
 		if (pPrev)
 		{
 			if(m_iDomDirection == UT_BIDI_RTL)
-				szAlign = pPrev->getProperty("margin-right", true);
+				szAlign = pPrev->getProperty(_PN("margin-right"), true);
 			else
-				szAlign = pPrev->getProperty("margin-left", true);
+				szAlign = pPrev->getProperty(_PN("margin-left"), true);
 
-			szIndent =	pPrev->getProperty("text-indent", true);
+			szIndent =	pPrev->getProperty(_PN("text-indent"), true);
 		}
 		else if (pNext)
 		{
 			if(m_iDomDirection == UT_BIDI_RTL)
-				szAlign = pNext->getProperty("margin-right", true);
+				szAlign = pNext->getProperty(_PN("margin-right"), true);
 			else
-				szAlign = pNext->getProperty("margin-left", true);
+				szAlign = pNext->getProperty(_PN("margin-left"), true);
 
-			szIndent = pNext->getProperty("text-indent", true);
+			szIndent = pNext->getProperty(_PN("text-indent"), true);
 		}
 		else
 		{
@@ -10538,23 +10518,21 @@ void	fl_BlockLayout::StopListInBlock(void)
 		}
 
 		if(m_iDomDirection == UT_BIDI_RTL)
-			props.push_back("margin-right");
+			props.push_back({ "margin-right", szAlign });
 		else
-			props.push_back("margin-left");
+			props.push_back({ "margin-left", szAlign });
 
-		props.push_back(szAlign);
-		props.push_back("text-indent");
-		props.push_back(szIndent);
+		props.push_back({ "text-indent", szIndent });
 	}
 	sprintf(pszlevel, "%i", level);
 
 	if (id == 0)
 	{
 		const PP_PropertyVector pListAttrs = {
-			"listid", "",
-			"parentid", "",
-			"level", "",
-			"type", "",
+			{"listid", ""},
+			{"parentid", ""},
+			{"level", ""},
+			{"type", ""},
 		};
 
 		// we also need to explicitely clear the list formating
@@ -10562,15 +10540,15 @@ void	fl_BlockLayout::StopListInBlock(void)
 		// of the style definition, so that cloneWithEliminationIfEqual
 		// which we call later will not get rid off them
 		const PP_PropertyVector pListProps = {
-			"start-value", "",
-			"list-style", "",
-			(m_iDomDirection == UT_BIDI_RTL) ? "margin-right" : "margin-left", "",
-			"text-indent", "",
-			"field-color", "",
-			"list-delim", "",
-			"field-font", "",
-			"list-decimal", "",
-			"list-tag", ""
+			{"start-value", ""},
+			{"list-style", ""},
+			{ (m_iDomDirection == UT_BIDI_RTL) ? "margin-right" : "margin-left", ""},
+			{"text-indent", ""},
+			{"field-color", ""},
+			{"list-delim", ""},
+			{"field-font", ""},
+			{"list-decimal", ""},
+			{"list-tag", ""}
 		};
 //
 // Remove all the list related properties
@@ -10598,8 +10576,8 @@ void	fl_BlockLayout::StopListInBlock(void)
 	else
 	{
 		const PP_PropertyVector attribs = {
-			"listid", lid,
-			"level", pszlevel
+			{"listid", lid},
+			{"level", pszlevel}
 		};
 
 		bRet = m_pDoc->changeStruxFmt(PTC_AddFmt,getPosition(), getPosition(), attribs, props, PTX_Block);
@@ -10721,9 +10699,9 @@ fl_BlockLayout * fl_BlockLayout::getPreviousListOfSameMargin(void) const
 
     const char * szAlign;
 	if(m_iDomDirection == UT_BIDI_RTL)
-		szAlign = getProperty("margin-right",true);
+		szAlign = getProperty(_PN("margin-right"), true);
 	else
-		szAlign = getProperty("margin-left",true);
+		szAlign = getProperty(_PN("margin-left"), true);
 
 	double dAlignMe = UT_convertToDimension(szAlign,DIM_IN);
 	//
@@ -10738,9 +10716,9 @@ fl_BlockLayout * fl_BlockLayout::getPreviousListOfSameMargin(void) const
 		if(pPrev->isListItem())
 		{
 			if(m_iDomDirection == UT_BIDI_RTL)
-				szAlign = pPrev->getProperty("margin-right",true);
+				szAlign = pPrev->getProperty(_PN("margin-right"), true);
 			else
-				szAlign = pPrev->getProperty("margin-left",true);
+				szAlign = pPrev->getProperty(_PN("margin-left"), true);
 
 			double dAlignThis = UT_convertToDimension(szAlign,DIM_IN);
 			float diff = static_cast<float>(fabs( static_cast<float>(dAlignThis)-dAlignMe));
@@ -10959,13 +10937,13 @@ void fl_BlockLayout::_createListLabel(void)
 	UT_uint32 itag = m_pDoc->getUID(UT_UniqueId::List);
 
 	const PP_PropertyVector tagatt = {
-		"list-tag",	UT_std_string_sprintf("%d", itag)
+		{ "list-tag", UT_std_string_sprintf("%d", itag) }
 	};
 	m_pDoc->changeSpanFmt(PTC_AddFmt, getPosition(), getPosition(), PP_NOPROPS, tagatt);
 #endif
 
 	const PP_PropertyVector attributes = {
-		"type",	"list_label"
+		{ "type", "list_label" }
 	};
 
 	UT_DebugOnly<bool> bResult = m_pDoc->insertObject(getPosition(), PTO_Field, attributes, PP_NOPROPS);
@@ -11257,8 +11235,7 @@ void fl_BlockLayout::setDominantDirection(UT_BidiCharType iDirection)
 	m_iDomDirection = iDirection;
 
 	PP_PropertyVector prop = {
-		"dom-dir",
-		(m_iDomDirection == UT_BIDI_RTL) ? "rtl" : "ltr"
+		{ "dom-dir", (m_iDomDirection == UT_BIDI_RTL) ? "rtl" : "ltr" }
 	};
 
 	PT_DocPosition offset = getPosition();

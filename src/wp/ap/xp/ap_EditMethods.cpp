@@ -4686,8 +4686,8 @@ static bool dlgEditLatexEquation(AV_View *pAV_View, EV_EditMethodCallData * /*pC
 	pMathRun = static_cast<fp_MathRun *>(pRun);
 	const PP_AttrProp * pSpanAP = pMathRun->getSpanAP();
 	const gchar * pszLatexID = NULL, *pszDisplayMode = NULL;
-	pSpanAP->getAttribute("latexid",pszLatexID);
-	pSpanAP->getProperty("display",pszDisplayMode);
+	pSpanAP->getAttribute(_PN("latexid"),pszLatexID);
+	pSpanAP->getProperty(_PN("display"),pszDisplayMode);
 	if(pszLatexID == NULL || *pszLatexID == 0)
 	{
 		return false;
@@ -7664,7 +7664,7 @@ static bool s_doLangDlg(FV_View * pView)
 	PP_PropertyVector props_in;
 	if (pView->getCharFormat(props_in))
 	{
-		pDialog->setLanguageProperty(PP_getAttribute("lang", props_in).c_str());
+		pDialog->setLanguageProperty(PP_getAttribute(_PN("lang"), props_in).c_str());
 	}
 
 	PD_Document * pDoc = pView->getDocument();
@@ -7674,7 +7674,7 @@ static bool s_doLangDlg(FV_View * pView)
 	UT_return_val_if_fail( pAP, false );
 
 	const gchar * pLang = NULL;
-	bool bRet = pAP->getProperty("lang", pLang);
+	bool bRet = pAP->getProperty(_PN("lang"), pLang);
 
 	if(bRet)
 	{
@@ -7703,8 +7703,7 @@ static bool s_doLangDlg(FV_View * pView)
 		bool bChange = pDialog->getChangedLangProperty(&s);
 		if (s)
 		{
-			props_out.push_back("lang");
-			props_out.push_back(s);
+			props_out.push_back({ "lang", s });
 		}
 
 		if(k > 0 && bChange)								// if something changed
@@ -7763,13 +7762,13 @@ UT_return_val_if_fail(pDialog, false);
 		// which change across the selection, we ask the dialog not
 		// to set the field (by passing "").
 
-		const std::string & sFontFamily = PP_getAttribute("font-family", props_in);
-		const std::string & sTextTransform = PP_getAttribute("text-transform", props_in);
-		const std::string & sFontSize = PP_getAttribute("font-size", props_in);
-		const std::string & sFontWeight = PP_getAttribute("font-weight", props_in);
-		const std::string & sFontStyle = PP_getAttribute("font-style", props_in);
-		const std::string & sColor = PP_getAttribute("color", props_in);
-		const std::string & sBGColor = PP_getAttribute("bgcolor", props_in);
+		const std::string & sFontFamily = PP_getAttribute(_PN("font-family"), props_in);
+		const std::string & sTextTransform = PP_getAttribute(_PN("text-transform"), props_in);
+		const std::string & sFontSize = PP_getAttribute(_PN("font-size"), props_in);
+		const std::string & sFontWeight = PP_getAttribute(_PN("font-weight"), props_in);
+		const std::string & sFontStyle = PP_getAttribute(_PN("font-style"), props_in);
+		const std::string & sColor = PP_getAttribute(_PN("color"), props_in);
+		const std::string & sBGColor = PP_getAttribute(_PN("bgcolor"), props_in);
 
 		pDialog->setFontFamily(sFontFamily);
 		pDialog->setTextTransform(sTextTransform);
@@ -7799,7 +7798,7 @@ UT_return_val_if_fail(pDialog, false);
 		bool bTopLine = false;
 		bool bBottomLine = false;
 
-		const std::string & s = PP_getAttribute("text-decoration", props_in);
+		const std::string & s = PP_getAttribute(_PN("text-decoration"), props_in);
 		if (!s.empty())
 		{
 			bUnderline = (s.find("underline") != std::string::npos);
@@ -7811,7 +7810,7 @@ UT_return_val_if_fail(pDialog, false);
 		pDialog->setFontDecoration(bUnderline,bOverline,bStrikeOut,bTopLine,bBottomLine);
 
 		bool bHidden = false;
-		const std::string & disp = PP_getAttribute("display", props_in);
+		const std::string & disp = PP_getAttribute(_PN("display"), props_in);
 		if(!disp.empty())
 		{
 			bHidden = (disp.find("none") != std::string::npos);
@@ -7820,7 +7819,7 @@ UT_return_val_if_fail(pDialog, false);
 
 		bool bSuperScript = false;
 		bool bSubScript = false;
-		const std::string & textPos = PP_getAttribute("text-position", props_in);
+		const std::string & textPos = PP_getAttribute(_PN("text-position"), props_in);
 		if(!textPos.empty())
 		{
 			bSuperScript = (textPos.find("superscript") != std::string::npos);
@@ -7858,44 +7857,37 @@ UT_return_val_if_fail(pDialog, false);
 
 		if (pDialog->getChangedFontFamily(s))
 		{
-			props_out.push_back("font-family");
-			props_out.push_back(s);
+			props_out.push_back({ "font-family", s });
 		}
 
 		if (pDialog->getChangedTextTransform(s))
 		{
-			props_out.push_back("text-transform");
-			props_out.push_back(s);
+			props_out.push_back({ "text-transform", s });
 		}
 
 		if (pDialog->getChangedFontSize(s))
 		{
-			props_out.push_back("font-size");
-			props_out.push_back(s);
+			props_out.push_back({ "font-size", s });
 		}
 
 		if (pDialog->getChangedFontWeight(s))
 		{
-			props_out.push_back("font-weight");
-			props_out.push_back(s);
+			props_out.push_back({ "font-weight", s});
 		}
 
 		if (pDialog->getChangedFontStyle(s))
 		{
-			props_out.push_back("font-style");
-			props_out.push_back(s);
+			props_out.push_back({"font-style", s});
 		}
 
 		if (pDialog->getChangedColor(s))
 		{
-			props_out.push_back("color");
-			props_out.push_back(s);
+			props_out.push_back({"color", s});
 		}
 
 		if (pDialog->getChangedBGColor(s))
 		{
-			props_out.push_back("bgcolor");
-			props_out.push_back(s);
+			props_out.push_back({"bgcolor", s});
 		}
 
 		bool bUnderline = false;
@@ -7923,8 +7915,7 @@ UT_return_val_if_fail(pDialog, false);
 				decors += "bottomline ";
 			if(!bUnderline && !bStrikeOut && !bOverline && !bTopline && !bBottomline)
 				decors = "none";
-			props_out.push_back("text-decoration");
-			props_out.push_back(decors);
+			props_out.push_back({ "text-decoration", decors });
 		}
 
 		bool bHidden = false;
@@ -7934,13 +7925,11 @@ UT_return_val_if_fail(pDialog, false);
 		{
 			if(bHidden)
 			{
-				props_out.push_back("display");
-				props_out.push_back("none");
+				props_out.push_back({ "display", "none" });
 			}
 			else
 			{
-				props_out.push_back("display");
-				props_out.push_back("inline");
+				props_out.push_back({ "display", "inline" });
 			}
 		}
 
@@ -7951,13 +7940,11 @@ UT_return_val_if_fail(pDialog, false);
 		{
 			if(bSuperScript)
 			{
-				props_out.push_back("text-position");
-				props_out.push_back("superscript");
+				props_out.push_back({ "text-position", "superscript" });
 			}
 			else
 			{
-				props_out.push_back("text-position");
-				props_out.push_back("");
+				props_out.push_back({ "text-position", ""});
 			}
 		}
 
@@ -7970,13 +7957,11 @@ UT_return_val_if_fail(pDialog, false);
 			{
 				if(bSubScript)
 				{
-					props_out.push_back("text-position");
-					props_out.push_back("subscript");
+					props_out.push_back({ "text-position", "subscript" });
 				}
 				else
 				{
-					props_out.push_back("text-position");
-					props_out.push_back("");
+					props_out.push_back({ "text-position", "" });
 				}
 			}
 		}
@@ -7999,23 +7984,22 @@ s_TabSaveCallBack (AP_Dialog_Tab * /*pDlg*/, FV_View * pView,
 	UT_return_if_fail(szTabStops && szDflTabStop);
 
 	PP_PropertyVector properties = {
-		"tabstops", szTabStops ? szTabStops : ""
+		{ "tabstops", szTabStops ? szTabStops : "" }
 	};
-	UT_DEBUGMSG(("AP_Dialog_Tab: Tab Stop [%s]\n",properties[1].c_str()));
+	UT_DEBUGMSG(("AP_Dialog_Tab: Tab Stop [%s]\n", properties[0].value.c_str()));
 	if(szTabStops && *szTabStops)
 	{
 		pView->setBlockFormat(properties);
 	}
 	else
 	{
-		properties[1] = " ";
+		properties[0].value = " ";
 		pView->setBlockFormat(properties);
 	}
 
-	properties[0] = "default-tab-interval";
-	properties[1] = szDflTabStop ? szDflTabStop : "";
+	properties[0] = { "default-tab-interval", szDflTabStop ? szDflTabStop : "" };
 	UT_return_if_fail (szDflTabStop);
-	UT_DEBUGMSG(("AP_Dialog_Tab: Default Tab Stop [%s]\n",properties[1].c_str()));
+	UT_DEBUGMSG(("AP_Dialog_Tab: Default Tab Stop [%s]\n",properties[0].value.c_str()));
 
 	pView->setBlockFormat(properties);
 }
@@ -8194,7 +8178,7 @@ Defun(language)
 	lang[i] = 0;
 
 	PP_PropertyVector properties = {
-		"lang", lang
+		{ "lang", lang }
 	};
 	pView->setCharFormat(properties);
 	return true;
@@ -8222,7 +8206,7 @@ Defun(fontFamily)
 	UT_return_val_if_fail(pView, false);
 	UT_UTF8String utf8(pCallData->m_pData, pCallData->m_dataLength);
 	const PP_PropertyVector properties = {
-		"font-family", utf8.utf8_str()
+		{ "font-family", utf8.utf8_str() }
 	};
 	pView->setCharFormat(properties);
 
@@ -8244,7 +8228,7 @@ Defun(fontSize)
 		buf += "pt";
 
 		PP_PropertyVector properties = {
-			"font-size", buf
+			{ "font-size", buf }
 		};
 		pView->setCharFormat(properties);
 	}
@@ -8259,7 +8243,7 @@ static bool _fontSizeChange(FV_View * pView, bool bIncrease)
 	pView->getCharFormat(span_props);
 	UT_return_val_if_fail(!span_props.empty(), false);
 
-	const std::string & s = PP_getAttribute("font-size", span_props);
+	const std::string & s = PP_getAttribute(_PN("font-size"), span_props);
 
 	if(s.empty())
 		return false;
@@ -8304,7 +8288,7 @@ static bool _fontSizeChange(FV_View * pView, bool bIncrease)
 		return false;
 
 	PP_PropertyVector properties = {
-		"font-size", sz
+		{ "font-size", sz }
 	};
 	pView->setCharFormat(properties);
 
@@ -8481,7 +8465,7 @@ Defun1(formatPainter)
 /*****************************************************************/
 
 static bool _toggleSpanOrBlock(FV_View * pView,
-				  const gchar * prop,
+				  PP_PropName prop,
 				  const gchar * vOn,
 				  const gchar * vOff,
 				  bool bMultiple,
@@ -8507,7 +8491,7 @@ static bool _toggleSpanOrBlock(FV_View * pView,
 	}
 
 	PP_PropertyVector props_out = {
-		prop, vOn
+		{ prop, vOn }
 	};
 
 	const std::string & s = PP_getAttribute(prop, props_in);
@@ -8531,23 +8515,23 @@ static bool _toggleSpanOrBlock(FV_View * pView,
 				buf += s.substr(n + strlen(vOn));
 
 				if (buf.find(' ') != std::string::npos)
-					props_out[1] = buf; 	// yep, use it
+					props_out[0].value = buf; 	// yep, use it
 				else
-					props_out[1] = vOff;	// nope, clear it
+					props_out[0].value = vOff;	// nope, clear it
 			}
 			else
 			{
 				// nope...
 				if (g_ascii_strcasecmp(s.c_str(), vOff))
 				{
-					props_out[1] = s + " " + vOn;
+					props_out[0].value = s + " " + vOn;
 				}
 			}
 		}
 		else
 		{
 			if (0 == g_ascii_strcasecmp(s.c_str(), vOn))
-				props_out[1] = vOff;
+				props_out[0].value = vOff;
 		}
 	}
 
@@ -8563,7 +8547,7 @@ static bool _toggleSpanOrBlock(FV_View * pView,
 }
 
 static bool _toggleSpan(FV_View * pView,
-			   const gchar * prop,
+			   PP_PropName prop,
 			   const gchar * vOn,
 			   const gchar * vOff,
 			   bool bMultiple=false)
@@ -9371,35 +9355,35 @@ static bool s_doPageSetupDlg (FV_View * pView)
 	}
 	if(!props_in.empty())
 	{
-		pszLeftMargin = PP_getAttribute("page-margin-left", props_in);
+		pszLeftMargin = PP_getAttribute(_PN("page-margin-left"), props_in);
 		if(!pszLeftMargin.empty())
 		{
 			dLeftMargin = UT_convertToInches(pszLeftMargin.c_str());
 		}
 
-		pszRightMargin = PP_getAttribute("page-margin-right", props_in);
+		pszRightMargin = PP_getAttribute(_PN("page-margin-right"), props_in);
 		if(!pszRightMargin.empty())
 		{
 			dRightMargin = UT_convertToInches(pszRightMargin.c_str());
 		}
 
-		pszTopMargin = PP_getAttribute("page-margin-top", props_in);
+		pszTopMargin = PP_getAttribute(_PN("page-margin-top"), props_in);
 		if(!pszTopMargin.empty())
 		{
 			dTopMargin = UT_convertToInches(pszTopMargin.c_str());
 		}
 
-		pszBottomMargin = PP_getAttribute("page-margin-bottom", props_in);
+		pszBottomMargin = PP_getAttribute(_PN("page-margin-bottom"), props_in);
 		if(!pszBottomMargin.empty())
 		{
 			dBottomMargin = UT_convertToInches(pszBottomMargin.c_str());
 		}
 
-		pszFooterMargin = PP_getAttribute("page-margin-footer", props_in);
+		pszFooterMargin = PP_getAttribute(_PN("page-margin-footer"), props_in);
 		if(!pszFooterMargin.empty())
 			dFooterMargin = UT_convertToInches(pszFooterMargin.c_str());
 
-		pszHeaderMargin = PP_getAttribute("page-margin-header", props_in);
+		pszHeaderMargin = PP_getAttribute(_PN("page-margin-header"), props_in);
 		if(!pszHeaderMargin.empty())
 			dHeaderMargin = UT_convertToInches(pszHeaderMargin.c_str());
 	}
@@ -9473,13 +9457,13 @@ static bool s_doPageSetupDlg (FV_View * pView)
 		sHeight = UT_formatDimensionString(final_ut,final_ht);
 		sScale = UT_formatDimensionString(DIM_none,final_scale);
 		const PP_PropertyVector attr = {
-			"pagetype", sType.utf8_str(),
-			"orientation", (final_ori == AP_Dialog_PageSetup::PORTRAIT) ?
-			"portrait" : "landscape",
-			"width", sWidth.utf8_str(),
-			"height", sHeight.utf8_str(),
-			"units", sUnits.utf8_str(),
-			"page-scale", sScale.utf8_str()
+			{ "pagetype", sType.utf8_str() },
+			{ "orientation", (final_ori == AP_Dialog_PageSetup::PORTRAIT) ?
+			  "portrait" : "landscape" },
+			{ "width", sWidth.utf8_str() },
+			{ "height", sHeight.utf8_str() },
+			{ "units", sUnits.utf8_str() },
+			{ "page-scale", sScale.utf8_str() }
 		};
 #if 0 //def DEBUG
 		for (const gchar ** a = szAttr; (*a); a++)
@@ -9542,33 +9526,27 @@ static bool s_doPageSetupDlg (FV_View * pView)
 	PP_PropertyVector props;
 	//szLeftMargin = UT_convertInchesToDimensionString(docMargUnits,dLeftMargin);
 	szLeftMargin = UT_formatDimensionString(final_margu,dLeftMargin);
-	props.push_back("page-margin-left");
-	props.push_back(szLeftMargin.c_str());
+	props.push_back({ "page-margin-left", szLeftMargin.c_str() });
 
 	//szRightMargin = UT_convertInchesToDimensionString(docMargUnits,dRightMargin);
 	szRightMargin = UT_formatDimensionString(final_margu,dRightMargin);
-	props.push_back("page-margin-right");
-	props.push_back(szRightMargin.c_str());
+	props.push_back({ "page-margin-right", szRightMargin.c_str() });
 
 	//szTopMargin = UT_convertInchesToDimensionString(docMargUnits,dTopMargin);
 	szTopMargin = UT_formatDimensionString(final_margu,dTopMargin);
-	props.push_back("page-margin-top");
-	props.push_back(szTopMargin.c_str());
+	props.push_back({ "page-margin-top", szTopMargin.c_str() });
 
 	//szBottomMargin = UT_convertInchesToDimensionString(docMargUnits,dBottomMargin);
 	szBottomMargin = UT_formatDimensionString(final_margu,dBottomMargin);
-	props.push_back("page-margin-bottom");
-	props.push_back(szBottomMargin.c_str());
+	props.push_back({ "page-margin-bottom", szBottomMargin.c_str() });
 
 	//szFooterMargin = UT_convertInchesToDimensionString(docMargUnits,dFooterMargin);
 	szFooterMargin = UT_formatDimensionString(final_margu,dFooterMargin);
-	props.push_back("page-margin-footer");
-	props.push_back(szFooterMargin.c_str());
+	props.push_back({ "page-margin-footer", szFooterMargin.c_str() });
 
 	//szHeaderMargin = UT_convertInchesToDimensionString(docMargUnits,dHeaderMargin);
 	szHeaderMargin = UT_formatDimensionString(final_margu,dHeaderMargin);
-	props.push_back("page-margin-header");
-	props.push_back(szHeaderMargin.c_str());
+	props.push_back({ "page-margin-header", szHeaderMargin.c_str() });
 
 	if(ppView->isHdrFtrEdit())
 	{
@@ -10441,18 +10419,18 @@ UT_return_val_if_fail(pDialog, false);
 		return true;
 	}
 	PP_PropertyVector atts = {
-		"text-align", ""
+		{ "text-align", "" }
 	};
 	switch (pDialog->getAlignment())
 	{
 		case AP_Dialog_PageNumbers::id_RALIGN :
-			atts[1] = "right";
+			atts[0].value = "right";
 			break;
 		case AP_Dialog_PageNumbers::id_LALIGN :
-			atts[1] = "left";
+			atts[0].value = "left";
 			break;
 		case AP_Dialog_PageNumbers::id_CALIGN :
-			atts[1] = "center";
+			atts[0].value = "center";
 			break;
 		default:
 			UT_ASSERT_HARMLESS(UT_SHOULD_NOT_HAPPEN);
@@ -10494,7 +10472,7 @@ UT_return_val_if_fail(pDialog, false);
 
 		if(pParam) {
 			PP_PropertyVector pAttr = {
-				"param", pParam
+				{ "param", pParam }
 			};
 			pView->cmdInsertField(pDialog->GetFieldFormat(), pAttr);
 		}
@@ -11190,12 +11168,12 @@ Defun1(setPosImage)
 	//
 	const char * szTitle = NULL;
 	const char * szDescription = NULL;
-	bool bFound = pImageAP->getAttribute("title",szTitle);
+	bool bFound = pImageAP->getAttribute(_PN("title"),szTitle);
 	if(!bFound)
 	{
 			szTitle = "";
 	}
-	bFound = pImageAP->getAttribute("alt",szDescription);
+	bFound = pImageAP->getAttribute(_PN("alt"),szDescription);
 	if(!bFound)
 	{
 			szDescription = "";
@@ -11204,10 +11182,10 @@ Defun1(setPosImage)
 // Now define the Frame attributes strux
 //
 	const PP_PropertyVector attributes = {
-		PT_STRUX_IMAGE_DATAID, dataID,
-		PT_PROPS_ATTRIBUTE_NAME, sFrameProps.c_str(),
-		PT_IMAGE_TITLE, szTitle,
-		PT_IMAGE_DESCRIPTION, szDescription
+		{ PT_STRUX_IMAGE_DATAID, dataID },
+		{ PT_PROPS_ATTRIBUTE_NAME, sFrameProps },
+		{ PT_IMAGE_TITLE, szTitle },
+		{ PT_IMAGE_DESCRIPTION, szDescription }
 	};
 //
 // This deletes the inline image and places a positioned image in it's place
@@ -11278,8 +11256,8 @@ Defun1(dlgFmtPosImage)
 
 	if (pAP) 
 	{
-	  pAP->getAttribute ("title", szTitle);
-	  pAP->getAttribute ("alt", szDescription);
+	  pAP->getAttribute(_PN("title"), szTitle);
+	  pAP->getAttribute(_PN("alt"), szDescription);
 	}
 
 	if (szTitle) 
@@ -11292,11 +11270,11 @@ Defun1(dlgFmtPosImage)
 	}
 	const gchar * pszWidth = NULL;
 	const gchar * pszHeight = NULL;
-	if(!pAP || !pAP->getProperty("frame-width",pszWidth))
+	if(!pAP || !pAP->getProperty(_PN("frame-width"),pszWidth))
 	{
 	  pszWidth = "1.0in";
 	}
-	if(!pAP || !pAP->getProperty("frame-height",pszHeight))
+	if(!pAP || !pAP->getProperty(_PN("frame-height"),pszHeight))
 	{
 	  pszHeight = "1.0in";
 	}
@@ -11360,15 +11338,15 @@ Defun1(dlgFmtPosImage)
 	sHeight = pDialog->getHeightString();
 	UT_DEBUGMSG(("Width %s Height %s \n",sWidth.c_str(),sHeight.c_str()));
 	PP_PropertyVector attribs = {
-		"title", pDialog->getTitle().utf8_str(),
-		"alt", pDialog->getDescription().utf8_str()
+		{ "title", pDialog->getTitle().utf8_str() },
+		{ "alt", pDialog->getDescription().utf8_str() }
 	};
 
 	if(pDialog->getWrapping() == WRAP_INLINE)
 	{
 		const PP_PropertyVector properties = {
-			"width", sWidth.c_str(),
-			"height", sHeight.c_str()
+			{ "width", sWidth.c_str() },
+			{ "height", sHeight.c_str() }
 		};
 
 		pView->convertPositionedToInLine(pPosObj);
@@ -11378,44 +11356,44 @@ Defun1(dlgFmtPosImage)
 	}
 	else
 	{
-	  POSITION_TO newFormatMode = pDialog->getPositionTo(); 
+	  POSITION_TO newFormatMode = pDialog->getPositionTo();
 	  WRAPPING_TYPE newWrapMode = pDialog->getWrapping();
 	  PP_PropertyVector properties = {
-		  "frame-width", sWidth.c_str(),
-		  "frame-height", sHeight.c_str(),
-		  "wrap-mode", "",
-		  "position-to", "",
-		  "tight-wrap", pDialog->isTightWrap() ? "1" : "0",
+		  { "frame-width", sWidth.c_str() },
+		  { "frame-height", sHeight.c_str() },
+		  { "wrap-mode", "" },
+		  { "position-to", "" },
+		  { "tight-wrap", pDialog->isTightWrap() ? "1" : "0" },
 	  };
 
 	  if(newWrapMode == WRAP_TEXTRIGHT)
 	  {
-	    properties[5] = "wrapped-to-right";
+	    properties[2].value = "wrapped-to-right";
 	  }
 	  else if(newWrapMode == WRAP_TEXTLEFT)
 	  {
-	    properties[5] = "wrapped-to-left";
+	    properties[2].value = "wrapped-to-left";
 	  }
 	  else if(newWrapMode == WRAP_TEXTBOTH)
 	  {
-	    properties[5] = "wrapped-both";
+	    properties[2].value = "wrapped-both";
 	  }
 	  else if(newWrapMode == WRAP_NONE)
 	  {
-	    properties[5] = "above-text";
+	    properties[2].value = "above-text";
 	  }
 
 	  if(newFormatMode == POSITION_TO_PARAGRAPH)
 	  {
-	    properties[7] = "block-above-text";
+		  properties[3].value = "block-above-text";
 	  }
 	  else if(newFormatMode == POSITION_TO_COLUMN)
 	  {
-	    properties[7] = "column-above-text";
+	    properties[3].value = "column-above-text";
 	  }
 	  else if(newFormatMode == POSITION_TO_PAGE)
 	  {
-	    properties[7] = "page-above-text";
+	    properties[3].value = "page-above-text";
 	  }
 
 	  fp_FrameContainer * pFrameC = static_cast<fp_FrameContainer *>(pPosObj->getFirstContainer());
@@ -11437,26 +11415,19 @@ Defun1(dlgFmtPosImage)
 		  UT_DEBUGMSG(("Position of frame: X %d\t Y %d\n",iXposPage,iYposPage));
 		  if (newFormatMode == POSITION_TO_PARAGRAPH)
 		  {
-			  properties.push_back("xpos");
-			  properties.push_back(FrameStrings.sXpos.c_str());
-			  properties.push_back("ypos");
-			  properties.push_back(FrameStrings.sYpos.c_str());
+			  properties.push_back({ "xpos", FrameStrings.sXpos.c_str() });
+			  properties.push_back({ "ypos", FrameStrings.sYpos.c_str() });
 		  }
 		  else if (newFormatMode == POSITION_TO_COLUMN)
 		  {
-			  properties.push_back("frame-col-xpos");
-			  properties.push_back(FrameStrings.sColXpos.c_str());
-			  properties.push_back("frame-col-ypos");
-			  properties.push_back(FrameStrings.sColYpos.c_str());
-			  properties.push_back("frame-pref-column");
-			  properties.push_back(FrameStrings.sPrefColumn.c_str());
+			  properties.push_back({ "frame-col-xpos", FrameStrings.sColXpos.c_str() });
+			  properties.push_back({ "frame-col-ypos", FrameStrings.sColYpos.c_str() });
+			  properties.push_back({"frame-pref-column", FrameStrings.sPrefColumn.c_str() });
 		  }
 		  else if (newFormatMode == POSITION_TO_PAGE)
 		  {
-			  properties.push_back("frame-page-xpos");
-			  properties.push_back(FrameStrings.sPageXpos.c_str());
-			  properties.push_back("frame-page-ypos");
-			  properties.push_back(FrameStrings.sPageYpos.c_str());
+			  properties.push_back({ "frame-page-xpos", FrameStrings.sPageXpos.c_str() });
+			  properties.push_back({ "frame-page-ypos", FrameStrings.sPageYpos.c_str() });
 		  }
 	  }
 
@@ -11559,15 +11530,15 @@ static bool s_doFormatImageDlg(FV_View * pView, EV_EditMethodCallData * pCallDat
 	{
 	  // stuff properties into the dialog.
 
-	  const std::string & szWidth = PP_getAttribute("width", props_in);
-	  const std::string & szHeight = PP_getAttribute("height", props_in);
+	  const std::string & szWidth = PP_getAttribute(_PN("width"), props_in);
+	  const std::string & szHeight = PP_getAttribute(_PN("height"), props_in);
 
 	  const gchar* szTitle = nullptr;
 	  const gchar* szDescription = nullptr;
 	  pDialog->setInHdrFtr(bInHdrFtr);
 	  if (pAP) {
-		  pAP->getAttribute ("title", szTitle);
-		  pAP->getAttribute ("alt", szDescription);
+		  pAP->getAttribute(_PN("title"), szTitle);
+		  pAP->getAttribute(_PN("alt"), szDescription);
 	  }
 
 	  if (szTitle) {
@@ -11645,13 +11616,13 @@ static bool s_doFormatImageDlg(FV_View * pView, EV_EditMethodCallData * pCallDat
 		  {
 			  UT_DEBUGMSG(("DOM: nw:%s nh:%s\n", sWidth.c_str(), sHeight.c_str()));
 			  const PP_PropertyVector properties = {
-				  "width", sWidth,
-				  "height", sHeight
+				  { "width", sWidth },
+				  { "height", sHeight }
 			  };
 
 			  const PP_PropertyVector attribs = {
-				  "title", pDialog->getTitle().utf8_str(),
-				  "alt", pDialog->getDescription().utf8_str()
+				  { "title", pDialog->getTitle().utf8_str() },
+				  { "alt", pDialog->getDescription().utf8_str() }
 			  };
 
 			  pView->setCharFormat(properties, attribs);
@@ -11893,10 +11864,10 @@ static bool s_doFormatImageDlg(FV_View * pView, EV_EditMethodCallData * pCallDat
 // Now define the Frame attributes strux
 //
 			  const PP_PropertyVector attributes = {
-				  PT_STRUX_IMAGE_DATAID, dataID,
-				  "props", sFrameProps.c_str(),
-				  "title", pDialog->getTitle().utf8_str(),
-				  "alt", pDialog->getDescription().utf8_str()
+				  { PT_STRUX_IMAGE_DATAID, dataID },
+				  { "props", sFrameProps.c_str() },
+				  { "title", pDialog->getTitle().utf8_str() },
+				  { "alt", pDialog->getDescription().utf8_str() }
 			  };
 //
 // This deletes the inline image and places a positioned image in it's place
@@ -11994,7 +11965,7 @@ UT_return_val_if_fail(pDialog, false);
 	}
 
 	// NB: maybe *no* properties are consistent across the selection
-	const std::string & sz = PP_getAttribute("columns", props_in);
+	const std::string & sz = PP_getAttribute(_PN("columns"), props_in);
 	if (!sz.empty())
 	{
 		iColumns = atoi(sz.c_str());
@@ -12005,15 +11976,15 @@ UT_return_val_if_fail(pDialog, false);
 		EX(viewPrintLayout);
 	}
 
-	bLineBetween = (PP_getAttribute("column-line", props_in) == "on");
+	bLineBetween = (PP_getAttribute(_PN("column-line"), props_in) == "on");
 
 	UT_uint32 iOrder = 0;
-	iOrder = PP_getAttribute("dom-dir", props_in) != "ltr" ? 1 : 0;
+	iOrder = PP_getAttribute(_PN("dom-dir"), props_in) != "ltr" ? 1 : 0;
 
 	pDialog->setColumnOrder(iOrder);
 
-	bSpaceAfter = !PP_getAttribute("section-space-after", props_in).empty();
-	bMaxHeight = !PP_getAttribute("section-max-column-height", props_in).empty();
+	bSpaceAfter = !PP_getAttribute(_PN("section-space-after"), props_in).empty();
+	bMaxHeight = !PP_getAttribute(_PN("section-max-column-height"), props_in).empty();
 
 	pDialog->setColumns(iColumns);
 	pDialog->setLineBetween(bLineBetween);
@@ -12042,21 +12013,19 @@ UT_return_val_if_fail(pDialog, false);
 			buf4 = "left";
 		}
 		PP_PropertyVector props = {
-			"columns", UT_std_string_sprintf("%i", pDialog->getColumns()),
-			"column-line", pDialog->getLineBetween() ? "on" : "off",
-			"dom-dir", buf3,
-			"text-align", buf4
+			{ "columns", UT_std_string_sprintf("%i", pDialog->getColumns()) },
+			{ "column-line", pDialog->getLineBetween() ? "on" : "off" },
+			{ "dom-dir", buf3 },
+			{ "text-align", buf4 }
 		};
 
 		if(bSpaceAfter)
 		{
-			props.push_back("section-space-after");
-			props.push_back(pDialog->getSpaceAfterString());
+			props.push_back({ "section-space-after", pDialog->getSpaceAfterString() });
 		}
 		if(bMaxHeight)
 		{
-			props.push_back("section-max-column-height");
-			props.push_back(pDialog->getHeightString());
+			props.push_back({ "section-max-column-height", pDialog->getHeightString() });
 		}
 		pView->setSectionFormat(props);
 	}
@@ -12300,7 +12269,7 @@ UT_return_val_if_fail(pDialog, false);
 													pDialog->getColumnWidth());
 			}
 			const PP_PropertyVector propsArray = {
-				"table-column-props", propBuffer,
+				{ "table-column-props", propBuffer },
 			};
 			pView->cmdInsertTable(pDialog->getNumRows(), pDialog->getNumCols(), propsArray);
 		} else
@@ -12388,7 +12357,7 @@ Defun1(insertSumRows)
 	ABIWORD_VIEW;
 	UT_return_val_if_fail(pView,false);
 	PP_PropertyVector atts = {
-		"param", ""
+		{ "param", "" }
 	};
 	pView->cmdInsertField("sum_rows", atts, PP_NOPROPS);
 	return true;
@@ -12400,7 +12369,7 @@ Defun1(insertSumCols)
 	ABIWORD_VIEW;
 	UT_return_val_if_fail(pView,false);
 	PP_PropertyVector atts = {
-		"param", ""
+		{ "param", "" }
 	};
 	pView->cmdInsertField("sum_cols", atts, PP_NOPROPS);
 	return true;
@@ -12420,41 +12389,41 @@ Defun1(toggleHidden)
 {
 	CHECK_FRAME;
 	ABIWORD_VIEW;
-	return _toggleSpan(pView, "display", "none", "");
+	return _toggleSpan(pView, _PN("display"), "none", "");
 }
 
 Defun1(toggleBold)
 {
 	CHECK_FRAME;
 	ABIWORD_VIEW;
-	return _toggleSpan(pView, "font-weight", "bold", "normal");
+	return _toggleSpan(pView, _PN("font-weight"), "bold", "normal");
 }
 
 Defun1(toggleItalic)
 {
 	CHECK_FRAME;
 	ABIWORD_VIEW;
-	return _toggleSpan(pView, "font-style", "italic", "normal");
+	return _toggleSpan(pView, _PN("font-style"), "italic", "normal");
 }
 
 Defun1(toggleUline)
 {
 	CHECK_FRAME;
 	ABIWORD_VIEW;
-	return _toggleSpan(pView, "text-decoration", "underline", "none", true);
+	return _toggleSpan(pView, _PN("text-decoration"), "underline", "none", true);
 }
 Defun1(toggleOline)
 {
 	CHECK_FRAME;
 	ABIWORD_VIEW;
-	return _toggleSpan(pView, "text-decoration", "overline", "none", true);
+	return _toggleSpan(pView, _PN("text-decoration"), "overline", "none", true);
 }
 
 Defun1(toggleStrike)
 {
 	CHECK_FRAME;
 	ABIWORD_VIEW;
-	return _toggleSpan(pView, "text-decoration", "line-through", "none", true);
+	return _toggleSpan(pView, _PN("text-decoration"), "line-through", "none", true);
 }
 
 
@@ -12462,7 +12431,7 @@ Defun1(toggleTopline)
 {
 	CHECK_FRAME;
 	ABIWORD_VIEW;
-	return _toggleSpan(pView, "text-decoration", "topline", "none", true);
+	return _toggleSpan(pView, _PN("text-decoration"), "topline", "none", true);
 }
 
 
@@ -12470,7 +12439,7 @@ Defun1(toggleBottomline)
 {
 	CHECK_FRAME;
 	ABIWORD_VIEW;
-	return _toggleSpan(pView, "text-decoration", "bottomline", "none", true);
+	return _toggleSpan(pView, _PN("text-decoration"), "bottomline", "none", true);
 }
 
 // non-static so that ap_Toolbar_Functions.cpp can use it
@@ -12484,34 +12453,27 @@ void s_getPageMargins(FV_View * pView,
 {
 	UT_return_if_fail(pView);
 	// get current char properties from pView
-	const gchar * prop = NULL;
 	std::string sz;
 
 	PP_PropertyVector props_in;
 	pView->getBlockFormat(props_in);
 
-	prop = "margin-left";
-	sz = PP_getAttribute(prop, props_in);
+	sz = PP_getAttribute(_PN("margin-left"), props_in);
 	margin_left = UT_convertToInches(sz.c_str());
 
-	prop = "margin-right";
-	sz = PP_getAttribute(prop, props_in);
+	sz = PP_getAttribute(_PN("margin-right"), props_in);
 	margin_right = UT_convertToInches(sz.c_str());
 
-	prop = "page-margin-left";
-	sz = PP_getAttribute(prop, props_in);
+	sz = PP_getAttribute(_PN("page-margin-left"), props_in);
 	page_margin_left = UT_convertToInches(sz.c_str());
 
-	prop = "page-margin-right";
-	sz = PP_getAttribute(prop, props_in);
+	sz = PP_getAttribute(_PN("page-margin-right"), props_in);
 	page_margin_right = UT_convertToInches(sz.c_str());
 
-	prop = "page-margin-top";
-	sz = PP_getAttribute(prop, props_in);
+	sz = PP_getAttribute(_PN("page-margin-top"), props_in);
 	page_margin_top	 = UT_convertToInches(sz.c_str());
 
-	prop = "page-margin-bottom";
-	sz = PP_getAttribute(prop, props_in);
+	sz = PP_getAttribute(_PN("page-margin-bottom"), props_in);
 	page_margin_bottom = UT_convertToInches(sz.c_str());
 }
 
@@ -12587,28 +12549,28 @@ Defun1(toggleSuper)
 {
 	CHECK_FRAME;
 	ABIWORD_VIEW;
-	return _toggleSpan(pView, "text-position", "superscript", "normal");
+	return _toggleSpan(pView, _PN("text-position"), "superscript", "normal");
 }
 
 Defun1(toggleSub)
 {
 	CHECK_FRAME;
 	ABIWORD_VIEW;
-	return _toggleSpan(pView, "text-position", "subscript", "normal");
+	return _toggleSpan(pView, _PN("text-position"), "subscript", "normal");
 }
 
 Defun1(toggleDirOverrideLTR)
 {
 	CHECK_FRAME;
 	ABIWORD_VIEW;
-	return _toggleSpan(pView, "dir-override", "ltr", "");
+	return _toggleSpan(pView, _PN("dir-override"), "ltr", "");
 }
 
 Defun1(toggleDirOverrideRTL)
 {
 	CHECK_FRAME;
 	ABIWORD_VIEW;
-	return _toggleSpan(pView, "dir-override", "rtl", "");
+	return _toggleSpan(pView, _PN("dir-override"), "rtl", "");
 }
 
 Defun1(toggleDomDirection)
@@ -12624,22 +12586,22 @@ Defun1(toggleDomDirection)
 	fl_BlockLayout * pBl = pView->getCurrentBlock();
 	UT_return_val_if_fail( pBl, false );
 
-	std::string cur_alignment = pBl->getProperty("text-align");
+	std::string cur_alignment = pBl->getProperty(_PN("text-align"));
 
 	PP_PropertyVector properties = {
-		"dom-dir", pBl->getDominantDirection() == UT_BIDI_RTL ? "ltr" : "rtl",
-		"text-align", cur_alignment
+		{ "dom-dir", pBl->getDominantDirection() == UT_BIDI_RTL ? "ltr" : "rtl" },
+		{ "text-align", cur_alignment }
 	};
 	// if the paragraph is was aligned either left or right, then
 	// toggle the alignment as well; if it was anything else
 	// i.e., justfied or centered, then leave it
 	if(cur_alignment == aleft)
 	{
-		properties[3] = aright;
+		properties[1].value = aright;
 	}
 	else if(cur_alignment == aright)
 	{
-		properties[3] = aleft;
+		properties[1].value = aleft;
 
 	}
 
@@ -12663,8 +12625,8 @@ Defun1(toggleDomDirectionSect)
 	UT_return_val_if_fail( pSL, false );
 
 	const PP_PropertyVector properties = {
-		"dom-dir",
-		pSL->getColumnOrder() ? "ltr" : "rtl"
+		{ "dom-dir",
+		  pSL->getColumnOrder() ? "ltr" : "rtl" }
 	};
 	pView->setSectionFormat(properties);
 
@@ -12685,11 +12647,11 @@ Defun1(toggleDomDirectionDoc)
 
 	const gchar * szValue;
 
-	UT_return_val_if_fail(pAP->getProperty("dom-dir", szValue), false);
+	UT_return_val_if_fail(pAP->getProperty(_PN("dom-dir"), szValue), false);
 
 	const char* drtl = "rtl";
 	const PP_PropertyVector properties = {
-		"dom-dir", !strcmp(szValue, drtl) ? "ltr" : drtl
+		{ "dom-dir", !strcmp(szValue, drtl) ? "ltr" : drtl }
 	};
 	UT_return_val_if_fail(pDoc->setProperties(properties), false);
 
@@ -12723,7 +12685,7 @@ Defun(colorForeTB)
 	UT_UTF8String utf8(pCallData->m_pData, pCallData->m_dataLength);
 
 	const PP_PropertyVector properties = {
-		"color", utf8.utf8_str()
+		{ "color", utf8.utf8_str() }
 	};
 	pView->setCharFormat(properties);
 
@@ -12739,7 +12701,7 @@ Defun(colorBackTB)
 	UT_UTF8String utf8(pCallData->m_pData, pCallData->m_dataLength);
 
 	const PP_PropertyVector properties = {
-		"bgcolor", utf8.utf8_str()
+		{ "bgcolor", utf8.utf8_str() }
 	};
 	pView->setCharFormat(properties);
 
@@ -12772,7 +12734,7 @@ Defun1(alignLeft)
 		return true;
 
 	const PP_PropertyVector properties = {
-		"text-align", "left"
+		{ "text-align", "left" }
 	};
 	pView->setBlockFormat(properties);
 	return true;
@@ -12788,7 +12750,7 @@ Defun1(alignCenter)
 		return true;
 
 	const PP_PropertyVector properties = {
-		"text-align", "center"
+		{ "text-align", "center" }
 	};
 	pView->setBlockFormat(properties);
 	return true;
@@ -12804,7 +12766,7 @@ Defun1(alignRight)
 		return true;
 
 	const PP_PropertyVector properties = {
-		"text-align", "right"
+		{ "text-align", "right" }
 	};
 	pView->setBlockFormat(properties);
 	return true;
@@ -12820,7 +12782,7 @@ Defun1(alignJustify)
 		return true;
 
 	const PP_PropertyVector properties = {
-		"text-align", "justify"
+		{ "text-align", "justify" }
 	};
 	pView->setBlockFormat(properties);
 	return true;
@@ -12869,7 +12831,7 @@ Defun1(sectColumns1)
 		return false;
 
 	const PP_PropertyVector properties = {
-		"columns", "1"
+		{ "columns", "1" }
 	};
 	pView->setSectionFormat(properties);
 	return true;
@@ -12884,7 +12846,7 @@ Defun1(sectColumns2)
 		return false;
 
 	const PP_PropertyVector properties = {
-		"columns", "2"
+		{ "columns", "2" }
 	};
 	pView->setSectionFormat(properties);
 	return true;
@@ -12898,7 +12860,7 @@ Defun1(sectColumns3)
 	if(pView->isHdrFtrEdit())
 		return false;
 	const PP_PropertyVector properties = {
-		"columns", "3"
+		{ "columns", "3" }
 	};
 	pView->setSectionFormat(properties);
 	return true;
@@ -12914,7 +12876,7 @@ Defun1(paraBefore0)
 		return true;
 
 	const PP_PropertyVector properties = {
-		"margin-top", "0pt"
+		{ "margin-top", "0pt" }
 	};
 	pView->setBlockFormat(properties);
 	return true;
@@ -12930,7 +12892,7 @@ Defun1(paraBefore12)
 		return true;
 
 	const PP_PropertyVector properties = {
-		"margin-top", "12pt"
+		{ "margin-top", "12pt" }
 	};
 	pView->setBlockFormat(properties);
 	return true;
@@ -12946,7 +12908,7 @@ Defun1(singleSpace)
 		return true;
 
 	const PP_PropertyVector properties = {
-		"line-height", "1.0"
+		{ "line-height", "1.0" }
 	};
 	pView->setBlockFormat(properties);
 	return true;
@@ -12962,7 +12924,7 @@ Defun1(middleSpace)
 		return true;
 
 	const PP_PropertyVector properties = {
-		"line-height", "1.5"
+		{ "line-height", "1.5" }
 	};
 	pView->setBlockFormat(properties);
 	return true;
@@ -12978,7 +12940,7 @@ Defun1(doubleSpace)
 		return true;
 
 	const PP_PropertyVector properties = {
-		"line-height", "2.0"
+		{ "line-height", "2.0" }
 	};
 	pView->setBlockFormat(properties);
 	return true;
@@ -13061,7 +13023,7 @@ Defun1(cycleInputMode)
 
 	// POLICY: make this the default for new frames, too
 	XAP_PrefsScheme * pScheme = pPrefs->getCurrentScheme(true);
-UT_return_val_if_fail(pScheme, false);
+	UT_return_val_if_fail(pScheme, false);
 	pScheme->setValue(static_cast<const gchar *>(AP_PREF_KEY_KeyBindings),
 					  szNextInputMode);
 
@@ -13716,7 +13678,7 @@ UT_return_val_if_fail(pDialog, false);//
 //
 	PP_PropertyVector propsChar;
 	pView->getCharFormat(propsChar);
-	const std::string & pszChar = PP_getAttribute("color",propsChar);
+	const std::string & pszChar = PP_getAttribute(_PN("color"),propsChar);
 	pDialog->setColor(pszChar.c_str());
 //
 // Set the dialog to Foreground Color Mode.
@@ -13732,7 +13694,7 @@ UT_return_val_if_fail(pDialog, false);//
 	{
 		const gchar * clr = pDialog->getColor();
 		const PP_PropertyVector properties = {
-			"color", clr ? clr : ""
+			{ "color", clr ? clr : "" }
 		};
 		pView->setCharFormat(properties);
 	}
@@ -13762,7 +13724,7 @@ UT_return_val_if_fail(pDialog, false);//
 //
 	PP_PropertyVector propsChar;
 	pView->getCharFormat(propsChar);
-	const std::string & pszChar = PP_getAttribute("bgcolor", propsChar);
+	const std::string & pszChar = PP_getAttribute(_PN("bgcolor"), propsChar);
 	pDialog->setColor(pszChar.c_str());
 //
 // Set the dialog to Highlight Color Mode.
@@ -13778,7 +13740,7 @@ UT_return_val_if_fail(pDialog, false);//
 	{
 		const gchar * clr = pDialog->getColor();
 		const PP_PropertyVector properties = {
-			"bgcolor", clr ? clr : ""
+			{ "bgcolor", clr ? clr : "" }
 		};
 		pView->setCharFormat(properties);
 	}
@@ -13808,7 +13770,7 @@ UT_return_val_if_fail(pDialog, false);
 //
 	PP_PropertyVector propsSection;
 	pView->getSectionFormat(propsSection);
-	const std::string & background = PP_getAttribute("background-color", propsSection);
+	const std::string & background = PP_getAttribute(_PN("background-color"), propsSection);
 	pDialog->setColor(background.c_str());
 
 	pDialog->runModal (pFrame);
@@ -13916,9 +13878,9 @@ UT_return_val_if_fail(pDialog, false);//
 	}
 	PP_PropertyVector propsSectionIn;
 	pView->getSectionFormat(propsSectionIn);
-	const std::string & restart = PP_getAttribute("section-restart", propsSectionIn);
+	const std::string & restart = PP_getAttribute(_PN("section-restart"), propsSectionIn);
 	const std::string & restartValue1 =
-		PP_getAttribute("section-restart-value", propsSectionIn);
+		PP_getAttribute(_PN("section-restart-value"), propsSectionIn);
 	bool bRestart = restart == "1";
 	UT_sint32 restartValue = 1;
 	if(!restartValue1.empty())
@@ -14028,18 +13990,18 @@ UT_return_val_if_fail(pDialog, false);//
 		if(pDialog->isRestartChanged())
 		{
 			PP_PropertyVector props_out = {
-					"section-restart", "",
-					"section-restart-value", ""
+				{ "section-restart", "" },
+				{ "section-restart-value", "" }
 			};
 			if(pDialog->isRestart())
 			{
-				props_out[1] = "1";
-				props_out[3] = UT_std_string_sprintf("%i", pDialog->getRestartValue());
+				props_out[0].value = "1";
+				props_out[1].value = UT_std_string_sprintf("%i", pDialog->getRestartValue());
 			}
 			else
 			{
-				props_out[1] = "0";
-				props_out[3] = "";
+				props_out[0].value = "0";
+				props_out[1].value = "";
 			}
 			pView->setSectionFormat(props_out);
 		}

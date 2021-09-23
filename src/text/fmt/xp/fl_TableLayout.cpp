@@ -1152,7 +1152,7 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	*/
 
 	const char* pszHomogeneous = NULL;
-	pSectionAP->getProperty("homogeneous", (const gchar *&)pszHomogeneous);
+	pSectionAP->getProperty(_PN("homogeneous"), (const gchar *&)pszHomogeneous);
 	if (pszHomogeneous && pszHomogeneous[0])
 	{
 		if(atoi(pszHomogeneous) == 1)
@@ -1166,8 +1166,8 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	}
 	const char* pszTableWidth = NULL;
 	const char* pszRelTableWidth = NULL;
-	pSectionAP->getProperty("table-width", (const gchar *&)pszTableWidth);
-	pSectionAP->getProperty("table-rel-width", (const gchar *&)pszRelTableWidth);
+	pSectionAP->getProperty(_PN("table-width"), (const gchar *&)pszTableWidth);
+	pSectionAP->getProperty(_PN("table-rel-width"), (const gchar *&)pszRelTableWidth);
 	if(pszTableWidth && pszTableWidth[0])
 	{
 		m_iTableWidth = UT_convertToLogicalUnits(pszTableWidth);
@@ -1191,7 +1191,7 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	// the bottom of the page when breaking a table along cell boundaries.
 	// The margin is defined as a fraction of the maximum column height.
 	const char* pszMaxExtraMargin = NULL;
-	pSectionAP->getProperty("table-max-extra-margin", (const gchar *&)pszMaxExtraMargin);
+	pSectionAP->getProperty(_PN("table-max-extra-margin"), (const gchar *&)pszMaxExtraMargin);
 	if(pszMaxExtraMargin && pszMaxExtraMargin[0])
 	{
 		m_dMaxExtraMargin = atof(pszMaxExtraMargin);
@@ -1207,10 +1207,10 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	const char* pszTopOffset = NULL;
 	const char* pszRightOffset = NULL;
 	const char* pszBottomOffset = NULL;
-	pSectionAP->getProperty("table-margin-left", (const gchar *&)pszLeftOffset);
-	pSectionAP->getProperty("table-margin-top", (const gchar *&)pszTopOffset);
-	pSectionAP->getProperty("table-margin-right", (const gchar *&)pszRightOffset);
-	pSectionAP->getProperty("table-margin-bottom", (const gchar *&)pszBottomOffset);
+	pSectionAP->getProperty(_PN("table-margin-left"), (const gchar *&)pszLeftOffset);
+	pSectionAP->getProperty(_PN("table-margin-top"), (const gchar *&)pszTopOffset);
+	pSectionAP->getProperty(_PN("table-margin-right"), (const gchar *&)pszRightOffset);
+	pSectionAP->getProperty(_PN("table-margin-bottom"), (const gchar *&)pszBottomOffset);
 
 	std::string rulerUnits;
 	UT_Dimension dim;
@@ -1301,7 +1301,7 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		m_dBottomOffsetUserUnits = UT_convertDimensionless(defaultOffset.c_str());
 	}
 	const char * pszLineThick = NULL;
-	pSectionAP->getProperty("table-line-thickness", (const gchar *&)pszLineThick);
+	pSectionAP->getProperty(_PN("table-line-thickness"), (const gchar *&)pszLineThick);
 	if(pszLineThick && *pszLineThick)
 	{
 		m_iLineThickness = UT_convertToLogicalUnits(pszLineThick);
@@ -1317,8 +1317,8 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	xxx_UT_DEBUGMSG(("SEVIOR: TableLayout::_lookup lineThickness %d \n",m_iLineThickness));
 	const char * pszTableColSpacing = NULL;
 	const char * pszTableRowSpacing = NULL;
-	pSectionAP->getProperty("table-col-spacing", (const gchar *&)pszTableColSpacing);
-	pSectionAP->getProperty("table-row-spacing", (const gchar *&)pszTableRowSpacing);
+	pSectionAP->getProperty(_PN("table-col-spacing"), (const gchar *&)pszTableColSpacing);
+	pSectionAP->getProperty(_PN("table-row-spacing"), (const gchar *&)pszTableRowSpacing);
 	if(pszTableColSpacing && *pszTableColSpacing)
 	{
 //
@@ -1356,9 +1356,9 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	const char * pszLeftColPos = NULL;
 	const char * pszColumnProps = NULL;
 	const char * pszRelColumnProps = NULL;
-	pSectionAP->getProperty("table-column-leftpos", (const gchar *&)pszLeftColPos);
-	pSectionAP->getProperty("table-column-props", (const gchar *&)pszColumnProps);
-	pSectionAP->getProperty("table-rel-column-props", (const gchar *&)pszRelColumnProps);
+	pSectionAP->getProperty(_PN("table-column-leftpos"), (const gchar *&)pszLeftColPos);
+	pSectionAP->getProperty(_PN("table-column-props"), (const gchar *&)pszColumnProps);
+	pSectionAP->getProperty(_PN("table-rel-column-props"), (const gchar *&)pszRelColumnProps);
 
 	if(pszLeftColPos && *pszLeftColPos)
 	{
@@ -1509,7 +1509,7 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 //
 	const char * pszRowHeightType = NULL;
 	const char * pszRowHeight = NULL;
-	pSectionAP->getProperty("table-row-height-type",(const gchar *&) pszRowHeightType);
+	pSectionAP->getProperty(_PN("table-row-height-type"), (const gchar *&) pszRowHeightType);
 	if(pszRowHeightType && *pszRowHeightType)
 	{
 		if(strcmp(pszRowHeightType,"undefined") == 0)
@@ -1537,7 +1537,7 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	{
 		m_iRowHeightType = 	FL_ROW_HEIGHT_NOT_DEFINED;
 	}
-	pSectionAP->getProperty("table-row-height",(const gchar *&) pszRowHeight);
+	pSectionAP->getProperty(_PN("table-row-height"), (const gchar *&) pszRowHeight);
 	if(pszRowHeight && *pszRowHeight)
 	{
 		m_iRowHeight = atoi(pszRowHeight);
@@ -1550,7 +1550,7 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 // Positioned row controls
 //
 	const char * pszRowHeights = NULL;
-	pSectionAP->getProperty("table-row-heights", (const gchar *&)pszRowHeights);
+	pSectionAP->getProperty(_PN("table-row-heights"), (const gchar *&)pszRowHeights);
 	if(pszRowHeights && *pszRowHeights)
 	{
 /*
@@ -1620,7 +1620,7 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	/* table-border properties:
 	 */
 	const gchar * pszColor = NULL;
-	pSectionAP->getProperty ("color", pszColor);
+	pSectionAP->getProperty(_PN("color"), pszColor);
 	if (pszColor)
 		UT_parseColor (pszColor, m_colorDefault);
 	else
@@ -1630,9 +1630,9 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	const gchar * pszBorderStyle = NULL;
 	const gchar * pszBorderWidth = NULL;
 
-	pSectionAP->getProperty ("bot-color",       pszBorderColor);
-	pSectionAP->getProperty ("bot-style",       pszBorderStyle);
-	pSectionAP->getProperty ("bot-thickness",   pszBorderWidth);
+	pSectionAP->getProperty(_PN("bot-color"), pszBorderColor);
+	pSectionAP->getProperty(_PN("bot-style"), pszBorderStyle);
+	pSectionAP->getProperty(_PN("bot-thickness"), pszBorderWidth);
 
 
 	s_border_properties (pszBorderColor, pszBorderStyle, pszBorderWidth, pszColor, m_lineBottom);
@@ -1641,9 +1641,9 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	pszBorderStyle = NULL;
 	pszBorderWidth = NULL;
 
-	pSectionAP->getProperty ("left-color",      pszBorderColor);
-	pSectionAP->getProperty ("left-style",      pszBorderStyle);
-	pSectionAP->getProperty ("left-thickness",  pszBorderWidth);
+	pSectionAP->getProperty(_PN("left-color"), pszBorderColor);
+	pSectionAP->getProperty(_PN("left-style"), pszBorderStyle);
+	pSectionAP->getProperty(_PN("left-thickness"), pszBorderWidth);
 
 	s_border_properties (pszBorderColor, pszBorderStyle, pszBorderWidth, pszColor, m_lineLeft);
 
@@ -1651,9 +1651,9 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	pszBorderStyle = NULL;
 	pszBorderWidth = NULL;
 
-	pSectionAP->getProperty ("right-color",     pszBorderColor);
-	pSectionAP->getProperty ("right-style",     pszBorderStyle);
-	pSectionAP->getProperty ("right-thickness", pszBorderWidth);
+	pSectionAP->getProperty(_PN("right-color"), pszBorderColor);
+	pSectionAP->getProperty(_PN("right-style"), pszBorderStyle);
+	pSectionAP->getProperty(_PN("right-thickness"), pszBorderWidth);
 
 	s_border_properties (pszBorderColor, pszBorderStyle, pszBorderWidth, pszColor, m_lineRight);
 
@@ -1661,9 +1661,9 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	pszBorderStyle = NULL;
 	pszBorderWidth = NULL;
 
-	pSectionAP->getProperty ("top-color",       pszBorderColor);
-	pSectionAP->getProperty ("top-style",       pszBorderStyle);
-	pSectionAP->getProperty ("top-thickness",   pszBorderWidth);
+	pSectionAP->getProperty(_PN("top-color"), pszBorderColor);
+	pSectionAP->getProperty(_PN("top-style"), pszBorderStyle);
+	pSectionAP->getProperty(_PN("top-thickness"), pszBorderWidth);
 
 	s_border_properties (pszBorderColor, pszBorderStyle, pszBorderWidth, pszColor, m_lineTop);
 
@@ -1675,16 +1675,16 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	const gchar * pszBgColor = NULL;
 	const gchar * pszBackgroundColor = NULL;
 
-	pSectionAP->getProperty ("bg-style",         pszBgStyle);
-	pSectionAP->getProperty ("bgcolor",          pszBgColor);
-	pSectionAP->getProperty ("background-color", pszBackgroundColor);
+	pSectionAP->getProperty(_PN("bg-style"), pszBgStyle);
+	pSectionAP->getProperty(_PN("bgcolor"), pszBgColor);
+	pSectionAP->getProperty(_PN("background-color"), pszBackgroundColor);
 	
 	s_background_properties (pszBgStyle, pszBgColor, pszBackgroundColor, m_background);
 
 	// table-wait-index is set by FV_View functions to a value different than zero to prevent 
 	// table initialization before the changes are completed.
 	const char * pszWaitIndex = NULL;
-	pSectionAP->getProperty("table-wait-index", (const gchar *&)pszWaitIndex);
+	pSectionAP->getProperty(_PN("table-wait-index"), (const gchar *&)pszWaitIndex);
 	if(pszWaitIndex && *pszWaitIndex)
 	{
 		m_iTableWaitIndex = atoi(pszWaitIndex);		
@@ -1704,10 +1704,10 @@ void fl_TableLayout::_lookupMarginProperties(const PP_AttrProp* pSectionAP)
 	const char* pszTopOffset = NULL;
 	const char* pszRightOffset = NULL;
 	const char* pszBottomOffset = NULL;
-	pSectionAP->getProperty("table-margin-left", (const gchar *&)pszLeftOffset);
-	pSectionAP->getProperty("table-margin-top", (const gchar *&)pszTopOffset);
-	pSectionAP->getProperty("table-margin-right", (const gchar *&)pszRightOffset);
-	pSectionAP->getProperty("table-margin-bottom", (const gchar *&)pszBottomOffset);
+	pSectionAP->getProperty(_PN("table-margin-left"), (const gchar *&)pszLeftOffset);
+	pSectionAP->getProperty(_PN("table-margin-top"), (const gchar *&)pszTopOffset);
+	pSectionAP->getProperty(_PN("table-margin-right"), (const gchar *&)pszRightOffset);
+	pSectionAP->getProperty(_PN("table-margin-bottom"), (const gchar *&)pszBottomOffset);
 
 	UT_String defaultOffset("0.01in");	// TODO: what to do with this. was 0.01in
 	if(pszLeftOffset && pszLeftOffset[0])
@@ -1759,7 +1759,7 @@ void fl_TableLayout::_lookupMarginProperties(const PP_AttrProp* pSectionAP)
 // Positioned columns controls
 //
 	const char * pszLeftColPos = NULL;
-	pSectionAP->getProperty("table-column-leftpos", (const gchar *&)pszLeftColPos);
+	pSectionAP->getProperty(_PN("table-column-leftpos"), (const gchar *&)pszLeftColPos);
 	UT_sint32 iLeftColPos = m_iLeftColPos;
 	if(pszLeftColPos && *pszLeftColPos)
 	{
@@ -2568,10 +2568,10 @@ void fl_CellLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	const char* pszTopOffset = NULL;
 	const char* pszRightOffset = NULL;
 	const char* pszBottomOffset = NULL;
-	pSectionAP->getProperty("cell-margin-left", (const gchar *&)pszLeftOffset);
-	pSectionAP->getProperty("cell-margin-top", (const gchar *&)pszTopOffset);
-	pSectionAP->getProperty("cell-margin-right", (const gchar *&)pszRightOffset);
-	pSectionAP->getProperty("cell-margin-bottom", (const gchar *&)pszBottomOffset);
+	pSectionAP->getProperty(_PN("cell-margin-left"), (const gchar *&)pszLeftOffset);
+	pSectionAP->getProperty(_PN("cell-margin-top"), (const gchar *&)pszTopOffset);
+	pSectionAP->getProperty(_PN("cell-margin-right"), (const gchar *&)pszRightOffset);
+	pSectionAP->getProperty(_PN("cell-margin-bottom"), (const gchar *&)pszBottomOffset);
 	std::string rulerUnits;
 	UT_Dimension dim;
 	if (XAP_App::getApp()->getPrefsValue(AP_PREF_KEY_RulerUnits, rulerUnits))
@@ -2667,10 +2667,10 @@ void fl_CellLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	const char* pszRightAttach = NULL;
 	const char* pszTopAttach = NULL;
 	const char* pszBottomAttach = NULL;
-	pSectionAP->getProperty("left-attach", (const gchar *&)pszLeftAttach);
-	pSectionAP->getProperty("right-attach", (const gchar *&)pszRightAttach);
-	pSectionAP->getProperty("top-attach", (const gchar *&)pszTopAttach);
-	pSectionAP->getProperty("bot-attach", (const gchar *&)pszBottomAttach);
+	pSectionAP->getProperty(_PN("left-attach"), (const gchar *&)pszLeftAttach);
+	pSectionAP->getProperty(_PN("right-attach"), (const gchar *&)pszRightAttach);
+	pSectionAP->getProperty(_PN("top-attach"), (const gchar *&)pszTopAttach);
+	pSectionAP->getProperty(_PN("bot-attach"), (const gchar *&)pszBottomAttach);
 	xxx_UT_DEBUGMSG(("CellLayout _lookupProps top %s bot %s left %s right %s \n",pszTopAttach,pszBottomAttach,pszLeftAttach,pszRightAttach)); 
 	if(pszLeftAttach && pszLeftAttach[0])
 	{
@@ -2708,15 +2708,15 @@ void fl_CellLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	/* cell-border properties:
 	 */
 	const gchar * pszColor = NULL;
-	pSectionAP->getProperty ("color", pszColor);
+	pSectionAP->getProperty(_PN("color"), pszColor);
 	
 	const gchar * pszBorderColor = NULL;
 	const gchar * pszBorderStyle = NULL;
 	const gchar * pszBorderWidth = NULL;
 
-	pSectionAP->getProperty ("bot-color",       pszBorderColor);
-	pSectionAP->getProperty ("bot-style",       pszBorderStyle);
-	pSectionAP->getProperty ("bot-thickness",   pszBorderWidth);
+	pSectionAP->getProperty(_PN("bot-color"), pszBorderColor);
+	pSectionAP->getProperty(_PN("bot-style"), pszBorderStyle);
+	pSectionAP->getProperty(_PN("bot-thickness"), pszBorderWidth);
 
 	fl_TableLayout * pTL = static_cast<fl_TableLayout *>(myContainingLayout());
 
@@ -2726,9 +2726,9 @@ void fl_CellLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	pszBorderStyle = NULL;
 	pszBorderWidth = NULL;
 
-	pSectionAP->getProperty ("left-color",      pszBorderColor);
-	pSectionAP->getProperty ("left-style",      pszBorderStyle);
-	pSectionAP->getProperty ("left-thickness",  pszBorderWidth);
+	pSectionAP->getProperty(_PN("left-color"), pszBorderColor);
+	pSectionAP->getProperty(_PN("left-style"), pszBorderStyle);
+	pSectionAP->getProperty(_PN("left-thickness"), pszBorderWidth);
 
 
 	s_border_properties_cell (pszBorderColor, pszBorderStyle, pszBorderWidth, pszColor, m_lineLeft,pTL->getLeftStyle());
@@ -2737,9 +2737,9 @@ void fl_CellLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	pszBorderStyle = NULL;
 	pszBorderWidth = NULL;
 
-	pSectionAP->getProperty ("right-color",     pszBorderColor);
-	pSectionAP->getProperty ("right-style",     pszBorderStyle);
-	pSectionAP->getProperty ("right-thickness", pszBorderWidth);
+	pSectionAP->getProperty(_PN("right-color"), pszBorderColor);
+	pSectionAP->getProperty(_PN("right-style"), pszBorderStyle);
+	pSectionAP->getProperty(_PN("right-thickness"), pszBorderWidth);
 
 	s_border_properties_cell (pszBorderColor, pszBorderStyle, pszBorderWidth, pszColor, m_lineRight,pTL->getRightStyle());
 
@@ -2747,14 +2747,14 @@ void fl_CellLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	pszBorderStyle = NULL;
 	pszBorderWidth = NULL;
 
-	pSectionAP->getProperty ("top-color",       pszBorderColor);
-	pSectionAP->getProperty ("top-style",       pszBorderStyle);
-	pSectionAP->getProperty ("top-thickness",   pszBorderWidth);
+	pSectionAP->getProperty(_PN("top-color"), pszBorderColor);
+	pSectionAP->getProperty(_PN("top-style"), pszBorderStyle);
+	pSectionAP->getProperty(_PN("top-thickness"), pszBorderWidth);
 
 	s_border_properties_cell (pszBorderColor, pszBorderStyle, pszBorderWidth, pszColor, m_lineTop,pTL->getTopStyle());
 
 	const char* pszVertAlign = NULL;
-	pSectionAP->getProperty("vert-align", (const gchar *&)pszVertAlign);
+	pSectionAP->getProperty(_PN("vert-align"), (const gchar *&)pszVertAlign);
 	if(pszVertAlign && pszVertAlign[0])
 	{
 		m_iVertAlign = atoi(pszVertAlign);
@@ -2773,9 +2773,9 @@ void fl_CellLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	const gchar * pszBgColor = NULL;
 	const gchar * pszBackgroundColor = NULL;
 
-	pSectionAP->getProperty ("bg-style",         pszBgStyle);
-	pSectionAP->getProperty ("bgcolor",          pszBgColor);
-	pSectionAP->getProperty ("background-color", pszBackgroundColor);
+	pSectionAP->getProperty(_PN("bg-style"), pszBgStyle);
+	pSectionAP->getProperty(_PN("bgcolor"), pszBgColor);
+	pSectionAP->getProperty(_PN("background-color"), pszBackgroundColor);
 
 	s_background_properties (pszBgStyle, pszBgColor, pszBackgroundColor, m_background);
 	if(pTL)

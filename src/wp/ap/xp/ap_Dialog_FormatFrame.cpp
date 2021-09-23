@@ -460,25 +460,25 @@ void AP_Dialog_FormatFrame::setCurFrameProps(void)
 			PP_removeAttribute(X, m_vecProps);   \
 	} while (0)
 
-					REPLACE_CELL_PROPERTY("right-style");
-					REPLACE_CELL_PROPERTY("left-style");
-					REPLACE_CELL_PROPERTY("top-style");
-					REPLACE_CELL_PROPERTY("bot-style");
+					REPLACE_CELL_PROPERTY(_PN("right-style"));
+					REPLACE_CELL_PROPERTY(_PN("left-style"));
+					REPLACE_CELL_PROPERTY(_PN("top-style"));
+					REPLACE_CELL_PROPERTY(_PN("bot-style"));
 
-					REPLACE_CELL_PROPERTY("right-thickness");
-					REPLACE_CELL_PROPERTY("left-thickness");
-					REPLACE_CELL_PROPERTY("top-thickness");
-					REPLACE_CELL_PROPERTY("bot-thickness");
+					REPLACE_CELL_PROPERTY(_PN("right-thickness"));
+					REPLACE_CELL_PROPERTY(_PN("left-thickness"));
+					REPLACE_CELL_PROPERTY(_PN("top-thickness"));
+					REPLACE_CELL_PROPERTY(_PN("bot-thickness"));
 
-					REPLACE_CELL_PROPERTY("right-color");
-					REPLACE_CELL_PROPERTY("left-color");
-					REPLACE_CELL_PROPERTY("top-color");
-					REPLACE_CELL_PROPERTY("bot-color");
+					REPLACE_CELL_PROPERTY(_PN("right-color"));
+					REPLACE_CELL_PROPERTY(_PN("left-color"));
+					REPLACE_CELL_PROPERTY(_PN("top-color"));
+					REPLACE_CELL_PROPERTY(_PN("bot-color"));
 
-					REPLACE_CELL_PROPERTY("background-color");
+					REPLACE_CELL_PROPERTY(_PN("background-color"));
 
-					REPLACE_CELL_PROPERTY("wrap-mode");
-					REPLACE_CELL_PROPERTY("position-to");
+					REPLACE_CELL_PROPERTY(_PN("wrap-mode"));
+					REPLACE_CELL_PROPERTY(_PN("position-to"));
 				}
 		}
 	if (!m_bSensitive) {
@@ -528,11 +528,11 @@ void AP_Dialog_FormatFrame::setCurFrameProps(void)
 		m_sImagePath.clear();
 	}
 
-	PP_addOrSetAttribute("bg-style", UT_std_string_sprintf("%d", FS_FILL),
+	PP_addOrSetAttribute(_PN("bg-style"), UT_std_string_sprintf("%d", FS_FILL),
 						 m_vecProps);
 
 	std::string style;
-	style = PP_getAttribute("background-color", m_vecProps);
+	style = PP_getAttribute(_PN("background-color"), m_vecProps);
 	if (!style.empty()) {
 		m_backgroundColor.setColor(style.c_str());
 	}
@@ -541,66 +541,66 @@ void AP_Dialog_FormatFrame::setCurFrameProps(void)
 	 */
 	long linestyle;
 
-	style = PP_getAttribute("right-style", m_vecProps);
+	style = PP_getAttribute(_PN("right-style"), m_vecProps);
 	if (!style.empty()) {
 		linestyle = LS_NORMAL;
 		sscanf(style.c_str(), "%ld", &linestyle);
 		m_borderLineStyleRight = linestyle;
 	}
-	style = PP_getAttribute("left-style", m_vecProps);
+	style = PP_getAttribute(_PN("left-style"), m_vecProps);
 	if (!style.empty()) {
 		linestyle = LS_NORMAL;
 		sscanf(style.c_str(), "%ld", &linestyle);
 		m_borderLineStyleLeft = linestyle;
 	}
-	style = PP_getAttribute("top-style", m_vecProps);
+	style = PP_getAttribute(_PN("top-style"), m_vecProps);
 	if (!style.empty()) {
 		linestyle = LS_NORMAL;
 		sscanf(style.c_str(), "%ld", &linestyle);
 		m_borderLineStyleTop = linestyle;
 	}
-	style = PP_getAttribute("bot-style", m_vecProps);
+	style = PP_getAttribute(_PN("bot-style"), m_vecProps);
 	if (!style.empty()) {
 		linestyle = LS_NORMAL;
 		sscanf(style.c_str(), "%ld", &linestyle);
 		m_borderLineStyleBottom = linestyle;
 	}
 
-	style = PP_getAttribute("right-color", m_vecProps);
+	style = PP_getAttribute(_PN("right-color"), m_vecProps);
 	if (!style.empty()) {
 		m_borderColorRight.setColor(style.c_str());
 	}
-	style = PP_getAttribute("left-color", m_vecProps);
+	style = PP_getAttribute(_PN("left-color"), m_vecProps);
 	if (!style.empty()) {
 		m_borderColorLeft.setColor(style.c_str());
 	}
-	style = PP_getAttribute("top-color", m_vecProps);
+	style = PP_getAttribute(_PN("top-color"), m_vecProps);
 	if (!style.empty()) {
 		m_borderColorTop.setColor(style.c_str());
 	}
-	style = PP_getAttribute("bot-color", m_vecProps);
+	style = PP_getAttribute(_PN("bot-color"), m_vecProps);
 	if (!style.empty()) {
 		m_borderColorBottom.setColor(style.c_str());
 	}
 
 	UT_UTF8String thickness;
 
-	style = PP_getAttribute("right-thickness", m_vecProps);
+	style = PP_getAttribute(_PN("right-thickness"), m_vecProps);
 	if (!style.empty()) {
 		thickness = style;
 		setBorderThicknessRight(thickness);
 	}
-	style = PP_getAttribute("left-thickness", m_vecProps);
+	style = PP_getAttribute(_PN("left-thickness"), m_vecProps);
 	if (!style.empty()) {
 		thickness = style;
 		setBorderThicknessLeft(thickness);
 	}
-	style = PP_getAttribute("top-thickness", m_vecProps);
+	style = PP_getAttribute(_PN("top-thickness"), m_vecProps);
 	if (!style.empty()) {
 		thickness = style;
 		setBorderThicknessTop(thickness);
 	}
-	style = PP_getAttribute("bot-thickness", m_vecProps);
+	style = PP_getAttribute(_PN("bot-thickness"), m_vecProps);
 	if (!style.empty()) {
 		thickness = style;
 		setBorderThicknessBottom(thickness);
@@ -608,7 +608,7 @@ void AP_Dialog_FormatFrame::setCurFrameProps(void)
 
 	/* update wrap properties
 	 */
-	style = PP_getAttribute("wrap-mode", m_vecProps);
+	style = PP_getAttribute(_PN("wrap-mode"), m_vecProps);
 	if (!style.empty()) {
 		if (style == "wrapped-both") {
 			m_bSetWrapping = true;
@@ -617,7 +617,7 @@ void AP_Dialog_FormatFrame::setCurFrameProps(void)
 
 	/* update position properties
 	 */
-	style = PP_getAttribute("position-to", m_vecProps);
+	style = PP_getAttribute(_PN("position-to"), m_vecProps);
 	if (!style.empty()) {
 		if (style == "block-above-text") {
 			m_iFramePositionTo = FL_FRAME_POSITIONED_TO_BLOCK;
@@ -646,17 +646,17 @@ void AP_Dialog_FormatFrame::setPositionMode(FL_FrameFormatMode mode)
 	default:
 	case FL_FRAME_POSITIONED_TO_BLOCK:
 		m_iFramePositionTo = FL_FRAME_POSITIONED_TO_BLOCK;
-		PP_addOrSetAttribute("position-to", "block-above-text", m_vecProps);
+		PP_addOrSetAttribute(_PN("position-to"), "block-above-text", m_vecProps);
 		break;
 
 	case FL_FRAME_POSITIONED_TO_COLUMN:
 		m_iFramePositionTo = FL_FRAME_POSITIONED_TO_COLUMN;
-		PP_addOrSetAttribute("position-to", "column-above-text", m_vecProps);
+		PP_addOrSetAttribute(_PN("position-to"), "column-above-text", m_vecProps);
 		break;
 
 	case FL_FRAME_POSITIONED_TO_PAGE:
 		m_iFramePositionTo = FL_FRAME_POSITIONED_TO_PAGE;
-		PP_addOrSetAttribute("position-to", "page-above-text", m_vecProps);
+		PP_addOrSetAttribute(_PN("position-to"), "page-above-text", m_vecProps);
 		break;
 	}
 	m_bSettingsChanged = true;
@@ -667,9 +667,9 @@ void AP_Dialog_FormatFrame::setWrapping(bool bWrap)
 	m_bSetWrapping = bWrap;
 
 	if (m_bSetWrapping)
-		PP_addOrSetAttribute("wrap-mode", "wrapped-both", m_vecProps);
+		PP_addOrSetAttribute(_PN("wrap-mode"), "wrapped-both", m_vecProps);
 	else
-		PP_addOrSetAttribute("wrap-mode", "above-text", m_vecProps);
+		PP_addOrSetAttribute(_PN("wrap-mode"), "above-text", m_vecProps);
 
 	m_bSettingsChanged = true;
 }
@@ -688,7 +688,7 @@ void AP_Dialog_FormatFrame::applyChanges()
 	//Check if the position mode changed. Update xpos and ypos parameters if necessary
 	fl_FrameLayout * pFL = pView->getFrameLayout();
 	fl_BlockLayout * pCloseBL = NULL;
-	const std::string sMode = PP_getAttribute("position-to", m_vecProps);
+	const std::string sMode = PP_getAttribute(_PN("position-to"), m_vecProps);
 
 	if (((pFL->getFramePositionTo() == FL_FRAME_POSITIONED_TO_BLOCK) &&
 		 (sMode != "block-above-text")) ||
@@ -714,19 +714,19 @@ void AP_Dialog_FormatFrame::applyChanges()
 
 			if (sMode == "block-above-text")
 			{
-				PP_addOrSetAttribute("xpos",FrameStrings.sXpos.c_str(), m_vecProps);
-				PP_addOrSetAttribute("ypos",FrameStrings.sYpos.c_str(), m_vecProps);
+				PP_addOrSetAttribute(_PN("xpos"),FrameStrings.sXpos.c_str(), m_vecProps);
+				PP_addOrSetAttribute(_PN("ypos"),FrameStrings.sYpos.c_str(), m_vecProps);
 			}
 			else if (sMode == "column-above-text")
 			{
-				PP_addOrSetAttribute("frame-col-xpos",FrameStrings.sColXpos.c_str(), m_vecProps);
-				PP_addOrSetAttribute("frame-col-ypos",FrameStrings.sColYpos.c_str(), m_vecProps);
-				PP_addOrSetAttribute("frame-pref-column",FrameStrings.sPrefColumn.c_str(), m_vecProps);
+				PP_addOrSetAttribute(_PN("frame-col-xpos"),FrameStrings.sColXpos.c_str(), m_vecProps);
+				PP_addOrSetAttribute(_PN("frame-col-ypos"),FrameStrings.sColYpos.c_str(), m_vecProps);
+				PP_addOrSetAttribute(_PN("frame-pref-column"),FrameStrings.sPrefColumn.c_str(), m_vecProps);
 			}
 			else if (sMode == "page-above-text")
 			{
-				PP_addOrSetAttribute("frame-page-xpos",FrameStrings.sPageXpos.c_str(), m_vecProps);
-				PP_addOrSetAttribute("frame-page-ypos",FrameStrings.sPageYpos.c_str(), m_vecProps);
+				PP_addOrSetAttribute(_PN("frame-page-xpos"),FrameStrings.sPageXpos.c_str(), m_vecProps);
+				PP_addOrSetAttribute(_PN("frame-page-ypos"),FrameStrings.sPageYpos.c_str(), m_vecProps);
 			}
 		}
 	}
@@ -757,9 +757,9 @@ void AP_Dialog_FormatFrame::toggleLineType(toggle_button btn, bool enabled)
 			m_borderLineStyleLeft = enabled ? LS_NORMAL : LS_OFF;
 			m_borderColorLeft = m_borderColor;
 			setBorderThicknessLeft(m_sBorderThickness);
-			PP_addOrSetAttribute("left-style", sTmp, m_vecProps);
-			PP_addOrSetAttribute("left-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("left-thickness",m_sBorderThickness.utf8_str(), m_vecProps);
+			PP_addOrSetAttribute(_PN("left-style"), sTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("left-color"), cTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("left-thickness"),m_sBorderThickness.utf8_str(), m_vecProps);
 		}
 		break;
 
@@ -768,9 +768,9 @@ void AP_Dialog_FormatFrame::toggleLineType(toggle_button btn, bool enabled)
 			m_borderLineStyleRight = enabled ? LS_NORMAL : LS_OFF;
 			m_borderColorRight = m_borderColor;
 			setBorderThicknessRight(m_sBorderThickness);
-			PP_addOrSetAttribute("right-style", sTmp, m_vecProps);
-			PP_addOrSetAttribute("right-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("right-thickness", m_sBorderThickness.utf8_str(), m_vecProps);
+			PP_addOrSetAttribute(_PN("right-style"), sTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("right-color"), cTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("right-thickness"), m_sBorderThickness.utf8_str(), m_vecProps);
 		}
 		break;
 
@@ -779,9 +779,9 @@ void AP_Dialog_FormatFrame::toggleLineType(toggle_button btn, bool enabled)
 			m_borderLineStyleTop = enabled ? LS_NORMAL : LS_OFF;
 			m_borderColorTop = m_borderColor;
 			setBorderThicknessTop(m_sBorderThickness);
-			PP_addOrSetAttribute("top-style", sTmp, m_vecProps);
-			PP_addOrSetAttribute("top-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("top-thickness",m_sBorderThickness.utf8_str(), m_vecProps);
+			PP_addOrSetAttribute(_PN("top-style"), sTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("top-color"), cTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("top-thickness"),m_sBorderThickness.utf8_str(), m_vecProps);
 		}
 		break;
 
@@ -790,9 +790,9 @@ void AP_Dialog_FormatFrame::toggleLineType(toggle_button btn, bool enabled)
 			m_borderLineStyleBottom = enabled ? LS_NORMAL : LS_OFF;
 			m_borderColorBottom = m_borderColor;
 			setBorderThicknessBottom(m_sBorderThickness);
-			PP_addOrSetAttribute("bot-style", sTmp, m_vecProps);
-			PP_addOrSetAttribute("bot-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("bot-thickness",m_sBorderThickness.utf8_str(), m_vecProps);
+			PP_addOrSetAttribute(_PN("bot-style"), sTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("bot-color"), cTmp, m_vecProps);
+			PP_addOrSetAttribute(_PN("bot-thickness"),m_sBorderThickness.utf8_str(), m_vecProps);
 		}
 		break;
 
@@ -806,7 +806,7 @@ void AP_Dialog_FormatFrame::toggleLineType(toggle_button btn, bool enabled)
 
 void AP_Dialog_FormatFrame::setBorderLineStyleRight (UT_sint32 linestyle)
 {
-	PP_addOrSetAttribute("right-style", UT_std_string_sprintf("%lu",
+	PP_addOrSetAttribute(_PN("right-style"), UT_std_string_sprintf("%lu",
 						 static_cast<unsigned long>(linestyle)), m_vecProps);
 
 	m_borderLineStyleRight = linestyle;
@@ -815,7 +815,7 @@ void AP_Dialog_FormatFrame::setBorderLineStyleRight (UT_sint32 linestyle)
 
 void AP_Dialog_FormatFrame::setBorderLineStyleLeft (UT_sint32 linestyle)
 {
-	PP_addOrSetAttribute("left-style", UT_std_string_sprintf("%lu",
+	PP_addOrSetAttribute(_PN("left-style"), UT_std_string_sprintf("%lu",
 						 static_cast<unsigned long>(linestyle)), m_vecProps);
 
 	m_borderLineStyleLeft = linestyle;
@@ -824,7 +824,7 @@ void AP_Dialog_FormatFrame::setBorderLineStyleLeft (UT_sint32 linestyle)
 
 void AP_Dialog_FormatFrame::setBorderLineStyleTop (UT_sint32 linestyle)
 {
-	PP_addOrSetAttribute("top-style", UT_std_string_sprintf("%lu",
+	PP_addOrSetAttribute(_PN("top-style"), UT_std_string_sprintf("%lu",
 						 static_cast<unsigned long>(linestyle)), m_vecProps);
 
 	m_borderLineStyleTop = linestyle;
@@ -833,7 +833,7 @@ void AP_Dialog_FormatFrame::setBorderLineStyleTop (UT_sint32 linestyle)
 
 void AP_Dialog_FormatFrame::setBorderLineStyleBottom (UT_sint32 linestyle)
 {
-	PP_addOrSetAttribute("bot-style", UT_std_string_sprintf("%ld",
+	PP_addOrSetAttribute(_PN("bot-style"), UT_std_string_sprintf("%ld",
 						 static_cast<unsigned long>(linestyle)), m_vecProps);
 
 	m_borderLineStyleBottom = linestyle;
@@ -899,7 +899,7 @@ void AP_Dialog_FormatFrame::setBorderThicknessRight (const UT_UTF8String & sThic
 {
 	m_sBorderThicknessRight = s_canonical_thickness(sThick, m_borderThicknessRight);
 
-	PP_addOrSetAttribute("right-thickness", m_sBorderThicknessRight.utf8_str(), m_vecProps);
+	PP_addOrSetAttribute(_PN("right-thickness"), m_sBorderThicknessRight.utf8_str(), m_vecProps);
 
 	m_bSettingsChanged = true;
 }
@@ -908,7 +908,7 @@ void AP_Dialog_FormatFrame::setBorderThicknessLeft (const UT_UTF8String & sThick
 {
 	m_sBorderThicknessLeft = s_canonical_thickness(sThick, m_borderThicknessLeft);
 
-	PP_addOrSetAttribute("left-thickness", m_sBorderThicknessLeft.utf8_str(), m_vecProps);
+	PP_addOrSetAttribute(_PN("left-thickness"), m_sBorderThicknessLeft.utf8_str(), m_vecProps);
 
 	m_bSettingsChanged = true;
 }
@@ -917,7 +917,7 @@ void AP_Dialog_FormatFrame::setBorderThicknessTop (const UT_UTF8String & sThick)
 {
 	m_sBorderThicknessTop = s_canonical_thickness(sThick, m_borderThicknessTop);
 
-	PP_addOrSetAttribute("top-thickness", m_sBorderThicknessTop.utf8_str(), m_vecProps);
+	PP_addOrSetAttribute(_PN("top-thickness"), m_sBorderThicknessTop.utf8_str(), m_vecProps);
 
 	m_bSettingsChanged = true;
 }
@@ -926,7 +926,7 @@ void AP_Dialog_FormatFrame::setBorderThicknessBottom (const UT_UTF8String & sThi
 {
 	m_sBorderThicknessBottom = s_canonical_thickness(sThick, m_borderThicknessBottom);
 
-	PP_addOrSetAttribute("bot-thickness", m_sBorderThicknessBottom.utf8_str(), m_vecProps);
+	PP_addOrSetAttribute(_PN("bot-thickness"), m_sBorderThicknessBottom.utf8_str(), m_vecProps);
 
 	m_bSettingsChanged = true;
 }
@@ -981,7 +981,7 @@ void AP_Dialog_FormatFrame::setBorderColorRight (const UT_RGBColor & clr)
 {
 	m_borderColorRight = clr;
 
-	PP_addOrSetAttribute("right-color", UT_std_string_sprintf("%02x%02x%02x", clr.m_red, clr.m_grn, clr.m_blu), m_vecProps);
+	PP_addOrSetAttribute(_PN("right-color"), UT_std_string_sprintf("%02x%02x%02x", clr.m_red, clr.m_grn, clr.m_blu), m_vecProps);
 
 	m_bSettingsChanged = true;
 }
@@ -990,7 +990,7 @@ void AP_Dialog_FormatFrame::setBorderColorLeft (const UT_RGBColor & clr)
 {
 	m_borderColorLeft = clr;
 
-	PP_addOrSetAttribute("left-color", UT_std_string_sprintf("%02x%02x%02x", clr.m_red, clr.m_grn, clr.m_blu), m_vecProps);
+	PP_addOrSetAttribute(_PN("left-color"), UT_std_string_sprintf("%02x%02x%02x", clr.m_red, clr.m_grn, clr.m_blu), m_vecProps);
 
 	m_bSettingsChanged = true;
 }
@@ -999,7 +999,7 @@ void AP_Dialog_FormatFrame::setBorderColorTop (const UT_RGBColor & clr)
 {
 	m_borderColorTop = clr;
 
-	PP_addOrSetAttribute("top-color", UT_std_string_sprintf("%02x%02x%02x", clr.m_red, clr.m_grn, clr.m_blu), m_vecProps);
+	PP_addOrSetAttribute(_PN("top-color"), UT_std_string_sprintf("%02x%02x%02x", clr.m_red, clr.m_grn, clr.m_blu), m_vecProps);
 
 	m_bSettingsChanged = true;
 }
@@ -1008,7 +1008,7 @@ void AP_Dialog_FormatFrame::setBorderColorBottom (const UT_RGBColor & clr)
 {
 	m_borderColorBottom = clr;
 
-	PP_addOrSetAttribute("bot-color", UT_std_string_sprintf("%02x%02x%02x", clr.m_red, clr.m_grn, clr.m_blu), m_vecProps);
+	PP_addOrSetAttribute(_PN("bot-color"), UT_std_string_sprintf("%02x%02x%02x", clr.m_red, clr.m_grn, clr.m_blu), m_vecProps);
 
 	m_bSettingsChanged = true;
 }
@@ -1028,13 +1028,13 @@ void AP_Dialog_FormatFrame::setBGColor(const UT_RGBColor & clr)
 {
 	m_backgroundColor = clr;
 
-	PP_removeAttribute ("bg-style", m_vecProps);
-	PP_removeAttribute ("bgcolor", m_vecProps);
+	PP_removeAttribute(_PN("bg-style"), m_vecProps);
+	PP_removeAttribute(_PN("bgcolor"), m_vecProps);
 
 	if (clr.isTransparent ()) {
-		PP_removeAttribute ("background-color", m_vecProps);
+		PP_removeAttribute(_PN("background-color"), m_vecProps);
 	} else {
-		PP_addOrSetAttribute ("background-color",
+		PP_addOrSetAttribute(_PN("background-color"),
 							  UT_std_string_sprintf("%02x%02x%02x",
 													clr.m_red, clr.m_grn,
 													clr.m_blu), m_vecProps);
@@ -1056,7 +1056,7 @@ void AP_Dialog_FormatFrame::_createPreviewFromGC(GR_Graphics * gc,
 	m_pFormatFramePreview->setWindowSize(width, height);
 }
 
-bool AP_Dialog_FormatFrame::_getToggleButtonStatus(const char * lineStyle)
+bool AP_Dialog_FormatFrame::_getToggleButtonStatus(PP_PropName lineStyle)
 {
 	std::string lsOff = UT_std_string_sprintf("%d", LS_OFF);
 	std::string style = PP_getAttribute(lineStyle, m_vecProps);
@@ -1137,7 +1137,7 @@ void AP_FormatFrame_preview::draw(const UT_Rect *clip)
 	}
 	else
 	{
-		std::string bgCol = PP_getAttribute("background-color",
+		std::string bgCol = PP_getAttribute(_PN("background-color"),
 											m_pFormatFrame->getPropVector());
 		if (!bgCol.empty())	{
 			UT_parseColor(bgCol.c_str(), tmpCol);

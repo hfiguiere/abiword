@@ -30,7 +30,7 @@
 
 class PD_Document;
 
-ABI_EXPORT const char* UT_getAttribute(const PP_AttrProp* pAP, const char* name, const char* def = nullptr);
+ABI_EXPORT const char* UT_getAttribute(const PP_AttrProp* pAP, PP_PropName name, const char* def = nullptr);
 /**
  * Like UT_getAttribute(name,atts,def) but check for a revision attribute and
  * if found first look for the most recent value of atts in the revision.
@@ -78,7 +78,7 @@ class ABI_EXPORT PP_Revision: public PP_AttrProp
 	const gchar * getAttrsString() const;
 
 	// this is intentionally not virtual (no need for that)
-	bool	setAttributes(const std::vector<std::string> & attributes);
+	bool	setAttributes(const PP_PropertyVector & attributes);
 
 	bool operator == (const PP_Revision &op2) const;
 
@@ -188,11 +188,11 @@ class ABI_EXPORT PP_RevisionAttr
 	    query the returned PP_Revision object.
     */
 	bool                  isVisible(UT_uint32 id) const;
-	bool                  hasProperty(UT_uint32 iId, const gchar * pName, const gchar * &pValue) const;
-	bool                  hasProperty(const gchar * pName, const gchar * &pValue) const;
+	bool                  hasProperty(UT_uint32 iId, PP_PropName pName, const gchar * &pValue) const;
+	bool                  hasProperty(PP_PropName pName, const gchar * &pValue) const;
 	PP_RevisionType       getType(UT_uint32 iId) const;
 	PP_RevisionType       getType() const;
-    UT_uint32             getHighestRevisionNumberWithAttribute( const gchar * pName ) const;
+    UT_uint32             getHighestRevisionNumberWithAttribute(PP_PropName pName) const;
 #if 0
 	const UT_Vector *     getProps(UT_uint32 iId);
 	const UT_Vector *     getProps();
@@ -209,9 +209,9 @@ class ABI_EXPORT PP_RevisionAttr
 
     void mergeAll( const PP_RevisionAttr& ra );
     void mergeAttr( UT_uint32 iId, PP_RevisionType t,
-                    const gchar* pzName, const gchar* pzValue );
+                    PP_PropName pzName, const gchar* pzValue );
     void mergeAttrIfNotAlreadyThere( UT_uint32 iId, PP_RevisionType t,
-                                     const gchar* pzName, const gchar* pzValue );
+                                     PP_PropName pzName, const gchar* pzValue );
 
 	const PP_Revision *   getLowestDeletionRevision() const;
 

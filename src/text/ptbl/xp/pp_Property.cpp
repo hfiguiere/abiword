@@ -75,230 +75,230 @@
  */
 static PP_Property _props[] =
 {
-	{ "background-color",      "transparent",     false, PP_LEVEL_SECT},
-	{ "bgcolor",               "transparent",     true,  PP_LEVEL_CHAR},
-	{"border-merge",           "0",               true,  PP_LEVEL_BLOCK},
-	{"border-shadow-merge",    "0",               true,  PP_LEVEL_BLOCK},
-	{ "bot-attach",            "",               false,  PP_LEVEL_TABLE},
-	{ "bot-color",             "000000",          false, PP_LEVEL_TABLE},
-	{ "bot-shadow",            "0",               false, PP_LEVEL_BLOCK},
-	{ "bot-shadow-color",      "grey",            false, PP_LEVEL_BLOCK},
-	{ "bot-space",             "0.02in",          false, PP_LEVEL_BLOCK},
-	{ "bot-style",             "1",           false, PP_LEVEL_TABLE},
-	{ "bot-thickness",         "1px",             false, PP_LEVEL_TABLE},
+	{ _PN("background-color"),      "transparent",     false, PP_LEVEL_SECT},
+	{ _PN("bgcolor"),               "transparent",     true,  PP_LEVEL_CHAR},
+	{ _PN("border-merge"),           "0",               true,  PP_LEVEL_BLOCK},
+	{ _PN("border-shadow-merge"),    "0",               true,  PP_LEVEL_BLOCK},
+	{ _PN("bot-attach"),            "",               false,  PP_LEVEL_TABLE},
+	{ _PN("bot-color"),             "000000",          false, PP_LEVEL_TABLE},
+	{ _PN("bot-shadow"),            "0",               false, PP_LEVEL_BLOCK},
+	{ _PN("bot-shadow-color"),      "grey",            false, PP_LEVEL_BLOCK},
+	{ _PN("bot-space"),             "0.02in",          false, PP_LEVEL_BLOCK},
+	{ _PN("bot-style"),             "1",           false, PP_LEVEL_TABLE},
+	{ _PN("bot-thickness"),         "1px",             false, PP_LEVEL_TABLE},
 
-	{ "bounding-space",        "0.05in",          false, PP_LEVEL_FRAME},
+	{ _PN("bounding-space"),        "0.05in",          false, PP_LEVEL_FRAME},
 
-	{ "cell-margin-bottom",   "0.002in",         false,  PP_LEVEL_TABLE},
-	{ "cell-margin-left",     "0.002in",         false,  PP_LEVEL_TABLE},
-	{ "cell-margin-right",    "0.002in",         false,  PP_LEVEL_TABLE},
-	{ "cell-margin-top",      "0.002in",         false,  PP_LEVEL_TABLE},
+	{ _PN("cell-margin-bottom"),   "0.002in",         false,  PP_LEVEL_TABLE},
+	{ _PN("cell-margin-left"),     "0.002in",         false,  PP_LEVEL_TABLE},
+	{ _PN("cell-margin-right"),    "0.002in",         false,  PP_LEVEL_TABLE},
+	{ _PN("cell-margin-top"),      "0.002in",         false,  PP_LEVEL_TABLE},
 
-	{ "color",                 "000000",          true,  PP_LEVEL_CHAR},
-	{ "column-gap",	           "0.25in",          false, PP_LEVEL_SECT},
-	{ "column-line",           "off",	          false, PP_LEVEL_SECT},
-	{ "columns",               "1",               false, PP_LEVEL_SECT},
+	{ _PN("color"),                 "000000",          true,  PP_LEVEL_CHAR},
+	{ _PN("column-gap"),	           "0.25in",          false, PP_LEVEL_SECT},
+	{ _PN("column-line"),           "off",	          false, PP_LEVEL_SECT},
+	{ _PN("columns"),               "1",               false, PP_LEVEL_SECT},
 
-	{ "default-tab-interval",  "0.5in",           false, PP_LEVEL_BLOCK},
-	{ "dir-override",          NULL,              true,  PP_LEVEL_CHAR},
-	{ "display",               "inline",          true,  PP_LEVEL_CHAR},
-	{ "dom-dir",               def_dom_dir,       true,  PP_LEVEL_BLOCK | PP_LEVEL_SECT},
+	{ _PN("default-tab-interval"),  "0.5in",           false, PP_LEVEL_BLOCK},
+	{ _PN("dir-override"),          NULL,              true,  PP_LEVEL_CHAR},
+	{ _PN("display"),               "inline",          true,  PP_LEVEL_CHAR},
+	{ _PN("dom-dir"),               def_dom_dir,       true,  PP_LEVEL_BLOCK | PP_LEVEL_SECT},
 
-	{ "field-color",           "dcdcdc",          true,  PP_LEVEL_FIELD},
-	{ "field-font",	           "NULL",	          true,  PP_LEVEL_FIELD},
-	{ "font-family",           "Times New Roman", true,  PP_LEVEL_CHAR},
-	{ "font-size",	           "12pt",	          true,  PP_LEVEL_CHAR},	// MS word defaults to 10pt, but it just seems too small
-	{ "font-stretch",          "normal",          true,  PP_LEVEL_CHAR},
-	{ "font-style",	           "normal",          true,  PP_LEVEL_CHAR},
-	{ "font-variant",          "normal",          true,  PP_LEVEL_CHAR},
-	{ "font-weight",           "normal",          true,  PP_LEVEL_CHAR},
-	{ "footer",                "",                false, PP_LEVEL_SECT},
-	{ "footer-even",           "",                false, PP_LEVEL_SECT},
-	{ "footer-first",          "",                false, PP_LEVEL_SECT},
-	{ "footer-last",           "",                false, PP_LEVEL_SECT},
-	{ "format",                "%*%d.",           true,  PP_LEVEL_BLOCK},
+	{ _PN("field-color"),           "dcdcdc",          true,  PP_LEVEL_FIELD},
+	{ _PN("field-font"),	           "NULL",	          true,  PP_LEVEL_FIELD},
+	{ _PN("font-family"),           "Times New Roman", true,  PP_LEVEL_CHAR},
+	{ _PN("font-size"),	           "12pt",	          true,  PP_LEVEL_CHAR},	// MS word defaults to 10pt, but it just seems too small
+	{ _PN("font-stretch"),          "normal",          true,  PP_LEVEL_CHAR},
+	{ _PN("font-style"),	           "normal",          true,  PP_LEVEL_CHAR},
+	{ _PN("font-variant"),          "normal",          true,  PP_LEVEL_CHAR},
+	{ _PN("font-weight"),           "normal",          true,  PP_LEVEL_CHAR},
+	{ _PN("footer"),                "",                false, PP_LEVEL_SECT},
+	{ _PN("footer-even"),           "",                false, PP_LEVEL_SECT},
+	{ _PN("footer-first"),          "",                false, PP_LEVEL_SECT},
+	{ _PN("footer-last"),           "",                false, PP_LEVEL_SECT},
+	{ _PN("format"),                "%*%d.",           true,  PP_LEVEL_BLOCK},
 
-	{"frame-col-xpos",         "0.0in",           false, PP_LEVEL_FRAME},
-	{"frame-col-ypos",         "0.0in",           false, PP_LEVEL_FRAME},
-	{"frame-expand-height",    "0.0in",           false, PP_LEVEL_FRAME},
-	{"frame-height",           "0.0in",           false, PP_LEVEL_FRAME},
-	{"frame-horiz-align",      "left",            false, PP_LEVEL_FRAME},
-	{"frame-min-height",       "0.0in",           false, PP_LEVEL_FRAME},
-	{"frame-page-xpos",        "0.0in",           false, PP_LEVEL_FRAME},
-	{"frame-page-ypos",        "0.0in",           false, PP_LEVEL_FRAME},
-	{"frame-pref-column",      "0",               false, PP_LEVEL_FRAME},
-	{"frame-pref-page",        "0",               false, PP_LEVEL_FRAME},
-	{"frame-rel-width",        "0.5",             false, PP_LEVEL_FRAME},
-	{"frame-type",             "textbox",         false, PP_LEVEL_FRAME},
-	{"frame-width",            "0.0in",           false, PP_LEVEL_FRAME},
+	{ _PN("frame-col-xpos"),         "0.0in",           false, PP_LEVEL_FRAME},
+	{ _PN("frame-col-ypos"),         "0.0in",           false, PP_LEVEL_FRAME},
+	{ _PN("frame-expand-height"),    "0.0in",           false, PP_LEVEL_FRAME},
+	{ _PN("frame-height"),           "0.0in",           false, PP_LEVEL_FRAME},
+	{ _PN("frame-horiz-align"),      "left",            false, PP_LEVEL_FRAME},
+	{ _PN("frame-min-height"),       "0.0in",           false, PP_LEVEL_FRAME},
+	{ _PN("frame-page-xpos"),        "0.0in",           false, PP_LEVEL_FRAME},
+	{ _PN("frame-page-ypos"),        "0.0in",           false, PP_LEVEL_FRAME},
+	{ _PN("frame-pref-column"),      "0",               false, PP_LEVEL_FRAME},
+	{ _PN("frame-pref-page"),        "0",               false, PP_LEVEL_FRAME},
+	{ _PN("frame-rel-width"),        "0.5",             false, PP_LEVEL_FRAME},
+	{ _PN("frame-type"),             "textbox",         false, PP_LEVEL_FRAME},
+	{ _PN("frame-width"),            "0.0in",           false, PP_LEVEL_FRAME},
 
-	{ "header",                "",                false, PP_LEVEL_SECT},
-	{ "header-even",           "",                false, PP_LEVEL_SECT},
-	{ "header-first",          "",                false, PP_LEVEL_SECT},
-	{ "header-last",           "",                false, PP_LEVEL_SECT},
-	{ "height",                "0in",             false, PP_LEVEL_CHAR},
-	{ "homogeneous",           "1",               false, PP_LEVEL_CHAR},
+	{ _PN("header"),                "",                false, PP_LEVEL_SECT},
+	{ _PN("header-even"),           "",                false, PP_LEVEL_SECT},
+	{ _PN("header-first"),          "",                false, PP_LEVEL_SECT},
+	{ _PN("header-last"),           "",                false, PP_LEVEL_SECT},
+	{ _PN("height"),                "0in",             false, PP_LEVEL_CHAR},
+	{ _PN("homogeneous"),           "1",               false, PP_LEVEL_CHAR},
 
-	{ "keep-together",         "no",              false, PP_LEVEL_BLOCK},
-	{ "keep-with-next",        "no",              false, PP_LEVEL_BLOCK},
+	{ _PN("keep-together"),         "no",              false, PP_LEVEL_BLOCK},
+	{ _PN("keep-with-next"),        "no",              false, PP_LEVEL_BLOCK},
 
-	{ "lang",                  "en-US",           true,  PP_LEVEL_CHAR},
-	{ "left-attach",           "",               false,  PP_LEVEL_TABLE},
-	{ "left-color",            "000000",          false, PP_LEVEL_TABLE},
-	{ "left-shadow",           "0",               false, PP_LEVEL_BLOCK},
-	{ "left-shadow-color",     "grey",            false, PP_LEVEL_BLOCK},
-	{ "left-space",            "0.02in",          false, PP_LEVEL_BLOCK},
-	{ "left-style",            "1",           false, PP_LEVEL_TABLE},
-	{ "left-thickness",        "1px",             false, PP_LEVEL_TABLE},
+	{ _PN("lang"),                  "en-US",           true,  PP_LEVEL_CHAR},
+	{ _PN("left-attach"),           "",               false,  PP_LEVEL_TABLE},
+	{ _PN("left-color"),            "000000",          false, PP_LEVEL_TABLE},
+	{ _PN("left-shadow"),           "0",               false, PP_LEVEL_BLOCK},
+	{ _PN("left-shadow-color"),     "grey",            false, PP_LEVEL_BLOCK},
+	{ _PN("left-space"),            "0.02in",          false, PP_LEVEL_BLOCK},
+	{ _PN("left-style"),            "1",           false, PP_LEVEL_TABLE},
+	{ _PN("left-thickness"),        "1px",             false, PP_LEVEL_TABLE},
 
-	{ "line-height",           "1.0",             false, PP_LEVEL_BLOCK},
-	{ "list-decimal",          ".",               true,  PP_LEVEL_BLOCK},
-	{ "list-delim",            "%L",              true,  PP_LEVEL_BLOCK},
-	{ "list-style",            "None",            true,  PP_LEVEL_CHAR},
-	{ "list-tag",              "0",               false, PP_LEVEL_BLOCK},
+	{ _PN("line-height"),           "1.0",             false, PP_LEVEL_BLOCK},
+	{ _PN("list-decimal"),          ".",               true,  PP_LEVEL_BLOCK},
+	{ _PN("list-delim"),            "%L",              true,  PP_LEVEL_BLOCK},
+	{ _PN("list-style"),            "None",            true,  PP_LEVEL_CHAR},
+	{ _PN("list-tag"),              "0",               false, PP_LEVEL_BLOCK},
 
-	{ "margin-bottom",         "0in",             false, PP_LEVEL_BLOCK},
-	{ "margin-left",           "0in",	          false, PP_LEVEL_BLOCK},
-	{ "margin-right",          "0in",             false, PP_LEVEL_BLOCK},
-	{ "margin-top",	           "0in",             false, PP_LEVEL_BLOCK}, // zero to be consistent with other WPs
+	{ _PN("margin-bottom"),         "0in",             false, PP_LEVEL_BLOCK},
+	{ _PN("margin-left"),           "0in",	          false, PP_LEVEL_BLOCK},
+	{ _PN("margin-right"),          "0in",             false, PP_LEVEL_BLOCK},
+	{ _PN("margin-top"),	           "0in",             false, PP_LEVEL_BLOCK}, // zero to be consistent with other WPs
 
-	{ "orphans",               "2",               false, PP_LEVEL_BLOCK}, // 2 to be consistent with widows & CSS
+	{ _PN("orphans"),               "2",               false, PP_LEVEL_BLOCK}, // 2 to be consistent with widows & CSS
 
-	{ "page-margin-bottom",	   "1in",             false, PP_LEVEL_SECT},
-	{ "page-margin-footer",    "0.0in",           false, PP_LEVEL_SECT},
-	{ "page-margin-header",    "0.0in",           false, PP_LEVEL_SECT},
-	{ "page-margin-left",	   "1in",             false, PP_LEVEL_SECT},
-	{ "page-margin-right",     "1in",             false, PP_LEVEL_SECT},
-	{ "page-margin-top",       "1in",             false, PP_LEVEL_SECT},
-	{ "position-to",           "block-above-text",false, PP_LEVEL_FRAME},
-	{ "right-attach",          "",                false, PP_LEVEL_TABLE},
-	{ "right-color",           "000000",          false, PP_LEVEL_TABLE},
-	{ "right-shadow",          "0",               false, PP_LEVEL_BLOCK},
-	{ "right-shadow-color",    "grey",            false, PP_LEVEL_BLOCK},
-	{ "right-space",           "0.02in",          false, PP_LEVEL_BLOCK},
-	{ "right-style",           "1",           false, PP_LEVEL_TABLE},
-	{ "right-thickness",       "1px",             false, PP_LEVEL_TABLE},
+	{ _PN("page-margin-bottom"),	   "1in",             false, PP_LEVEL_SECT},
+	{ _PN("page-margin-footer"),    "0.0in",           false, PP_LEVEL_SECT},
+	{ _PN("page-margin-header"),    "0.0in",           false, PP_LEVEL_SECT},
+	{ _PN("page-margin-left"),	   "1in",             false, PP_LEVEL_SECT},
+	{ _PN("page-margin-right"),     "1in",             false, PP_LEVEL_SECT},
+	{ _PN("page-margin-top"),       "1in",             false, PP_LEVEL_SECT},
+	{ _PN("position-to"),           "block-above-text",false, PP_LEVEL_FRAME},
+	{ _PN("right-attach"),          "",                false, PP_LEVEL_TABLE},
+	{ _PN("right-color"),           "000000",          false, PP_LEVEL_TABLE},
+	{ _PN("right-shadow"),          "0",               false, PP_LEVEL_BLOCK},
+	{ _PN("right-shadow-color"),    "grey",            false, PP_LEVEL_BLOCK},
+	{ _PN("right-space"),           "0.02in",          false, PP_LEVEL_BLOCK},
+	{ _PN("right-style"),           "1",           false, PP_LEVEL_TABLE},
+	{ _PN("right-thickness"),       "1px",             false, PP_LEVEL_TABLE},
 
-	{ "section-footnote-line-thickness","0.005in",false, PP_LEVEL_SECT},
-	{ "section-footnote-yoff", "0.01in",          false, PP_LEVEL_SECT},
-	{ "section-max-column-height", "0in",         false, PP_LEVEL_SECT},
-	{ "section-restart",       "",                false, PP_LEVEL_SECT},
-	{ "section-restart-value", "",                false, PP_LEVEL_SECT},
-	{ "section-space-after",   "0.25in",          false, PP_LEVEL_SECT},
-	{"shading-background-color", "white",         false, PP_LEVEL_BLOCK},
-	{"shading-foreground-color", "white",         false, PP_LEVEL_BLOCK},
-	{"shading-pattern",          "0",             false, PP_LEVEL_BLOCK},
-	{ "start-value",           "1",               true,  PP_LEVEL_BLOCK},
+	{ _PN("section-footnote-line-thickness"),"0.005in",false, PP_LEVEL_SECT},
+	{ _PN("section-footnote-yoff"), "0.01in",          false, PP_LEVEL_SECT},
+	{ _PN("section-max-column-height"), "0in",         false, PP_LEVEL_SECT},
+	{ _PN("section-restart"),       "",                false, PP_LEVEL_SECT},
+	{ _PN("section-restart-value"), "",                false, PP_LEVEL_SECT},
+	{ _PN("section-space-after"),   "0.25in",          false, PP_LEVEL_SECT},
+	{ _PN("shading-background-color"), "white",         false, PP_LEVEL_BLOCK},
+	{ _PN("shading-foreground-color"), "white",         false, PP_LEVEL_BLOCK},
+	{ _PN("shading-pattern"),          "0",             false, PP_LEVEL_BLOCK},
+	{ _PN("start-value"),           "1",               true,  PP_LEVEL_BLOCK},
 
-	{ "table-border",          "0.1in",           false, PP_LEVEL_TABLE},
-	{ "table-col-spacing",     "0.03in",          false, PP_LEVEL_TABLE},
-	{ "table-column-leftpos",  "0.0in",           false, PP_LEVEL_TABLE},
-	{ "table-column-props",    "",                false, PP_LEVEL_TABLE},
-	{ "table-line-thickness",  "0.8pt",           false, PP_LEVEL_TABLE},
-	{ "table-line-type",       "1",               false, PP_LEVEL_TABLE},
-	{ "table-margin-bottom",   "0.01in",          false, PP_LEVEL_TABLE},
- 	{ "table-margin-left",     "0.005in",         false, PP_LEVEL_TABLE},
-	{ "table-margin-right",    "0.005in",         false, PP_LEVEL_TABLE},
-	{ "table-margin-top",      "0.01in",          false, PP_LEVEL_TABLE},
-	{ "table-max-extra-margin","0.05",            false, PP_LEVEL_TABLE},
-	{ "table-row-props",       "",                false, PP_LEVEL_TABLE},
-	{ "table-row-spacing",     "0.01in",          false, PP_LEVEL_TABLE},
-	{ "tabstops",              "",                false, PP_LEVEL_BLOCK},
-	{ "text-align",            text_align,	      true,  PP_LEVEL_BLOCK},
-	{ "text-decoration",       "none",            true,  PP_LEVEL_CHAR},
-	{ "text-folded",           "0",               false, PP_LEVEL_BLOCK},
-	{ "text-folded-id",        "0",               false, PP_LEVEL_BLOCK},
-	{ "text-indent",           "0in",             false, PP_LEVEL_BLOCK},
-	{ "text-position",         "normal",          true,  PP_LEVEL_CHAR},
-	{ "text-transform",         "none",          true,  PP_LEVEL_CHAR},
-	{ "toc-dest-style1",      "Contents 1"   ,   false, PP_LEVEL_BLOCK},
-	{ "toc-dest-style2",      "Contents 2",      false, PP_LEVEL_BLOCK},
-	{ "toc-dest-style3",      "Contents 3",      false, PP_LEVEL_BLOCK},
-	{ "toc-dest-style4",      "Contents 4",      false, PP_LEVEL_BLOCK},
-	{ "toc-has-heading",       "1",               false, PP_LEVEL_BLOCK},
-	{ "toc-has-label1",       "1",                false, PP_LEVEL_BLOCK},
-	{ "toc-has-label2",       "1",                false, PP_LEVEL_BLOCK},
-	{ "toc-has-label3",       "1",                false, PP_LEVEL_BLOCK},
-	{ "toc-has-label4",       "1",                false, PP_LEVEL_BLOCK},
-	{ "toc-heading",       "Contents",   false, PP_LEVEL_BLOCK},
-	{ "toc-heading-style",  "Contents Header",    false, PP_LEVEL_BLOCK},
-    { "toc-id",                "0",               false, PP_LEVEL_SECT},
-	{ "toc-indent1",           "0.5in",           false, PP_LEVEL_BLOCK},
-	{ "toc-indent2",           "0.5in",           false, PP_LEVEL_BLOCK},
-	{ "toc-indent3",           "0.5in",           false, PP_LEVEL_BLOCK},
-	{ "toc-indent4",           "0.5in",           false, PP_LEVEL_BLOCK},
-	{ "toc-label-after1",       "",               false, PP_LEVEL_BLOCK},
-	{ "toc-label-after2",       "",               false, PP_LEVEL_BLOCK},
-	{ "toc-label-after3",       "",               false, PP_LEVEL_BLOCK},
-	{ "toc-label-after4",       "",               false, PP_LEVEL_BLOCK},
-	{ "toc-label-before1",       "",              false, PP_LEVEL_BLOCK},
-	{ "toc-label-before2",       "",              false, PP_LEVEL_BLOCK},
-	{ "toc-label-before3",       "",              false, PP_LEVEL_BLOCK},
-	{ "toc-label-before4",       "",              false, PP_LEVEL_BLOCK},
-	{ "toc-label-inherits1",       "1",           false, PP_LEVEL_BLOCK},
-	{ "toc-label-inherits2",       "1",           false, PP_LEVEL_BLOCK},
-	{ "toc-label-inherits3",       "1",           false, PP_LEVEL_BLOCK},
-	{ "toc-label-inherits4",       "1",           false, PP_LEVEL_BLOCK},
-	{ "toc-label-start1",       "1",              false, PP_LEVEL_BLOCK},
-	{ "toc-label-start2",       "1",              false, PP_LEVEL_BLOCK},
-	{ "toc-label-start3",       "1",              false, PP_LEVEL_BLOCK},
-	{ "toc-label-start4",       "1",              false, PP_LEVEL_BLOCK},
-	{ "toc-label-type1",       "numeric",         false, PP_LEVEL_BLOCK},
-	{ "toc-label-type2",       "numeric",         false, PP_LEVEL_BLOCK},
-	{ "toc-label-type3",       "numeric",         false, PP_LEVEL_BLOCK},
-	{ "toc-label-type4",       "numeric",         false, PP_LEVEL_BLOCK},
-	{ "toc-page-type1",        "numeric",         false, PP_LEVEL_BLOCK},
-	{ "toc-page-type2",        "numeric",         false, PP_LEVEL_BLOCK},
-	{ "toc-page-type3",        "numeric",         false, PP_LEVEL_BLOCK},
-	{ "toc-page-type4",        "numeric",         false, PP_LEVEL_BLOCK},
-	{ "toc-range-bookmark",    "",                false, PP_LEVEL_BLOCK},
-	{ "toc-source-style1",     "Heading 1",       false, PP_LEVEL_BLOCK},
-	{ "toc-source-style2",     "Heading 2",       false, PP_LEVEL_BLOCK},
-	{ "toc-source-style3",     "Heading 3",       false, PP_LEVEL_BLOCK},
-	{ "toc-source-style4",     "Heading 4",       false, PP_LEVEL_BLOCK},
-	{ "toc-tab-leader1",       "dot",             false, PP_LEVEL_BLOCK},
-	{ "toc-tab-leader2",       "dot",             false, PP_LEVEL_BLOCK},
-	{ "toc-tab-leader3",       "dot",             false, PP_LEVEL_BLOCK},
-	{ "toc-tab-leader4",       "dot",             false, PP_LEVEL_BLOCK},
+	{ _PN("table-border"),          "0.1in",           false, PP_LEVEL_TABLE},
+	{ _PN("table-col-spacing"),     "0.03in",          false, PP_LEVEL_TABLE},
+	{ _PN("table-column-leftpos"),  "0.0in",           false, PP_LEVEL_TABLE},
+	{ _PN("table-column-props"),    "",                false, PP_LEVEL_TABLE},
+	{ _PN("table-line-thickness"),  "0.8pt",           false, PP_LEVEL_TABLE},
+	{ _PN("table-line-type"),       "1",               false, PP_LEVEL_TABLE},
+	{ _PN("table-margin-bottom"),   "0.01in",          false, PP_LEVEL_TABLE},
+	{ _PN("table-margin-left"),     "0.005in",         false, PP_LEVEL_TABLE},
+	{ _PN("table-margin-right"),    "0.005in",         false, PP_LEVEL_TABLE},
+	{ _PN("table-margin-top"),      "0.01in",          false, PP_LEVEL_TABLE},
+	{ _PN("table-max-extra-margin"),"0.05",            false, PP_LEVEL_TABLE},
+	{ _PN("table-row-props"),       "",                false, PP_LEVEL_TABLE},
+	{ _PN("table-row-spacing"),     "0.01in",          false, PP_LEVEL_TABLE},
+	{ _PN("tabstops"),              "",                false, PP_LEVEL_BLOCK},
+	{ _PN("text-align"),            text_align,	      true,  PP_LEVEL_BLOCK},
+	{ _PN("text-decoration"),       "none",            true,  PP_LEVEL_CHAR},
+	{ _PN("text-folded"),           "0",               false, PP_LEVEL_BLOCK},
+	{ _PN("text-folded-id"),        "0",               false, PP_LEVEL_BLOCK},
+	{ _PN("text-indent"),           "0in",             false, PP_LEVEL_BLOCK},
+	{ _PN("text-position"),         "normal",          true,  PP_LEVEL_CHAR},
+	{ _PN("text-transform"),         "none",          true,  PP_LEVEL_CHAR},
+	{ _PN("toc-dest-style1"),      "Contents 1"   ,   false, PP_LEVEL_BLOCK},
+	{ _PN("toc-dest-style2"),      "Contents 2",      false, PP_LEVEL_BLOCK},
+	{ _PN("toc-dest-style3"),      "Contents 3",      false, PP_LEVEL_BLOCK},
+	{ _PN("toc-dest-style4"),      "Contents 4",      false, PP_LEVEL_BLOCK},
+	{ _PN("toc-has-heading"),       "1",               false, PP_LEVEL_BLOCK},
+	{ _PN("toc-has-label1"),       "1",                false, PP_LEVEL_BLOCK},
+	{ _PN("toc-has-label2"),       "1",                false, PP_LEVEL_BLOCK},
+	{ _PN("toc-has-label3"),       "1",                false, PP_LEVEL_BLOCK},
+	{ _PN("toc-has-label4"),       "1",                false, PP_LEVEL_BLOCK},
+	{ _PN("toc-heading"),       "Contents",   false, PP_LEVEL_BLOCK},
+	{ _PN("toc-heading-style"),  "Contents Header",    false, PP_LEVEL_BLOCK},
+	{ _PN("toc-id"),                "0",               false, PP_LEVEL_SECT},
+	{ _PN("toc-indent1"),           "0.5in",           false, PP_LEVEL_BLOCK},
+	{ _PN("toc-indent2"),           "0.5in",           false, PP_LEVEL_BLOCK},
+	{ _PN("toc-indent3"),           "0.5in",           false, PP_LEVEL_BLOCK},
+	{ _PN("toc-indent4"),           "0.5in",           false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-after1"),       "",               false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-after2"),       "",               false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-after3"),       "",               false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-after4"),       "",               false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-before1"),       "",              false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-before2"),       "",              false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-before3"),       "",              false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-before4"),       "",              false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-inherits1"),       "1",           false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-inherits2"),       "1",           false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-inherits3"),       "1",           false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-inherits4"),       "1",           false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-start1"),       "1",              false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-start2"),       "1",              false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-start3"),       "1",              false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-start4"),       "1",              false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-type1"),       "numeric",         false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-type2"),       "numeric",         false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-type3"),       "numeric",         false, PP_LEVEL_BLOCK},
+	{ _PN("toc-label-type4"),       "numeric",         false, PP_LEVEL_BLOCK},
+	{ _PN("toc-page-type1"),        "numeric",         false, PP_LEVEL_BLOCK},
+	{ _PN("toc-page-type2"),        "numeric",         false, PP_LEVEL_BLOCK},
+	{ _PN("toc-page-type3"),        "numeric",         false, PP_LEVEL_BLOCK},
+	{ _PN("toc-page-type4"),        "numeric",         false, PP_LEVEL_BLOCK},
+	{ _PN("toc-range-bookmark"),    "",                false, PP_LEVEL_BLOCK},
+	{ _PN("toc-source-style1"),     "Heading 1",       false, PP_LEVEL_BLOCK},
+	{ _PN("toc-source-style2"),     "Heading 2",       false, PP_LEVEL_BLOCK},
+	{ _PN("toc-source-style3"),     "Heading 3",       false, PP_LEVEL_BLOCK},
+	{ _PN("toc-source-style4"),     "Heading 4",       false, PP_LEVEL_BLOCK},
+	{ _PN("toc-tab-leader1"),       "dot",             false, PP_LEVEL_BLOCK},
+	{ _PN("toc-tab-leader2"),       "dot",             false, PP_LEVEL_BLOCK},
+	{ _PN("toc-tab-leader3"),       "dot",             false, PP_LEVEL_BLOCK},
+	{ _PN("toc-tab-leader4"),       "dot",             false, PP_LEVEL_BLOCK},
 
-	{ "top-attach",             "",               false, PP_LEVEL_TABLE},
-	{ "top-color",             "000000",          false, PP_LEVEL_TABLE},
-	{ "top-shadow",            "0",               false, PP_LEVEL_BLOCK},
-	{ "top-shadow-color",      "grey",            false, PP_LEVEL_BLOCK},
-	{ "top-space",             "0.02in",          false, PP_LEVEL_BLOCK},
-	{ "top-style",             "1",               false, PP_LEVEL_TABLE},
-	{ "top-thickness",         "1px",             false, PP_LEVEL_TABLE},
+	{ _PN("top-attach"),             "",               false, PP_LEVEL_TABLE},
+	{ _PN("top-color"),             "000000",          false, PP_LEVEL_TABLE},
+	{ _PN("top-shadow"),            "0",               false, PP_LEVEL_BLOCK},
+	{ _PN("top-shadow-color"),      "grey",            false, PP_LEVEL_BLOCK},
+	{ _PN("top-space"),             "0.02in",          false, PP_LEVEL_BLOCK},
+	{ _PN("top-style"),             "1",               false, PP_LEVEL_TABLE},
+	{ _PN("top-thickness"),         "1px",             false, PP_LEVEL_TABLE},
 
 
-	{ "vert-align",            "0",               false, PP_LEVEL_TABLE},
+	{ _PN("vert-align"),            "0",               false, PP_LEVEL_TABLE},
 
-	{ "widows",                "2",               false, PP_LEVEL_BLOCK},
-	{ "width",                 "0in",             false, PP_LEVEL_CHAR},
-	{ "wrap-mode",             "above-text",      false, PP_LEVEL_FRAME},
-	{ "xpad",                  "0.03in",          false, PP_LEVEL_FRAME},
-	{ "xpos",                  "0.0in",           false, PP_LEVEL_FRAME},
-	{ "ypad",                  "0.03in",          false, PP_LEVEL_FRAME},
-	{ "ypos",                  "0.0in",           false, PP_LEVEL_FRAME}
+	{ _PN("widows"),                "2",               false, PP_LEVEL_BLOCK},
+	{ _PN("width"),                 "0in",             false, PP_LEVEL_CHAR},
+	{ _PN("wrap-mode"),             "above-text",      false, PP_LEVEL_FRAME},
+	{ _PN("xpad"),                  "0.03in",          false, PP_LEVEL_FRAME},
+	{ _PN("xpos"),                  "0.0in",           false, PP_LEVEL_FRAME},
+	{ _PN("ypad"),                  "0.03in",          false, PP_LEVEL_FRAME},
+	{ _PN("ypos"),                  "0.0in",           false, PP_LEVEL_FRAME}
 };
 
 static int s_compare (const void * a, const void * b)
 {
   const PP_Property * prop;
-  const char * name;
+  const char* name;
 
   name = static_cast<const char *>(a);
   prop = static_cast<const PP_Property *>(b);
 
-  return strcmp (name, prop->getName());
+  return strcmp (name, prop->getName().c_str());
 }
 
 /*****************************************************************/
 
-const PP_Property * PP_lookupProperty(const gchar * name)
+const PP_Property * PP_lookupProperty(PP_PropName name)
 {
 	PP_Property * prop = NULL;
 
-	prop = static_cast<PP_Property *>(bsearch (name, _props, G_N_ELEMENTS(_props), sizeof (_props[0]), s_compare));
+	prop = static_cast<PP_Property *>(bsearch (name.c_str(), _props, G_N_ELEMENTS(_props), sizeof (_props[0]), s_compare));
 
 	return prop;
 }
@@ -312,17 +312,16 @@ void PP_resetInitialBiDiValues(const gchar * pszValue)
 	for (i=0; i<count; i++)
 	{
 		if (/*(0 == strcmp(_props[i].m_pszName, "dir"))
-		  ||*/(0 == strcmp(_props[i].m_pszName, "dom-dir"))
+		  ||*/(_props[i].m_pszName == "dom-dir")
 		  /*||(0 == strcmp(_props[i].m_pszName, "column-order"))*/)
 		  //this last one is not necessary since dom-dir and column-order
 		  //share the same physical string
 		{
 			_props[i].m_pszInitial = pszValue;
 		}
-		else if ((0 == strcmp(_props[i].m_pszName, "text-align")))
-		{
+		else if (_props[i].m_pszName == "text-align") {
 			UT_DEBUGMSG(("reseting text-align (%s)\n", pszValue));
-			if(pszValue[0] == (gchar)'r') {
+			if (pszValue[0] == 'r') {
 				_props[i].m_pszInitial = "right";
 			}
 			else {
@@ -355,7 +354,7 @@ static PD_Style * _getStyle(const PP_AttrProp * pAttrProp, const PD_Document * p
 	{
 		UT_return_val_if_fail (szValue && szValue[0], NULL);
 		if (pDoc)
-			pDoc->getStyle(reinterpret_cast<const char*>(szValue), &pStyle);
+			pDoc->getStyle(szValue, &pStyle);
 
 		// NOTE: we silently fail if style is referenced, but not defined
 	}
@@ -363,7 +362,7 @@ static PD_Style * _getStyle(const PP_AttrProp * pAttrProp, const PD_Document * p
 	{
 		UT_return_val_if_fail (szValue && szValue[0], NULL);
 		if (pDoc)
-			pDoc->getStyle(reinterpret_cast<const char*>(szValue), &pStyle);
+			pDoc->getStyle(szValue, &pStyle);
 
 		// NOTE: we silently fail if style is referenced, but not defined
 	}
@@ -399,7 +398,7 @@ static const gchar * s_evalProperty (const PP_Property * pProp,
 	return NULL;
 }
 
-const gchar * PP_evalProperty (const gchar *  pszName,
+const gchar * PP_evalProperty (PP_PropName pszName,
 								  const PP_AttrProp * pSpanAttrProp,
 								  const PP_AttrProp * pBlockAttrProp,
 								  const PP_AttrProp * pSectionAttrProp,
@@ -410,8 +409,7 @@ const gchar * PP_evalProperty (const gchar *  pszName,
 	// by evaluating it in the contexts given.
 	// use the CSS inheritance as necessary.
 
-	if (!pszName || !*pszName)
-	{
+	if (!pszName || !*pszName.c_str()) {
 		UT_DEBUGMSG(("PP_evalProperty: null property given\n"));
 		return NULL;
 	}
@@ -422,7 +420,7 @@ const gchar * PP_evalProperty (const gchar *  pszName,
 	const PP_Property * pProp = PP_lookupProperty(pszName);
 	if (!pProp)
 	{
-		UT_DEBUGMSG(("PP_evalProperty: unknown property \'%s\'\n",pszName));
+		UT_DEBUGMSG(("PP_evalProperty: unknown property \'%s\'\n", pszName.c_str()));
 		return NULL;
 	}
 
@@ -545,8 +543,7 @@ const gchar * PP_evalProperty (const gchar *  pszName,
 			pDocAP->getProperty (pszName, szValue);
 
 			// dom-dir requires special treatment at document level
-			if(szValue && strcmp(pszName, "dom-dir") == 0)
-			{
+			if (szValue && pszName == "dom-dir") {
 				if(   strcmp(szValue, "logical-ltr") == 0
 				   || strcmp(szValue, "logical-rtl") == 0)
 					szValue += 8;
@@ -590,7 +587,7 @@ const gchar * PP_evalProperty (const gchar *  pszName,
 	return szValue;
 }
 
-std::unique_ptr<PP_PropertyType> PP_evalPropertyType(const gchar *  pszName,
+std::unique_ptr<PP_PropertyType> PP_evalPropertyType(PP_PropName  pszName,
 								 const PP_AttrProp * pSpanAttrProp,
 								 const PP_AttrProp * pBlockAttrProp,
 								 const PP_AttrProp * pSectionAttrProp,
@@ -602,8 +599,7 @@ std::unique_ptr<PP_PropertyType> PP_evalPropertyType(const gchar *  pszName,
 	// by evaluating it in the contexts given.
 	// use the CSS inheritance as necessary.
 
-	if (!pszName || !*pszName)
-	{
+	if (!pszName || !*pszName.c_str()) {
 		UT_DEBUGMSG(("PP_evalProperty: null property given\n"));
 		return NULL;
 	}
@@ -612,7 +608,7 @@ std::unique_ptr<PP_PropertyType> PP_evalPropertyType(const gchar *  pszName,
 	const PP_Property * pProp = PP_lookupProperty(pszName);
 	if (!pProp)
 	{
-		UT_DEBUGMSG(("PP_evalProperty: unknown property \'%s\'\n",pszName));
+		UT_DEBUGMSG(("PP_evalProperty: unknown property \'%s\'\n", pszName.c_str()));
 		return NULL;
 	}
 
@@ -703,7 +699,7 @@ UT_uint32        PP_getPropertyCount()
 	return (sizeof(_props)/sizeof(PP_Property));
 }
 
-const gchar * PP_getNthPropertyName(UT_uint32 n)
+PP_PropName PP_getNthPropertyName(UT_uint32 n)
 {
 	return _props[n].getName();
 }

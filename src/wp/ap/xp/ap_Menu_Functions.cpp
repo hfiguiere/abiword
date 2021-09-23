@@ -1000,7 +1000,7 @@ Defun_EV_GetMenuItemState_Fn(ap_GetState_CharFmt)
 
 	EV_Menu_ItemState s = EV_MIS_ZERO;
 
-	const gchar * prop = NULL;
+	PP_PropName prop;
 	const gchar * val  = NULL;
 
 	if(pView->getDocument()->areStylesLocked() && !(AP_MENU_ID_FMT_SUPERSCRIPT == id || AP_MENU_ID_FMT_SUBSCRIPT == id)) {
@@ -1010,61 +1010,61 @@ Defun_EV_GetMenuItemState_Fn(ap_GetState_CharFmt)
 	switch(id)
 	{
 	case AP_MENU_ID_FMT_BOLD:
-		prop = "font-weight";
+		prop = _PN("font-weight");
 		val  = "bold";
 		break;
 
 	case AP_MENU_ID_FMT_ITALIC:
-		prop = "font-style";
+		prop = _PN("font-style");
 		val  = "italic";
 		break;
 
 	case AP_MENU_ID_FMT_UNDERLINE:
-		prop = "text-decoration";
+		prop = _PN("text-decoration");
 		val  = "underline";
 		bMultiple = true;
 		break;
 
 	case AP_MENU_ID_FMT_OVERLINE:
-		prop = "text-decoration";
+		prop = _PN("text-decoration");
 		val  = "overline";
 		bMultiple = true;
 		break;
 
 	case AP_MENU_ID_FMT_STRIKE:
-		prop = "text-decoration";
+		prop = _PN("text-decoration");
 		val  = "line-through";
 		bMultiple = true;
 		break;
 
 	case AP_MENU_ID_FMT_TOPLINE:
-		prop = "text-decoration";
+		prop = _PN("text-decoration");
 		val  = "topline";
 		bMultiple = true;
 		break;
 
 	case AP_MENU_ID_FMT_BOTTOMLINE:
-		prop = "text-decoration";
+		prop = _PN("text-decoration");
 		val  = "bottomline";
 		bMultiple = true;
 		break;
 	case AP_MENU_ID_FMT_SUPERSCRIPT:
-		prop = "text-position";
+		prop = _PN("text-position");
 		val  = "superscript";
 		break;
 
 	case AP_MENU_ID_FMT_SUBSCRIPT:
-		prop = "text-position";
+		prop = _PN("text-position");
 		val  = "subscript";
 		break;
 
 	case AP_MENU_ID_FMT_DIRECTION_DO_RTL:
-		prop = "dir-override";
+		prop = _PN("dir-override");
 		val  = "rtl";
 		break;
 		
 	case AP_MENU_ID_FMT_DIRECTION_DO_LTR:
-		prop = "dir-override";
+		prop = _PN("dir-override");
 		val  = "ltr";
 		break;
 
@@ -1073,7 +1073,7 @@ Defun_EV_GetMenuItemState_Fn(ap_GetState_CharFmt)
 		break;
 	}
 
-	if (prop && val)
+	if (!!prop && val)
 	{
 		// get current font info from pView
 		PP_PropertyVector props_in;
@@ -1109,7 +1109,7 @@ Defun_EV_GetMenuItemState_Fn(ap_GetState_BlockFmt)
 
 	EV_Menu_ItemState s = EV_MIS_ZERO;
 
-	const gchar * prop = "text-align";
+	PP_PropName prop = _PN("text-align");
 	const gchar * val  = NULL;
 
 	if(pView->getDocument()->areStylesLocked()) {
@@ -1135,7 +1135,7 @@ Defun_EV_GetMenuItemState_Fn(ap_GetState_BlockFmt)
 		break;
 
 	case AP_MENU_ID_FMT_DIRECTION_DD_RTL:
-		prop = "dom-dir";
+		prop = _PN("dom-dir");
 		val  = "rtl";
 		break;
 
@@ -1144,7 +1144,7 @@ Defun_EV_GetMenuItemState_Fn(ap_GetState_BlockFmt)
 		break;
 	}
 
-	if (prop && val)
+	if (!!prop && val)
 	{
 		// get current font info from pView
 		PP_PropertyVector props_in;
@@ -1172,8 +1172,8 @@ Defun_EV_GetMenuItemState_Fn(ap_GetState_DocFmt)
 
 	const PP_AttrProp * pAP = pDoc->getAttrProp();
 	UT_return_val_if_fail( pAP, EV_MIS_Gray );
-	
-	const gchar * prop = NULL;
+
+	PP_PropName prop;
 	const gchar * val  = NULL;
 
 	if(pDoc->areStylesLocked()) {
@@ -1183,7 +1183,7 @@ Defun_EV_GetMenuItemState_Fn(ap_GetState_DocFmt)
 	switch(id)
 	{
 		case AP_MENU_ID_FMT_DIRECTION_DOCD_RTL:
-			prop = "dom-dir";
+			prop = _PN("dom-dir");
 			val  = "rtl";
 			break;
 
@@ -1192,7 +1192,7 @@ Defun_EV_GetMenuItemState_Fn(ap_GetState_DocFmt)
 			break;
 	}
 
-	if (prop && val)
+	if (!!prop && val)
 	{
 		const gchar * sz;
 
@@ -1213,7 +1213,7 @@ Defun_EV_GetMenuItemState_Fn(ap_GetState_SectFmt)
 
 	EV_Menu_ItemState s = EV_MIS_ZERO;
 
-	const gchar * prop = NULL;
+	PP_PropName prop;
 	const gchar * val  = NULL;
 
 	if(pView->getDocument()->areStylesLocked()) {
@@ -1223,7 +1223,7 @@ Defun_EV_GetMenuItemState_Fn(ap_GetState_SectFmt)
 	switch(id)
 	{
 		case AP_MENU_ID_FMT_DIRECTION_SD_RTL:
-			prop = "dom-dir";
+			prop = _PN("dom-dir");
 			val  = "rtl";
 			break;
 
@@ -1232,7 +1232,7 @@ Defun_EV_GetMenuItemState_Fn(ap_GetState_SectFmt)
 			break;
 	}
 
-	if (prop && val)
+	if (!!prop && val)
 	{
 		// get current font info from pView
 		PP_PropertyVector props_in;

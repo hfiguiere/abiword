@@ -130,15 +130,15 @@ fv_ChangeState::~fv_ChangeState()
 class ABI_EXPORT _fmtPair
 {
 public:
-	_fmtPair(const gchar * p,
+    _fmtPair(char*, const PP_AttrProp * c, const PP_AttrProp * b, const PP_AttrProp * s,
+			 PD_Document * pDoc, bool bExpandStyles) = delete;
+	_fmtPair(PP_PropName p,
 			 const PP_AttrProp * c, const PP_AttrProp * b, const PP_AttrProp * s,
 			 PD_Document * pDoc, bool bExpandStyles)
-		{
-			m_prop = p;
-			m_val  = PP_evalProperty(p,c,b,s, pDoc, bExpandStyles);
-		}
+	: m_prop(p), m_val(PP_evalProperty(p,c,b,s, pDoc, bExpandStyles))
+	{}
 
-	const gchar *	m_prop;
+    PP_PropName m_prop;
 	const gchar *	m_val;
 };
 
@@ -567,8 +567,8 @@ FV_View::FV_View(XAP_App * pApp, void* pParentData, FL_DocLayout* pLayout)
 	if(m_bDefaultDirectionRtl)
 	{
 		const PP_PropertyVector bidi_props = {
-			"dom-dir", "rtl",
-			"text-align", "right"
+			{ "dom-dir", "rtl" },
+			{ "text-align", "right" }
 		};
 
 		m_pDoc->addStyleProperties("Normal", bidi_props);
@@ -578,8 +578,8 @@ FV_View::FV_View(XAP_App * pApp, void* pParentData, FL_DocLayout* pLayout)
 	if(!m_bDefaultDirectionRtl)
 	{
 		const PP_PropertyVector bidi_props = {
-			"dom-dir", "ltr",
-			"text-align", "left"
+			{ "dom-dir", "ltr" },
+			{ "text-align", "left" }
 		};
 
 		m_pDoc->addStyleProperties("Normal", bidi_props);
@@ -652,7 +652,7 @@ FV_View::FV_View(XAP_App * pApp, void* pParentData, FL_DocLayout* pLayout)
 	if(pDocAP)
 	{
 		const gchar * szValue;
-		pDocAP->getProperty("dom-dir",szValue);
+		pDocAP->getProperty(_PN("dom-dir"),szValue);
 
 		if(szValue)
 		{
@@ -1249,18 +1249,18 @@ bool FV_View::convertPositionedToInLine(fl_FrameLayout * pFrame)
 	{
 		return false;
 	}
-	bFound = pAP->getProperty("frame-width",szWidth);
+	bFound = pAP->getProperty(_PN("frame-width"), szWidth);
 	if(!bFound)
 	{
 		return false;
 	}
-	bFound = pAP->getProperty("frame-height",szHeight);
+	bFound = pAP->getProperty(_PN("frame-height"), szHeight);
 	if(!bFound)
 	{
 		return false;
 	}
-	bFound = pAP->getAttribute("title",szTitle);
-	bFound = pAP->getAttribute("alt",szDescription);
+	bFound = pAP->getAttribute(_PN("title"), szTitle);
+	bFound = pAP->getAttribute(_PN("alt"), szDescription);
 	std::string sProps = "width:";
 	sProps += szWidth;
 	sProps += "; height:";
@@ -1272,10 +1272,10 @@ bool FV_View::convertPositionedToInLine(fl_FrameLayout * pFrame)
 		szDescription = "";
 
 	const PP_PropertyVector attributes = {
-		PT_IMAGE_DATAID, szDataID,
-		PT_IMAGE_TITLE, szTitle,
-		PT_IMAGE_DESCRIPTION, szDescription,
-		PT_PROPS_ATTRIBUTE_NAME, sProps
+		{ PT_IMAGE_DATAID, szDataID },
+		{ PT_IMAGE_TITLE, szTitle },
+		{ PT_IMAGE_DESCRIPTION, szDescription },
+		{ PT_PROPS_ATTRIBUTE_NAME, sProps }
 	};
 	if(pFrame->getPosition(true) < pos)
 	{
@@ -1429,7 +1429,7 @@ void FV_View::setFrameFormat(const PP_PropertyVector & properties, const FG_Cons
 	else
 	{
 		const PP_PropertyVector attributes = {
-			PT_STRUX_IMAGE_DATAID, ""
+			{ PT_STRUX_IMAGE_DATAID, "" }
 		};
 		UT_DebugOnly<bool> bRet = m_pDoc->changeStruxFmt(PTC_RemoveFmt, posStart,
 														 posStart, attributes, PP_NOPROPS, PTX_SectionFrame);
@@ -2440,7 +2440,7 @@ void FV_View::setPaperColor(const gchar* clr)
 	UT_DEBUGMSG(("DOM: color is: %s\n", clr));
 
 	const PP_PropertyVector props = {
-		"background-color", clr
+		{ "background-color", clr }
 	};
 	setSectionFormat(props);
 	// update the screen
@@ -3065,7 +3065,7 @@ bool FV_View::setTOCProps(PT_DocPosition pos, const char * szProps)
 	// Signal PieceTable Change
 	_saveAndNotifyPieceTableChange();
 	const PP_PropertyVector atts = {
-		"props", szProps
+		{ "props", szProps }
 	};
 	bRet = m_pDoc->changeStruxFmt(PTC_AddFmt, pos, pos, atts, PP_NOPROPS, PTX_SectionTOC);
 
@@ -3474,8 +3474,8 @@ void FV_View::processSelectedBlocks(FL_ListType listType)
 
 	m_pDoc->beginUserAtomicGlob();
 
-	char margin_left [] = "margin-left";
-	char margin_right[] = "margin-right";
+	PP_PropName margin_left = _PN("margin-left");
+	PP_PropName margin_right = _PN("margin-right");
 	UT_GenericVector<fl_BlockLayout *> vListBlocks;
 	UT_GenericVector<fl_BlockLayout *> vNoListBlocks;
 
@@ -3503,9 +3503,9 @@ void FV_View::processSelectedBlocks(FL_ListType listType)
 		PT_DocPosition posBlock = pBlock->getPosition();
 
 		const PP_PropertyVector pListAttrs = {
-			"listid", "",
-			"parentid", "",
-			"level", "",
+			{ "listid", "" },
+			{ "parentid", "" },
+			{ "level", "" },
 		};
 
 		// we also need to explicitely clear the list formating
@@ -3513,15 +3513,15 @@ void FV_View::processSelectedBlocks(FL_ListType listType)
 		// of the style definition, so that cloneWithEliminationIfEqual
 		// which we call later will not get rid off them
 		const PP_PropertyVector pListProps = {
-			"start-value", "",
-			"list-style", "",
-			(pBlock->getDominantDirection() == UT_BIDI_RTL) ? "margin-right" : "margin-left", "",
-			"text-indent", "",
-			"field-color", "",
-			"list-delim", "",
-			"field-font", "",
-			"list-decimal", "",
-			"list-tag", "",
+			{ "start-value", "" },
+			{ "list-style", "" },
+			{ (pBlock->getDominantDirection() == UT_BIDI_RTL) ? "margin-right" : "margin-left", "" },
+			{ "text-indent", "" },
+			{ "field-color", "" },
+			{ "list-delim", "" },
+			{ "field-font", "" },
+			{ "list-decimal", "" },
+			{ "list-tag", "" },
 		};
 //
 // Remove all the list related properties
@@ -3908,7 +3908,7 @@ void FV_View::insertParagraphBreak(void)
 		if(pStyle != NULL  && !bBefore)
 		{
 			const gchar* szFollow = NULL;
-			pStyle->getAttribute("followedby",szFollow);
+			pStyle->getAttribute(_PN("followedby"), szFollow);
 			if(szFollow && strcmp(szFollow,"Current Settings")!=0)
 			{
 				if(pStyle->getFollowedBy())
@@ -3931,7 +3931,7 @@ void FV_View::insertParagraphBreak(void)
 // Stop a List if "followed-by" is not a list style
 //
 					const gchar * szListType = NULL;
-					pStyle->getProperty("list-style",szListType);
+					pStyle->getProperty(_PN("list-style"), szListType);
 					bool bisListStyle = false;
 					if(szListType)
 					{
@@ -4058,7 +4058,7 @@ bool FV_View::setStyleAtPos(const gchar * style, PT_DocPosition posStart1, PT_Do
 //
 	fl_BlockLayout * pBL = getCurrentBlock();
 	const gchar * pszStyle = NULL;
-	pStyle->getProperty("list-style",pszStyle);
+	pStyle->getProperty(_PN("list-style"), pszStyle);
 	bool bisListStyle = false;
 	if(pszStyle)
 		bisListStyle = (NOT_A_LIST != pBL->getListTypeFromStyle( pszStyle));
@@ -4197,7 +4197,7 @@ bool FV_View::setStyleAtPos(const gchar * style, PT_DocPosition posStart1, PT_Do
 		}
 	}
 	const PP_PropertyVector attribs = {
-		PT_STYLE_ATTRIBUTE_NAME, style
+		{ PT_STYLE_ATTRIBUTE_NAME, style }
 	};
 
 	bool bHasNumberedHeading = false;
@@ -4794,12 +4794,13 @@ bool FV_View::resetCharFormat(bool bAll)
 		if(pAP)
 		{
 			UT_uint32 i = 0;
-			const gchar * szName, *szValue;
-			while(pAP->getNthProperty(i++,szName,szValue))
+			PP_PropName name;
+			const gchar *szValue;
+			while (pAP->getNthProperty(i++, name, szValue))
 			{
 				// add other props as required ...
-				if(!strcmp(szName,"lang"))
-				   AP.setProperty(szName,szValue);
+				if (name != "lang")
+				   AP.setProperty(name, szValue);
 			}
 			
 		}
@@ -4811,8 +4812,8 @@ bool FV_View::resetCharFormat(bool bAll)
 	// we have to do this, because setCharFormat() calls are cumulative (it uses
 	// PTC_AddFmt)
 	const PP_PropertyVector attrs_out = {
-		"props", "",
-		"style", ""
+		{ "props", "" },
+		{ "style", "" }
 	};
 	bool bRet = setCharFormat(PP_NOPROPS, attrs_out);
 
@@ -5004,7 +5005,7 @@ bool FV_View::getAllAttrProp(const PP_AttrProp *& pSpanAP, const PP_AttrProp *& 
  * 
  * [Question: How does, e.g., paragraph background color export to other formats?]
  */
-bool FV_View::queryCharFormat(const gchar * szProperty, UT_UTF8String & szValue, bool & bExplicitlyDefined, bool & bMixedSelection) const
+bool FV_View::queryCharFormat(PP_PropName szProperty, UT_UTF8String & szValue, bool & bExplicitlyDefined, bool & bMixedSelection) const
 {
 	UT_return_val_if_fail(szProperty,false);
 
@@ -5100,7 +5101,7 @@ bool FV_View::isMathLoaded(void) const
 	return true;
 }
 
-bool FV_View::queryCharFormat(const gchar * szProperty, UT_UTF8String & szValue, bool & bExplicitlyDefined, PT_DocPosition position) const
+bool FV_View::queryCharFormat(PP_PropName szProperty, UT_UTF8String & szValue, bool & bExplicitlyDefined, PT_DocPosition position) const
 {
 	UT_return_val_if_fail(szProperty,false);
 
@@ -5132,7 +5133,8 @@ bool FV_View::queryCharFormat(const gchar * szProperty, UT_UTF8String & szValue,
 	{
 		if (pSpanAP->getProperty(szProperty, szPropValue))
 		{
-			UT_DEBUGMSG(("Property \"%s\" defined at span level as \"%s\"\n",szProperty,szPropValue));
+			UT_DEBUGMSG(("Property \"%s\" defined at span level as \"%s\"\n",
+						 szProperty.c_str(), szPropValue));
 			szValue = szPropValue;
 			bExplicitlyDefined = true;
 		}
@@ -5370,7 +5372,8 @@ bool FV_View::getCharFormat(PP_PropertyVector & props, bool bExpandStyles, PT_Do
 				{
 					f = v.getNthItem(i-1);
 
-					const gchar * value = PP_evalProperty(f->m_prop,pSpanAP,pBlockAP,pSectionAP,m_pDoc,bExpandStyles);
+					const gchar * value = PP_evalProperty(f->m_prop, pSpanAP, pBlockAP,
+														  pSectionAP, m_pDoc, bExpandStyles);
 
 					// prune anything that doesn't match
 					if (value && strcmp(f->m_val, value))
@@ -5399,8 +5402,7 @@ bool FV_View::getCharFormat(PP_PropertyVector & props, bool bExpandStyles, PT_Do
 		f = v.getNthItem(i-1);
 		i--;
 
-		props.push_back(f->m_prop);
-		props.push_back(f->m_val);
+		props.push_back({ f->m_prop, f->m_val });
 
 	}
 
@@ -5497,23 +5499,23 @@ bool FV_View::setBlockIndents(bool doLists, double indentChange, double page_siz
 		getBlocksInSelection(&v);
 
 	PP_PropertyVector props = {
-		"", "0.0in"
+		{ "", "0.0in" }
 	};
 
-	const gchar * indent;
+	PP_PropName indent;
 	for(i = 0; i<v.getItemCount();i++)
 	{
 		pBlock = v.getNthItem(i);
 		if(pBlock->getDominantDirection() == UT_BIDI_RTL) {
-			indent = "margin-right";
+			indent = _PN("margin-right");
 		} else {
-			indent = "margin-left";
+			indent = _PN("margin-left");
 		}
 
 		szAlign = pBlock->getProperty(indent);
 		dim = UT_determineDimension(szAlign.c_str());
 		fAlign = static_cast<double>(UT_convertToInches(szAlign.c_str()));
-		szIndent = pBlock->getProperty("text-indent");
+		szIndent = pBlock->getProperty(_PN("text-indent"));
 		fIndent = static_cast<double>(UT_convertToInches(szIndent.c_str()));
 		if(fAlign + fIndent + indentChange < 0.0)
 		{
@@ -5530,8 +5532,8 @@ bool FV_View::setBlockIndents(bool doLists, double indentChange, double page_siz
 		UT_String szNewAlign = UT_convertInchesToDimensionString (dim, fAlign);
 		pf_Frag_Strux* sdh = pBlock->getStruxDocHandle();
 		PT_DocPosition iPos = m_pDoc->getStruxPosition(sdh)+fl_BLOCK_STRUX_OFFSET;
-		props[0] = indent;
-		props[1] = static_cast<const gchar *>(szNewAlign.c_str());
+		props[0].name = indent;
+		props[0].value = static_cast<const gchar *>(szNewAlign.c_str());
 		bRet = m_pDoc->changeStruxFmt(PTC_AddFmt, iPos, iPos, PP_NOPROPS, props, PTX_Block);
 	}
 	//
@@ -5579,7 +5581,7 @@ bool FV_View::isImageAtStrux(PT_DocPosition ipos1, PTStruxType iStrux)
 		return false;
 	}	
 	const gchar * pszDataID = NULL;
-    bret = m_pDoc->getAttributeFromSDH(sdh, isShowRevisions(), getRevisionLevel(), PT_STRUX_IMAGE_DATAID,&pszDataID);
+    bret = m_pDoc->getAttributeFromSDH(sdh, isShowRevisions(), getRevisionLevel(), PT_STRUX_IMAGE_DATAID, &pszDataID);
 	if(!bret)
 	{
 		return false;
@@ -5627,7 +5629,7 @@ bool FV_View::setBlockFormat(const PP_PropertyVector & properties)
 	bool bDomDirChange = false;
 	UT_BidiCharType iDomDir = UT_BIDI_LTR;
 
-	const std::string & rtl = PP_getAttribute("dom-dir", properties);
+	const std::string & rtl = PP_getAttribute(_PN("dom-dir"), properties);
 	if (!rtl.empty()) {
 		bDomDirChange = true;
 		if (rtl == "rtl") {
@@ -5843,7 +5845,7 @@ bool FV_View::processPageNumber(HdrFtrType hfType, const PP_PropertyVector & att
 //
 
 	const PP_PropertyVector f_attributes = {
-		"type", "page_number"
+		{ "type", "page_number" }
 	};
 	pBL = pHFSL->getNextBlockInDocument();
 	pos = pBL->getPosition();
@@ -5948,28 +5950,25 @@ void FV_View::changeListStyle(const fl_AutoNumPtr & pAuto,
 	pszIndent[sizeof(pszIndent) - 1] = 0;
 
 	PP_PropertyVector props = {
-		"start-value", pszStart,
-		"margin-left", pszAlign,
-		"text-indent", pszIndent,
-		"list-style", style
+		{ "start-value", pszStart },
+		{ "margin-left", pszAlign },
+		{ "text-indent", pszIndent },
+		{ "list-style", style }
 	};
 	pAuto->setStartValue(startv);
 	if(pszDelim != NULL)
 	{
-		props.push_back( "list-delim");
-		props.push_back( pszDelim);
+		props.push_back({ "list-delim", pszDelim });
 		pAuto->setDelim(pszDelim);
 	}
 	if(pszDecimal != NULL)
 	{
-		props.push_back( "list-decimal");
-		props.push_back( pszDecimal);
+		props.push_back({ "list-decimal", pszDecimal });
 		pAuto->setDecimal(pszDecimal);
 	}
 	if(pszFont != NULL)
 	{
-		props.push_back( "field-font");
-		props.push_back( pszFont);
+		props.push_back({ "field-font", pszFont });
 	}
 
 	//
@@ -6137,8 +6136,7 @@ bool FV_View::getSectionFormat(PP_PropertyVector & props) const
 		f = v.getNthItem(i-1);
 		i--;
 
-		props.push_back(f->m_prop);
-		props.push_back(f->m_val);
+		props.push_back({ f->m_prop, f->m_val });
 	}
 	UT_VECTOR_PURGEALL(_fmtPair *,v);
 
@@ -6176,7 +6174,7 @@ bool FV_View::getCellFormat(PT_DocPosition pos, std::string & sCellProps) const
 
 	UT_sint32 iPropsCount = PP_getPropertyCount();
 	UT_sint32 n = 0;
-	std::string sPropName;
+	PP_PropName sPropName;
 	std::string sPropVal;
 	const gchar * pszPropVal;
 	for(n = 0; n < iPropsCount; n++)
@@ -6189,7 +6187,7 @@ bool FV_View::getCellFormat(PT_DocPosition pos, std::string & sCellProps) const
 			if(bFound)
 			{
 				sPropVal = pszPropVal;
-				UT_std_string_setProperty(sCellProps, sPropName, sPropVal);
+				UT_std_string_setProperty(sCellProps, sPropName.c_str(), sPropVal);
 			}
 		}
 	}
@@ -6332,8 +6330,7 @@ bool FV_View::getBlockFormat(PP_PropertyVector & props,bool bExpandStyles) const
 		f = v.getNthItem(i-1);
 		i--;
 
-		props.push_back(f->m_prop);
-		props.push_back(f->m_val);
+		props.push_back({ f->m_prop, f->m_val });
 	}
 	UT_VECTOR_PURGEALL(_fmtPair *,v);
 
@@ -7958,13 +7955,13 @@ void FV_View::insertSymbol(UT_UCSChar c, const gchar * symfont)
 
 	PP_PropertyVector props_in;
 	getCharFormat(props_in);
-	const std::string & currentfont = PP_getAttribute("font-family",props_in);
+	const std::string & currentfont = PP_getAttribute(_PN("font-family"), props_in);
 	std::string ssymfont = symfont;
 	if(ssymfont.find(currentfont) == std::string::npos)
 	{
 		// Set the font
 		PP_PropertyVector properties = {
-			"font-family", ssymfont
+			{ "font-family", ssymfont }
 		};
 		setCharFormat(properties);
 
@@ -7972,7 +7969,7 @@ void FV_View::insertSymbol(UT_UCSChar c, const gchar * symfont)
 		cmdCharInsert(&c,1);
 
 		// Change the font back to its original value
-		properties[1] = currentfont;
+		properties[0].value = currentfont;
 		setCharFormat(properties);
 
 		UT_sint32 xPoint, yPoint, xPoint2, yPoint2, iPointHeight;
@@ -8511,7 +8508,8 @@ bool FV_View::getCellParams(PT_DocPosition posCell, UT_sint32 * pLeft, UT_sint32
 	const char * pszRight;
 	const char * pszTop;
 	const char * pszBot;
-	m_pDoc->getPropertyFromSDH(cellSDH,isShowRevisions(),getRevisionLevel(),"left-attach",&pszLeft);
+	m_pDoc->getPropertyFromSDH(cellSDH, isShowRevisions(), getRevisionLevel(),
+							   _PN("left-attach"), &pszLeft);
 	if(pszLeft && *pszLeft)
 	{
 		*pLeft = atoi(pszLeft);
@@ -8520,7 +8518,8 @@ bool FV_View::getCellParams(PT_DocPosition posCell, UT_sint32 * pLeft, UT_sint32
 	{
 		return false;
 	}
-	m_pDoc->getPropertyFromSDH(cellSDH,isShowRevisions(),getRevisionLevel(),"right-attach",&pszRight);
+	m_pDoc->getPropertyFromSDH(cellSDH, isShowRevisions(), getRevisionLevel(),
+							   _PN("right-attach"), &pszRight);
 	if(pszRight && *pszRight)
 	{
 		*pRight = atoi(pszRight);
@@ -8529,7 +8528,8 @@ bool FV_View::getCellParams(PT_DocPosition posCell, UT_sint32 * pLeft, UT_sint32
 	{
 		return false;
 	}
-	m_pDoc->getPropertyFromSDH(cellSDH,isShowRevisions(),getRevisionLevel(),"top-attach",&pszTop);
+	m_pDoc->getPropertyFromSDH(cellSDH, isShowRevisions(), getRevisionLevel(),
+							   _PN("top-attach"), &pszTop);
 	if(pszTop && *pszTop)
 	{
 		*pTop = atoi(pszTop);
@@ -8538,7 +8538,8 @@ bool FV_View::getCellParams(PT_DocPosition posCell, UT_sint32 * pLeft, UT_sint32
 	{
 		return false;
 	}
-	m_pDoc->getPropertyFromSDH(cellSDH,isShowRevisions(),getRevisionLevel(),"bot-attach",&pszBot);
+	m_pDoc->getPropertyFromSDH(cellSDH, isShowRevisions(), getRevisionLevel(),
+							   _PN("bot-attach"), &pszBot);
 	if(pszBot && *pszBot)
 	{
 		*pBot = atoi(pszBot);
@@ -8567,7 +8568,8 @@ bool FV_View::getCellLineStyle(PT_DocPosition posCell, UT_sint32 * pLeft, UT_sin
 	const char * pszRight;
 	const char * pszTop;
 	const char * pszBot;
-	m_pDoc->getPropertyFromSDH(cellSDH,isShowRevisions(),getRevisionLevel(),"left-style",&pszLeft);
+	m_pDoc->getPropertyFromSDH(cellSDH, isShowRevisions(), getRevisionLevel(),
+							   _PN("left-style"), &pszLeft);
 	if(pszLeft && *pszLeft)
 	{
 		*pLeft = atoi(pszLeft);
@@ -8576,7 +8578,8 @@ bool FV_View::getCellLineStyle(PT_DocPosition posCell, UT_sint32 * pLeft, UT_sin
 	{
 		*pLeft = -1;
 	}
-	m_pDoc->getPropertyFromSDH(cellSDH,isShowRevisions(),getRevisionLevel(),"right-style",&pszRight);
+	m_pDoc->getPropertyFromSDH(cellSDH, isShowRevisions(), getRevisionLevel(),
+							   _PN("right-style"), &pszRight);
 	if(pszRight && *pszRight)
 	{
 		*pRight = atoi(pszRight);
@@ -8585,7 +8588,8 @@ bool FV_View::getCellLineStyle(PT_DocPosition posCell, UT_sint32 * pLeft, UT_sin
 	{
 		*pRight = -1;
 	}
-	m_pDoc->getPropertyFromSDH(cellSDH,isShowRevisions(),getRevisionLevel(),"top-style",&pszTop);
+	m_pDoc->getPropertyFromSDH(cellSDH, isShowRevisions(), getRevisionLevel(),
+							   _PN("top-style"), &pszTop);
 	if(pszTop && *pszTop)
 	{
 		*pTop = atoi(pszTop);
@@ -8594,7 +8598,8 @@ bool FV_View::getCellLineStyle(PT_DocPosition posCell, UT_sint32 * pLeft, UT_sin
 	{
 		*pTop = -1;
 	}
-	m_pDoc->getPropertyFromSDH(cellSDH,isShowRevisions(),getRevisionLevel(),"bottom-style",&pszBot);
+	m_pDoc->getPropertyFromSDH(cellSDH, isShowRevisions(), getRevisionLevel(),
+							   _PN("bottom-style"), &pszBot);
 	if(pszBot && *pszBot)
 	{
 		*pBot = atoi(pszBot);
@@ -8709,7 +8714,7 @@ bool FV_View::setCellFormat(const PP_PropertyVector & properties, FormatTable ap
 						else
 						{
 							const PP_PropertyVector attributes = {
-								PT_STRUX_IMAGE_DATAID, "",
+								{ PT_STRUX_IMAGE_DATAID, "" },
 							};
 							bRet = m_pDoc->changeStruxFmt(PTC_RemoveFmt, pos, pos, attributes, PP_NOPROPS, PTX_SectionCell);
 						}
@@ -8761,7 +8766,7 @@ bool FV_View::setCellFormat(const PP_PropertyVector & properties, FormatTable ap
 					else
 					{
 						const PP_PropertyVector attributes = {
-							PT_STRUX_IMAGE_DATAID, ""
+							{ PT_STRUX_IMAGE_DATAID, "" }
 						};
 						bRet = m_pDoc->changeStruxFmt(PTC_RemoveFmt, posStart, posStart, attributes, PP_NOPROPS, PTX_SectionCell);
 					}
@@ -8850,7 +8855,7 @@ bool FV_View::setCellFormat(const PP_PropertyVector & properties, FormatTable ap
 					else
 					{
 						const PP_PropertyVector attributes = {
-							PT_STRUX_IMAGE_DATAID, ""
+							{ PT_STRUX_IMAGE_DATAID, "" }
 						};
 						bRet = m_pDoc->changeStruxFmt(PTC_RemoveFmt,
 													  posStart,
@@ -8893,7 +8898,7 @@ bool FV_View::setCellFormat(const PP_PropertyVector & properties, FormatTable ap
  \param col will be set to the cell to the property value, if the requested property exists
  \return True if succesful (ie. the property value is set), false otherwise
  */
-bool FV_View::getCellProperty(PT_DocPosition posCell, const gchar * szPropName, gchar * &szPropValue) const
+bool FV_View::getCellProperty(PT_DocPosition posCell, PP_PropName szPropName, gchar * &szPropValue) const
 {
 	pf_Frag_Strux* cellSDH;
 	bool bres = m_pDoc->getStruxOfTypeFromPosition(posCell,PTX_SectionCell,&cellSDH);
@@ -9434,7 +9439,7 @@ void FV_View::getTopRulerInfo(PT_DocPosition pos,AP_TopRulerInfo * pInfo)
 	pInfo->m_pVoidEnumTabStopsData = static_cast<void *>(pBlock);
 	pInfo->m_iTabStops = static_cast<UT_sint32>(pBlock->getTabsCount());
 	pInfo->m_iDefaultTabInterval = pBlock->getDefaultTabInterval();
-	pInfo->m_pszTabStops = pBlock->getProperty("tabstops");
+	pInfo->m_pszTabStops = pBlock->getProperty(_PN("tabstops"));
 
 	return;
 }
@@ -11480,7 +11485,7 @@ void FV_View::createThisHdrFtr(HdrFtrType hfType, bool bSkipPTSaves)
 {
 	setCursorWait();
 	const PP_PropertyVector block_props = {
-		"text-align", "left"
+		{ "text-align", "left" }
 	};
 	if(!isSelectionEmpty())
 	{
@@ -11912,7 +11917,7 @@ bool FV_View::getEditableBounds(bool isEnd, PT_DocPosition &posEOD, bool bOverid
 void FV_View::insertHeaderFooter(HdrFtrType hfType)
 {
 	const PP_PropertyVector block_props = {
-		"text-align", "left"
+		{ "text-align", "left" }
 	};
 	if(!isSelectionEmpty())
 	{
@@ -11989,38 +11994,38 @@ bool FV_View::insertHeaderFooter(const PP_PropertyVector & props, HdrFtrType hfT
 	  This provides NO undo stuff.	Do it yourself.
 	*/
 
-	std::string szString;
+	PP_PropName szString;
 	if(hfType == FL_HDRFTR_HEADER)
 	{
-		szString = "header";
+		szString = _PN("header");
 	}
 	else if( hfType == FL_HDRFTR_HEADER_EVEN)
 	{
-		szString = "header-even";
+		szString = _PN("header-even");
 	}
 	else if( hfType == FL_HDRFTR_HEADER_FIRST)
 	{
-		szString = "header-first";
+		szString = _PN("header-first");
 	}
 	else if( hfType == FL_HDRFTR_HEADER_LAST)
 	{
-		szString = "header-last";
+		szString = _PN("header-last");
 	}
 	else if(hfType == FL_HDRFTR_FOOTER)
 	{
-		szString = "footer";
+		szString = _PN("footer");
 	}
 	else if( hfType == FL_HDRFTR_FOOTER_EVEN)
 	{
-		szString = "footer-even";
+		szString = _PN("footer-even");
 	}
 	else if( hfType == FL_HDRFTR_FOOTER_FIRST)
 	{
-		szString = "footer-first";
+		szString = _PN("footer-first");
 	}
 	else if( hfType == FL_HDRFTR_FOOTER_LAST)
 	{
-		szString = "footer-last";
+		szString = _PN("footer-last");
 	}
 
 	UT_return_val_if_fail(m_pDoc,false);
@@ -12029,14 +12034,14 @@ bool FV_View::insertHeaderFooter(const PP_PropertyVector & props, HdrFtrType hfT
 	std::string sid = UT_std_string_sprintf("%i", id);
 
 	const PP_PropertyVector sec_attributes1 = {
-		"type", szString,
-		"id", sid,
-		"listid", "0",
-		"parentid", "0"
+		{ "type", szString.c_str() },
+		{ "id", sid },
+		{ "listid", "0" },
+		{ "parentid", "0" }
 	};
 
 	const PP_PropertyVector sec_attributes2 = {
-		szString, sid
+		{ szString, sid }
 	};
 
 //
@@ -12069,7 +12074,7 @@ bool FV_View::insertHeaderFooter(const PP_PropertyVector & props, HdrFtrType hfT
 // Now the block strux for the content
 
 	m_pDoc->insertStrux(posBlock, PTX_Block, PP_NOPROPS,
-						props.empty() ? PP_PropertyVector({ "text-align", "center" }) : props);
+						props.empty() ? PP_PropertyVector({ { "text-align", "center" } }) : props);
 	setPoint(posBlock+1);
 // OK it's in!
  	m_pDoc->signalListeners(PD_SIGNAL_REFORMAT_LAYOUT);
@@ -12590,13 +12595,13 @@ bool FV_View::setAnnotationText(UT_uint32 iAnnotation, const std::string & sText
 	// Set the annotation properties
 	//
 	PP_PropertyVector propsAnn = {
-		"annotation-author", sAuthor,
-		"annotation-title", sTitle,
-		"annotation-date", ""
+		{ "annotation-author", sAuthor },
+		{ "annotation-title", sTitle },
+		{ "annotation-date", "" }
 	};
 	GDate  gDate;
 	g_date_set_time_t (&gDate, time (NULL));
-	propsAnn[5] = UT_std_string_sprintf("%d-%d-%d",gDate.month,gDate.day,gDate.year);
+	propsAnn[2].value = UT_std_string_sprintf("%d-%d-%d",gDate.month,gDate.day,gDate.year);
 	xxx_UT_DEBUGMSG((" Set Author %s Title %s posStart %d \n", sAuthor.c_str(),sTitle.c_str(),posStart));
 	m_pDoc->changeStruxFmt(PTC_AddFmt, posStart, posStart, PP_NOPROPS, propsAnn, PTX_SectionAnnotation);
 
@@ -12635,7 +12640,7 @@ bool FV_View::setAnnotationTitle(UT_uint32 iAnnotation, const std::string & sTit
 	pf_Frag_Strux* sdhAnn = pAL->getStruxDocHandle();
 	PT_DocPosition posAnn = m_pDoc->getStruxPosition(sdhAnn);
 	const PP_PropertyVector propsAnn = {
-		"annotation-title", sTitle
+		{ "annotation-title", sTitle }
 	};
 	m_pDoc->changeStruxFmt(PTC_AddFmt, posAnn, posAnn, PP_NOPROPS, propsAnn, PTX_SectionAnnotation);
 	return true;
@@ -12664,7 +12669,7 @@ bool FV_View::setAnnotationAuthor(UT_uint32 iAnnotation, const std::string  & sA
 	pf_Frag_Strux* sdhAnn = pAL->getStruxDocHandle();
 	PT_DocPosition posAnn = m_pDoc->getStruxPosition(sdhAnn);
 	const PP_PropertyVector propsAnn = {
-		"annotation-author", sAuthor
+		{ "annotation-author", sAuthor }
 	};
 	m_pDoc->changeStruxFmt(PTC_AddFmt, posAnn, posAnn, PP_NOPROPS, propsAnn, PTX_SectionAnnotation);
 	return true;
@@ -12798,7 +12803,7 @@ bool FV_View::insertAnnotation(UT_sint32 iAnnotation,
 	}
 	std::string sNum = UT_std_string_sprintf("%d", iAnnotation);
 	const PP_PropertyVector pAttr = {
-		PT_ANNOTATION_NUMBER, sNum
+		{ PT_ANNOTATION_NUMBER, sNum }
 	};
 	//
 	// First set up a glob
@@ -12832,17 +12837,17 @@ bool FV_View::insertAnnotation(UT_sint32 iAnnotation,
 	//
 	PT_DocPosition posAnnotation = posStart+1;
 	PP_PropertyVector ann_attrs = {
-		"annotation-id", sNum
+		{ "annotation-id", sNum }
 	};
 	GDate gDate;
 	g_date_set_time_t (&gDate, time (NULL));
 	PP_PropertyVector propsAnn = {
-		"annotation-author", sAuthor,
-		"annotation-title", sTitle,
-		"annotation-date", UT_std_string_sprintf("%d-%d-%d", gDate.month, gDate.day, gDate.year)
+		{ "annotation-author", sAuthor },
+		{ "annotation-title", sTitle },
+		{ "annotation-date", UT_std_string_sprintf("%d-%d-%d", gDate.month, gDate.day, gDate.year) }
 	};
 	PP_PropertyVector block_atts = {
-		PT_STYLE_ATTRIBUTE_NAME, "Normal"
+		{ PT_STYLE_ATTRIBUTE_NAME, "Normal" }
 	};
 	//
 	//
@@ -13026,7 +13031,7 @@ bool FV_View::insertFootnote(bool bFootnote)
 
 	PT_DocPosition dpFT = 0;
 	const PP_PropertyVector dumProps = {
-		"list-tag","123"
+		{ "list-tag", "123" }
 	};
 	PT_DocPosition dpBody = getPoint();
 //
@@ -13044,23 +13049,23 @@ bool FV_View::insertFootnote(bool bFootnote)
 	FrefStart = dpBody;
 	UT_DebugOnly<bool> bRet = false;
 	PP_PropertyVector attrs = {
-		bFootnote ? "footnote-id" : "endnote-id", footpid,
-		"style", ""
+		{ bFootnote ? "footnote-id" : "endnote-id", footpid },
+		{ "style", "" }
 	};
 
 	if(bFootnote)
 	{
-		attrs[3] = "Footnote Reference";
+		attrs[1].value = "Footnote Reference";
 		if (_insertField("footnote_ref", attrs) == false)
 			return false;
 	}
 	else
 	{
-		attrs[3] = "Endnote Reference";
+		attrs[1].value = "Endnote Reference";
 		if (_insertField("endnote_ref", attrs) == false)
 			return false;
 	}
-	attrs.resize(2);
+	attrs.resize(1);
 	fl_BlockLayout * pBL;
 
 //
@@ -13092,7 +13097,7 @@ bool FV_View::insertFootnote(bool bFootnote)
 //
 	UT_uint32 id = m_pDoc->getUID(UT_UniqueId::HeaderFtr);
 	const PP_PropertyVector propListTag = {
-		"list-tag", UT_std_string_sprintf("%i", id)
+		{ "list-tag", UT_std_string_sprintf("%i", id) }
 	};
 	bRet = m_pDoc->changeSpanFmt(PTC_AddFmt, FanchStart, FanchStart, PP_NOPROPS, propListTag);
 
@@ -13165,11 +13170,11 @@ bool FV_View::insertFootnote(bool bFootnote)
 bool FV_View::insertFootnoteSection(bool bFootnote,const gchar * enpid)
 {
 	PP_PropertyVector block_attrs = {
-		bFootnote ? "footnote-id" : "endnote-id", enpid
+		{ bFootnote ? "footnote-id" : "endnote-id", enpid }
 	};
 	PP_PropertyVector block_attrs2 = {
-		bFootnote ? "footnote-id" : "endnote-id", enpid,
-		"style", bFootnote ? "Footnote" : "Endnote" // xxx 'Footnote Body'
+		{ bFootnote ? "footnote-id" : "endnote-id", enpid },
+		{ "style", bFootnote ? "Footnote" : "Endnote" } // xxx 'Footnote Body'
 	};
 
 	m_pDoc->beginUserAtomicGlob(); // Begin the big undo block
@@ -13251,7 +13256,7 @@ bool FV_View::insertPageNum(const PP_PropertyVector & props, HdrFtrType hfType)
 	  point in a place where it can write the page_num field.
 	*/
 	PP_PropertyVector  f_attributes = {
-		"type", "page_number"
+		{ "type", "page_number" }
 	};
 
 	m_pDoc->beginUserAtomicGlob(); // Begin the big undo block
@@ -13829,7 +13834,7 @@ SpellChecker * FV_View::getDictForSelection () const
 	PP_PropertyVector props_in;
 	if (getCharFormat(props_in))
 	{
-		lang = PP_getAttribute("lang", props_in);
+		lang = PP_getAttribute(_PN("lang"), props_in);
 	}
 
 	if (!lang.empty())
@@ -13860,13 +13865,11 @@ PP_PropertyVector FV_View::getViewPersistentProps() const
 	PP_PropertyVector pProps;
 	if(m_eBidiOrder == FV_Order_Logical_LTR)
 	{
-		pProps.push_back("dom-dir");
-		pProps.push_back("logical-ltr");
+		pProps.push_back({"dom-dir", "logical-ltr"});
 	}
 	else if(m_eBidiOrder == FV_Order_Logical_RTL)
 	{
-		pProps.push_back("dom-dir");
-		pProps.push_back("logical-rtl");
+		pProps.push_back({"dom-dir", "logical-rtl"});
 	}
 	return pProps;
 }

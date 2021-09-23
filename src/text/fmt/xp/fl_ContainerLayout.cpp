@@ -104,7 +104,7 @@ bool fl_ContainerLayout::_getPropertiesAP(const PP_AttrProp*& pAP)
 	// evaluate "display" property
 	// display property
 	const char* pszDisplay = NULL;
-	pAP->getProperty("display", (const gchar *&)pszDisplay);
+	pAP->getProperty(_PN("display"), (const gchar *&)pszDisplay);
 	if(isHidden() == FP_VISIBLE && pszDisplay && !strcmp(pszDisplay, "none"))
 	{
 		setVisibility(FP_HIDDEN_TEXT);
@@ -245,14 +245,14 @@ const char * fl_ContainerLayout::getContainerString(void)
 /*!
  * Return the value of the attribute keyed by pszName
  */
-const char*	fl_ContainerLayout::getAttribute(const char * pszName) const
+const char*	fl_ContainerLayout::getAttribute(PP_PropName name) const
 {
 	const PP_AttrProp * pAP = NULL;
 	getAP(pAP);
 	UT_return_val_if_fail(pAP, NULL);
 	
 	const gchar* pszAtt = NULL;
-	pAP->getAttribute(static_cast<const gchar*>(pszName), pszAtt);
+	pAP->getAttribute(name, pszAtt);
 
 	return pszAtt;
 }
@@ -364,7 +364,7 @@ void fl_ContainerLayout::lookupFoldedLevel(void)
 	getAP(pSectionAP);
 
 	const gchar *pszTEXTFOLDED = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("text-folded",pszTEXTFOLDED))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("text-folded"), pszTEXTFOLDED))
 	{
 		m_iFoldedLevel = 0;
 	}
@@ -374,7 +374,7 @@ void fl_ContainerLayout::lookupFoldedLevel(void)
 	}
 	xxx_UT_DEBUGMSG(("FOlded Level is %d \n",m_iFoldedLevel));
     pszTEXTFOLDED = NULL;
-	if(!pSectionAP || !pSectionAP->getProperty("text-folded-id",pszTEXTFOLDED))
+	if(!pSectionAP || !pSectionAP->getProperty(_PN("text-folded-id"), pszTEXTFOLDED))
 	{
 		m_iFoldedID = 0;
 	}

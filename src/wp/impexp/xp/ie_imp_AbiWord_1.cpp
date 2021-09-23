@@ -360,7 +360,7 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 	case TT_SECTION:
 	{
 		X_VerifyParseState(_PS_Doc);
-		const std::string & sId = PP_getAttribute("id", atts);
+		const std::string & sId = PP_getAttribute(_PN("id"), atts);
 		bool bOK = true;
 		if(!sId.empty()) {
 			UT_uint32 id = atoi(sId.c_str());
@@ -377,7 +377,7 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 // OK this is a header/footer with an id without a matching section. Fix this
 // now.
 //
-			const std::string & sType = PP_getAttribute("type", atts);
+			const std::string & sType = PP_getAttribute(_PN("type"), atts);
 			if(!sType.empty()) {
 				pf_Frag_Strux* sdh = getDoc()->getLastSectionMutableSDH();
 				getDoc()->changeStruxAttsNoUpdate(sdh, sType.c_str(), sId.c_str());
@@ -403,7 +403,7 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 
 		// Need to set the min Unique id now.
 
-		const std::string & sId = PP_getAttribute("footnote-id", atts);
+		const std::string & sId = PP_getAttribute(_PN("footnote-id"), atts);
 		UT_DebugOnly<bool> bOK = true;
 		if(!sId.empty()) {
 			UT_uint32 id = atoi(sId.c_str());
@@ -426,7 +426,7 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
         // a footnote reference field.
 
 		// Do we Need to set the min Unique id now???
-		const std::string & sId = PP_getAttribute("annotation-id", atts);
+		const std::string & sId = PP_getAttribute(_PN("annotation-id"), atts);
 		UT_DebugOnly<bool> bOK = true;
 		if(!sId.empty()) {
 			UT_uint32 id = atoi(sId.c_str());
@@ -446,7 +446,7 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 
 		// Need to set the min Unique id now.
 
-		const std::string & sId = PP_getAttribute("endnote-id", atts);
+		const std::string & sId = PP_getAttribute(_PN("endnote-id"), atts);
 		UT_DebugOnly<bool> bOK = true;
 		if(!sId.empty()) {
 			UT_uint32 id = atoi(sId.c_str());
@@ -482,7 +482,7 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 
 		m_parseState = _PS_Block;
 		m_bWroteParagraph = true;
-		const std::string & sId = PP_getAttribute("list", atts);
+		const std::string & sId = PP_getAttribute(_PN("list"), atts);
 		bool bOK;
 		if(!sId.empty()) {
 			UT_uint32 id = atoi(sId.c_str());
@@ -538,7 +538,7 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 #ifdef ENABLE_RESOURCE_MANAGER
 		X_CheckError(_handleImage (atts));
 #else
-		//const gchar * pszId = PP_getAttribute("dataid", atts);
+		//const gchar * pszId = PP_getAttribute(_PN("dataid"), atts);
 
 		//
 		// Remove this assert because the image object MUST have already
@@ -572,23 +572,22 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 		X_VerifyParseState(_PS_Block);
 
 
-		const std::string & type = PP_getAttribute("type", atts);
+		const std::string & type = PP_getAttribute(_PN("type"), atts);
 		if(type == "end") {
 			std::string	 xmlid = "";
-			const std::string & nameAttr  = PP_getAttribute("name", atts);
+			const std::string & nameAttr  = PP_getAttribute(_PN("name"), atts);
 			if(!nameAttr.empty()) {
 				xmlid = xmlidMapForBookmarks[nameAttr];
 				xmlidMapForBookmarks.erase(nameAttr);
 			}
 			// XXX do we need to copy here?
 			PP_PropertyVector pp = atts;
-			pp.push_back(PT_XMLID);
-			pp.push_back(xmlid);
+			pp.push_back({ PT_XMLID, xmlid });
 			X_CheckError(appendObject(PTO_Bookmark, pp));
 		} else {
 			X_CheckError(appendObject(PTO_Bookmark, atts));
-			const std::string & nameAttr  = PP_getAttribute("name", atts);
-			const std::string & xmlid = PP_getAttribute("xml:id", atts);
+			const std::string & nameAttr  = PP_getAttribute(_PN("name"), atts);
+			const std::string & xmlid = PP_getAttribute(_PN("xml:id"), atts);
 			if(!nameAttr.empty() && !xmlid.empty()) {
 				xmlidMapForBookmarks[nameAttr] = xmlid;
 			}
@@ -601,7 +600,7 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 	{
 		X_VerifyParseState(_PS_Block);
 		X_CheckError(appendObject(PTO_RDFAnchor, atts));
-		xmlidStackForTextMeta.push_back(PP_getAttribute("xml:id", atts));
+		xmlidStackForTextMeta.push_back(PP_getAttribute(_PN("xml:id"), atts));
 		return;
 	}
 
@@ -737,27 +736,27 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 		m_parseState = _PS_RevisionSec;
 
 		// parse the attributes ...
-		const std::string & s1 = PP_getAttribute("show", atts);
+		const std::string & s1 = PP_getAttribute(_PN("show"), atts);
 		UT_uint32 i;
 		if(!s1.empty()) {
 			i = atoi(s1.c_str());
 			getDoc()->setShowRevisions(i != 0);
 		}
 
-		const std::string & s2 = PP_getAttribute("mark", atts);
+		const std::string & s2 = PP_getAttribute(_PN("mark"), atts);
 		if(!s2.empty())	{
 			i = atoi(s2.c_str());
 			getDoc()->setMarkRevisions(i != 0);
 		}
 
-		const std::string & s3 = PP_getAttribute("show-level", atts);
+		const std::string & s3 = PP_getAttribute(_PN("show-level"), atts);
 		if(!s3.empty())
 		{
 			i = atoi(s3.c_str());
 			getDoc()->setShowRevisionId(i);
 		}
 
-		const std::string & s4 = PP_getAttribute("auto",atts);
+		const std::string & s4 = PP_getAttribute(_PN("auto"),atts);
 		if(!s4.empty())
 		{
 			i = atoi(s4.c_str());
@@ -789,12 +788,12 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 			m_currentRevisionId = atoi(s1.c_str());
 			m_currentRevisionTime = 0;
 
-			const std::string & s2 = PP_getAttribute("time-started",atts);
+			const std::string & s2 = PP_getAttribute(_PN("time-started"),atts);
 			if(!s2.empty()) {
 				m_currentRevisionTime = (time_t)atoi(s2.c_str());
 			}
 
-			const std::string & s3 = PP_getAttribute("version", atts);
+			const std::string & s3 = PP_getAttribute(_PN("version"), atts);
 			if(!s3.empty()) {
 				m_currentRevisionVersion = atoi(s3.c_str());
 			}
@@ -815,14 +814,14 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 		X_VerifyParseState(_PS_AuthorSec);
 		m_parseState = _PS_Author;
 
-		const std::string & sId = PP_getAttribute("id", atts);
+		const std::string & sId = PP_getAttribute(_PN("id"), atts);
 		UT_sint32 iAuthorInt = atoi(sId.c_str());
 		pp_Author * pA = getDoc()->addAuthor(iAuthorInt);
 		PP_AttrProp * pPA = pA->getAttrProp();
 		const std::string & props = PP_getAttribute(PT_PROPS_ATTRIBUTE_NAME, atts);
 		if(!props.empty()) {
 			const PP_PropertyVector extraAtts = {
-				PT_PROPS_ATTRIBUTE_NAME, props,
+				{ PT_PROPS_ATTRIBUTE_NAME, props },
 			};
 			pPA->setAttributes(extraAtts);
 		}
@@ -836,7 +835,7 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 		m_parseState = _PS_HistorySec;
 
 		// parse the attributes ...
-		const std::string & s1 = PP_getAttribute("version", atts);
+		const std::string & s1 = PP_getAttribute(_PN("version"), atts);
 		UT_uint32 i;
 		if(!s1.empty())
 		{
@@ -844,20 +843,20 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 			getDoc()->setDocVersion(i);
 		}
 
-		const std::string & s2 = PP_getAttribute("edit-time", atts);
+		const std::string & s2 = PP_getAttribute(_PN("edit-time"), atts);
 		if(!s2.empty())
 		{
 			i = atoi(s2.c_str());
 			getDoc()->setEditTime(i);
 		}
 
-		const std::string & s3 = PP_getAttribute("last-saved", atts);
+		const std::string & s3 = PP_getAttribute(_PN("last-saved"), atts);
 		if(!s3.empty())
 		{
 			i = atoi(s3.c_str());
 			getDoc()->setLastSavedTime((time_t)i);
 		}
-		const std::string & s4 = PP_getAttribute("uid", atts);
+		const std::string & s4 = PP_getAttribute(_PN("uid"), atts);
 		if(!s4.empty())
 		{
 			getDoc()->setDocUUID(s4.c_str());
@@ -876,13 +875,13 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 			UT_uint32 iId = atoi(s1.c_str());
 
 			time_t tStarted = 0;
-			const std::string & s2 = PP_getAttribute("started", atts);
+			const std::string & s2 = PP_getAttribute(_PN("started"), atts);
 			if(!s2.empty()) {
 				tStarted = (time_t) atoi(s2.c_str());
 			}
 
 			bool bAuto = false;
-			const std::string & sAuto = PP_getAttribute("auto", atts);
+			const std::string & sAuto = PP_getAttribute(_PN("auto"), atts);
 			if(!sAuto.empty()) {
 				bAuto = (0 != atoi(sAuto.c_str()));
 			} else {
@@ -890,12 +889,12 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 			}
 
 			UT_uint32 iXID = 0;
-			const std::string & sXID = PP_getAttribute("top-xid", atts);
+			const std::string & sXID = PP_getAttribute(_PN("top-xid"), atts);
 			if(!sXID.empty()) {
 				iXID = atoi(sXID.c_str());
 			}
 
-			const std::string & sUid = PP_getAttribute("uid", atts);
+			const std::string & sUid = PP_getAttribute(_PN("uid"), atts);
 
 			if(!sUid.empty()) {
 				getDoc()->addRecordToHistory(AD_VersionData(iId, sUid.c_str(), tStarted, bAuto, iXID));
@@ -944,7 +943,7 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
 	case TT_META:
 		X_VerifyParseState(_PS_MetaData);
 		m_parseState = _PS_Meta;
-		m_currentMetaDataName = PP_getAttribute("key", atts);
+		m_currentMetaDataName = UT_StaticString::Interned(PP_getAttribute(_PN("key"), atts).c_str());
 		return;
 
 	case TT_RDFBLOCK:
@@ -960,12 +959,12 @@ void IE_Imp_AbiWord_1::startElement(const gchar *name,
     {
 		X_VerifyParseState(_PS_RDFData);
 		m_parseState   = _PS_RDFTriple;
-		m_rdfSubject   = PP_getAttribute("s", atts);
-		m_rdfPredicate = PP_getAttribute("p", atts);
-        m_rdfXSDType   = PP_getAttribute("xsdtype", atts);
+		m_rdfSubject   = PP_getAttribute(_PN("s"), atts);
+		m_rdfPredicate = PP_getAttribute(_PN("p"), atts);
+        m_rdfXSDType   = PP_getAttribute(_PN("xsdtype"), atts);
         {
             std::stringstream ss;
-            ss << PP_getAttribute("objecttype", atts);
+            ss << PP_getAttribute(_PN("objecttype"), atts);
             m_rdfObjectType = PD_Object::OBJECT_TYPE_URI;
             ss >> m_rdfObjectType;
         }
@@ -1136,10 +1135,10 @@ void IE_Imp_AbiWord_1::endElement(const gchar *name)
 		X_VerifyParseState(_PS_Block);
 
         PP_PropertyVector ppAtts = {
-            PT_XMLID, xmlid,
+            { PT_XMLID, xmlid },
             // sanity check
-            "this-is-an-rdf-anchor", "yes",
-            PT_RDF_END, "yes"
+            { "this-is-an-rdf-anchor", "yes" },
+            { PT_RDF_END, "yes" }
         };
 		X_CheckError(appendObject(PTO_RDFAnchor,ppAtts));
 		return;
@@ -1350,12 +1349,12 @@ void IE_Imp_AbiWord_1::endElement(const gchar *name)
 
 const std::string & IE_Imp_AbiWord_1::_getDataItemName(const PP_PropertyVector & atts)
 {
-	return PP_getAttribute ("name", atts);
+	return PP_getAttribute(_PN("name"), atts);
 }
 
 std::string IE_Imp_AbiWord_1::_getDataItemMimeType(const PP_PropertyVector & atts)
 {
-	const std::string & val = PP_getAttribute ("mime-type", atts);
+	const std::string & val = PP_getAttribute(_PN("mime-type"), atts);
 
 	// if the mime-type was not specified, for backwards
  	// compatibility we assume that it is a png image
@@ -1364,7 +1363,7 @@ std::string IE_Imp_AbiWord_1::_getDataItemMimeType(const PP_PropertyVector & att
 
 bool IE_Imp_AbiWord_1::_getDataItemEncoded(const PP_PropertyVector & atts)
 {
-	const std::string & val = PP_getAttribute ("base64", atts);
+	const std::string & val = PP_getAttribute(_PN("base64"), atts);
 
 	if (val.empty() || (val != "no")) {
 		return true;

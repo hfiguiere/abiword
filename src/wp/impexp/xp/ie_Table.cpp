@@ -237,23 +237,23 @@ void ie_PartTable::setCellApi(PT_AttrPropIndex iApi)
 	UT_return_if_fail(m_pDoc);
 	m_pDoc->getAttrProp(iApi, &m_CellAttProp);
 	const char * szVal = NULL;
-	szVal = getCellProp("left-attach");
+	szVal = getCellProp(_PN("left-attach"));
 	if(szVal && *szVal)
 	{
 		m_iLeft = atoi(szVal);
 	}
-	szVal = getCellProp("right-attach");
+	szVal = getCellProp(_PN("right-attach"));
 	xxx_UT_DEBUGMSG(("New Right set to %s \n",szVal));
 	if(szVal && *szVal)
 	{
 		m_iRight = atoi(szVal);
 	}
-	szVal = getCellProp("top-attach");
+	szVal = getCellProp(_PN("top-attach"));
 	if(szVal && *szVal)
 	{
 		m_iTop = atoi(szVal);
 	}
-	szVal = getCellProp("bot-attach");
+	szVal = getCellProp(_PN("bot-attach"));
 	if(szVal && *szVal)
 	{
 		m_iBot = atoi(szVal);
@@ -271,7 +271,7 @@ void ie_PartTable::setCellApi(PT_AttrPropIndex iApi)
 /*!
  * Return the value of the property named *pProp of the current Table.
  */
-const char * ie_PartTable::getTableProp(const char * pProp) const
+const char * ie_PartTable::getTableProp(PP_PropName pProp) const
 {
 	const gchar * szVal = NULL;
 	if(m_TableAttProp == NULL)
@@ -287,7 +287,7 @@ const char * ie_PartTable::getTableProp(const char * pProp) const
 /*!
  * Return the value of the property named *pProp of the current cell.
  */
-const char * ie_PartTable::getCellProp(const char * pProp) const
+const char * ie_PartTable::getCellProp(PP_PropName pProp) const
 {
 	const gchar * szVal = NULL;
 	if(m_CellAttProp == NULL)
@@ -590,7 +590,7 @@ PT_AttrPropIndex ie_Table::getTableAPI(void) const
 /*!
  * Return the value of the property named *pProp of the current Table.
  */
-const char * ie_Table::getTableProp(const char * pProp) const
+const char * ie_Table::getTableProp(PP_PropName pProp) const
 {
 	UT_return_val_if_fail(!m_sLastTable.empty(), nullptr);
 	ie_PartTable * pPT = m_sLastTable.top();
@@ -602,7 +602,7 @@ const char * ie_Table::getTableProp(const char * pProp) const
 /*!
  * Return the value of the property named *pProp of the current Cell.
  */
-const char * ie_Table::getCellProp(const char * pProp) const
+const char * ie_Table::getCellProp(PP_PropName pProp) const
 {
 	UT_return_val_if_fail(!m_sLastTable.empty(), nullptr);
 	ie_PartTable * pPT = m_sLastTable.top();
@@ -2072,7 +2072,7 @@ bool IE_Imp_TableHelper::tableStart (void)
 		else
 		{
 			const PP_PropertyVector atts = {
-				"props", m_style
+				{ "props", m_style }
 			};
 			if (!getDoc()->appendStrux (PTX_SectionTable,atts))
 				return false;
@@ -2093,7 +2093,7 @@ bool IE_Imp_TableHelper::tableStart (void)
 		else
 		{
 			const PP_PropertyVector atts = {
-				"props", m_style
+				{ "props", m_style }
 			};
 			getDoc()->insertStruxBeforeFrag(pf,PTX_SectionTable,atts);
 		}
@@ -2414,9 +2414,9 @@ bool IE_Imp_TableHelper::tdEnd(void) const
 	m_current->setProp("right-attach", UT_std_string_sprintf("%d",m_current->m_right));
 
 	const PP_PropertyVector atts = {
-		"props", m_current->m_sCellProps
+		{ "props", m_current->m_sCellProps }
 	};
-	UT_DEBUGMSG(("Props for td are : %s \n",atts[1].c_str()));
+	UT_DEBUGMSG(("Props for td are : %s \n",atts[0].value.c_str()));
 	pf_Frag * pf = NULL;
 	if(pfsThis == NULL)
 		{

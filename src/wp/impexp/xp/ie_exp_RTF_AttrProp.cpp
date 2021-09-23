@@ -54,18 +54,18 @@ std::string eraseAP( const std::string& retvalue, const std::string& name )
 
 struct APFilterDropParaDeleteMarkers
 {
-    std::string operator()( const gchar * szName, const std::string& value ) const
+    std::string operator()(PP_PropName szName, const std::string& value ) const
     {
-        if( !strcmp( szName, PT_REVISION_ATTRIBUTE_NAME ))
+        if (szName == PT_REVISION_ATTRIBUTE_NAME)
         {
             UT_DEBUGMSG(("APFilterDropParaDeleteMarkers::op() have rev:%s\n", value.c_str() ));
-            if( std::string::npos != value.find( ABIATTR_PARA_START_DELETED_REVISION )
-                || std::string::npos != value.find( ABIATTR_PARA_END_DELETED_REVISION ) )
+            if (std::string::npos != value.find(ABIATTR_PARA_START_DELETED_REVISION.c_str())
+                || std::string::npos != value.find(ABIATTR_PARA_END_DELETED_REVISION.c_str()))
             {
                 UT_DEBUGMSG(("APFilterDropParaDeleteMarkers::op() MUTATE rev:%s\n", value.c_str() ));
                 std::string ret = value;
-                ret = eraseAP( ret, ABIATTR_PARA_START_DELETED_REVISION );
-                ret = eraseAP( ret, ABIATTR_PARA_END_DELETED_REVISION );
+                ret = eraseAP(ret, ABIATTR_PARA_START_DELETED_REVISION.c_str());
+                ret = eraseAP(ret, ABIATTR_PARA_END_DELETED_REVISION.c_str());
                 return ret;
             }
         }
@@ -93,21 +93,21 @@ s_RTF_AttrPropAdapter_AP::~s_RTF_AttrPropAdapter_AP()
 }
 
 
-const gchar * s_RTF_AttrPropAdapter_Style::getAttribute(const gchar * szName) const 
+const gchar * s_RTF_AttrPropAdapter_Style::getAttribute(PP_PropName szName) const
 {
     const gchar * szValue = nullptr;
     m_pStyle->getAttribute(szName, szValue);
     return szValue;
 }
 
-const gchar * s_RTF_AttrPropAdapter_Style::getProperty(const gchar * szName) const 
+const gchar * s_RTF_AttrPropAdapter_Style::getProperty(PP_PropName szName) const
 {
     const gchar * szValue = nullptr;
     m_pStyle->getProperty(szName, szValue);
     return szValue;
 }
 
-const gchar * s_RTF_AttrPropAdapter_AP::getAttribute(const gchar * szName) const
+const gchar * s_RTF_AttrPropAdapter_AP::getAttribute(PP_PropName szName) const
 {
     // UT_DEBUGMSG(("s_RTF_AttrPropAdapter_AP::getAttribute() szName:%s\n", szName ));
 
@@ -126,11 +126,11 @@ const gchar * s_RTF_AttrPropAdapter_AP::getAttribute(const gchar * szName) const
 	return NULL;
 }
 
-const gchar * s_RTF_AttrPropAdapter_AP::getProperty(const gchar * szName) const 
+const gchar * s_RTF_AttrPropAdapter_AP::getProperty(PP_PropName szName) const
 {
     // UT_DEBUGMSG(("s_RTF_AttrPropAdapter_AP::getProperty() szName:%s\n", szName ));
-    
-    return PP_evalProperty(szName, m_pSpanAP, m_pBlockAP, m_pSectionAP, 
+
+    return PP_evalProperty(szName, m_pSpanAP, m_pBlockAP, m_pSectionAP,
 			   m_pDoc, true);
 }
 

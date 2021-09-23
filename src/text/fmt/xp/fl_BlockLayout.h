@@ -159,8 +159,8 @@ public:
 		return m_pLayout->getView();
 	}
 
-	const char* getProperty(const gchar * pszName, bool bExpandStyles = true) const;
-	std::unique_ptr<PP_PropertyType> getPropertyType(const gchar * szName,
+	const char* getProperty(PP_PropName name, bool bExpandStyles = true) const;
+	std::unique_ptr<PP_PropertyType> getPropertyType(PP_PropName name,
 											tProperty_type Type, bool bExpandStyles = true) const;
 	void setAlignment(UT_uint32 iAlignCmd);
 	UT_sint32       getLength(void) const;

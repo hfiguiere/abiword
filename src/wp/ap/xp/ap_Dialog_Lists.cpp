@@ -1,6 +1,7 @@
 /* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t -*- */
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (C) 2021 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -262,9 +263,9 @@ void AP_Dialog_Lists::Apply(void)
 		        ID = pAuto->getID();
 		}
 		const PP_PropertyVector props = {
-                  "text-folded", UT_std_string_sprintf("%d",getCurrentFold()),
-                  "text-folded-id", UT_std_string_sprintf("%d",ID)
-                };
+			{ "text-folded", UT_std_string_sprintf("%d",getCurrentFold()) },
+			{ "text-folded-id", UT_std_string_sprintf("%d",ID) }
+		};
 		PT_DocPosition posLow = 0;
 		PT_DocPosition posHigh = 0;
 		if(getView()->isSelectionEmpty() && pAuto)
@@ -537,7 +538,7 @@ void  AP_Dialog_Lists::fillUncustomizedValues(void)
 	PP_PropertyVector props_in;
 	std::string font_family;
 	if (getView()->getCharFormat(props_in))
-		font_family = PP_getAttribute("font-family", props_in);
+		font_family = PP_getAttribute(_PN("font-family"), props_in);
 	if (font_family.empty())
 		font_family = "NULL";
 
@@ -827,8 +828,7 @@ void AP_Dialog_Lists::fillDialogFromBlock(void)
 	const PP_AttrProp * pAP = NULL;
 	getBlock()->getAP(pAP);
 	const gchar *pszTEXTFOLDED = NULL;
-	if(!pAP || !pAP->getProperty("text-folded",pszTEXTFOLDED))
-	{
+	if (!pAP || !pAP->getProperty(_PN("text-folded"), pszTEXTFOLDED)) {
 		m_iCurrentLevel = 0;
 	}
 	else
@@ -845,7 +845,7 @@ void AP_Dialog_Lists::fillDialogFromBlock(void)
 		i = findVecItem(vp,"start-value");
 		if(i >= 0)
 		{
-			m_iStartValue = atoi(vp[i + 1].c_str());
+			m_iStartValue = atoi(vp[i].value.c_str());
 		}
 		else
 		{
@@ -855,7 +855,7 @@ void AP_Dialog_Lists::fillDialogFromBlock(void)
 		i = findVecItem(vp,"margin-left");
 		if(i>=0)
 		{
-			m_fAlign = (float)UT_convertToInches(vp[i + 1].c_str());
+			m_fAlign = (float)UT_convertToInches(vp[i].value.c_str());
 		}
 		else
 		{
@@ -865,7 +865,7 @@ void AP_Dialog_Lists::fillDialogFromBlock(void)
 		i = findVecItem(vp,"text-indent");
 		if(i >= 0)
 		{
-			m_fIndent = (float)UT_convertToInches(vp[i + 1].c_str());
+			m_fIndent = (float)UT_convertToInches(vp[i].value.c_str());
 		}
 		else
 		{
@@ -884,7 +884,7 @@ void AP_Dialog_Lists::fillDialogFromBlock(void)
 		}
 		else if(i >=0 )
 		{
-			m_pszDelim = vp[i + 1];
+			m_pszDelim = vp[i].value;
 		}
 		else
 		{
@@ -904,7 +904,7 @@ void AP_Dialog_Lists::fillDialogFromBlock(void)
 		}
 		else if( i>= 0)
 		{
-			m_pszDecimal = vp[i + 1];
+			m_pszDecimal = vp[i].value;
 		}
 		else
 		{
@@ -914,7 +914,7 @@ void AP_Dialog_Lists::fillDialogFromBlock(void)
 		i = findVecItem(vp,"field-font");
 		if( i>= 0)
 		{
-			m_pszFont = vp[i + 1];
+			m_pszFont = vp[i].value;
 		}
 		else
 		{
@@ -923,7 +923,7 @@ void AP_Dialog_Lists::fillDialogFromBlock(void)
 		i = findVecItem(vp,"list-style");
 		if( i>= 0)
 		{
-			m_DocListType = getBlock()->getListTypeFromStyle(vp[i + 1].c_str());
+			m_DocListType = getBlock()->getListTypeFromStyle(vp[i].value.c_str());
 		}
 		else
 		{
@@ -948,7 +948,7 @@ void AP_Dialog_Lists::fillDialogFromBlock(void)
 		i = findVecItem(va,"level");
 		if( i>= 0)
 		{
-			m_iLevel = atoi(va[i + 1].c_str());
+			m_iLevel = atoi(va[i].value.c_str());
 		}
 		else
 		{
@@ -1049,9 +1049,9 @@ UT_sint32 AP_Dialog_Lists::findVecItem(const PP_PropertyVector & v, const char *
 		return -1;
 	}
 	size_t i = 0;
-	ASSERT_PV_SIZE(v);
-	for(auto iter = v.cbegin(); iter != v.cend(); iter += 2, i += 2) {
-		if (*iter == key) {
+
+	for (auto iter = v.cbegin(); iter != v.cend(); ++iter, i++) {
+		if (iter->name == key) {
 			break;
 		}
 	}

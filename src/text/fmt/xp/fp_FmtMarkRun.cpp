@@ -75,7 +75,7 @@ void fp_FmtMarkRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 
 	_setDirection(UT_BIDI_WS);
 
-	const gchar * pszPosition = PP_evalProperty("text-position",
+	const gchar * pszPosition = PP_evalProperty(_PN("text-position"),
 												   pSpanAP,
 												   pBlockAP,
 												   pSectionAP,

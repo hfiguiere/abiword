@@ -2,6 +2,7 @@
 
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (c) 2021 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -787,11 +788,11 @@ void pt_PieceTable::deleteHdrFtrStrux(pf_Frag_Strux * pfs)
 			return;
 
 		const gchar * pszHdrId;
-		if(!pAP->getAttribute("id", pszHdrId) || !pszHdrId)
+		if (!pAP->getAttribute(_PN("id"), pszHdrId) || !pszHdrId)
 			return;
 
 		const gchar * pszHdrType;
-		if(!pAP->getAttribute("type", pszHdrType) || !pszHdrType)
+		if (!pAP->getAttribute(_PN("type"), pszHdrType) || !pszHdrType)
 			return;
 
 		_realDeleteHdrFtrStrux(pfs);
@@ -1259,12 +1260,11 @@ pf_Frag *    pt_PieceTable::_findPrevHyperlink(pf_Frag * pfStart)
 				pOb->getPieceTable()->getAttrProp(pOb->getIndexAP(),&pAP);
 				UT_return_val_if_fail (pAP, NULL);
 				const gchar* pszHref = NULL;
-				const gchar* pszHname  = NULL;
+				PP_PropName pszHname;
 				UT_uint32 k = 0;
 				while((pAP)->getNthAttribute(k++,pszHname, pszHref))
 				{
-					if(!strcmp(pszHname, "xlink:href"))
-				    {
+					if (pszHname == "xlink:href") {
 						return pf;
 					}
 				}
@@ -1317,12 +1317,11 @@ pf_Frag *    pt_PieceTable::_findNextHyperlink(pf_Frag * pfStart)
 				pOb->getPieceTable()->getAttrProp(pOb->getIndexAP(),&pAP);
 				UT_return_val_if_fail (pAP, NULL);
 				const gchar* pszHref = NULL;
-				const gchar* pszHname  = NULL;
+				PP_PropName pszHname;
 				UT_uint32 k = 0;
 				while((pAP)->getNthAttribute(k++,pszHname, pszHref))
 				{
-					if(!strcmp(pszHname, "xlink:href"))
-				    {
+					if (pszHname == "xlink:href") {
 						return NULL;
 					}
 				}

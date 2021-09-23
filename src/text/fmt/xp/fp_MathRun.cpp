@@ -73,12 +73,12 @@ void fp_MathRun::_lookupProperties(const PP_AttrProp * pSpanAP,
   xxx_UT_DEBUGMSG(("fp_MathRun _lookupProperties span %x run is % uid is %d \n",pSpanAP,this,m_iMathUID));
 	m_pSpanAP = pSpanAP;
 	m_bNeedsSnapshot = true;
-	pSpanAP->getAttribute("dataid", m_pszDataID);
+	pSpanAP->getAttribute(_PN("dataid"), m_pszDataID);
 	const gchar * pszFontSize = NULL;
-	pSpanAP->getProperty("font-size", pszFontSize);
+	pSpanAP->getProperty(_PN("font-size"), pszFontSize);
 	xxx_UT_DEBUGMSG(("Font-size %s \n",pszFontSize));
 	const char *pszDisplayMode = NULL;
-	pSpanAP->getProperty("display",pszDisplayMode);
+	pSpanAP->getProperty(_PN("display"), pszDisplayMode);
 
 // Load this into MathView
 
@@ -128,7 +128,7 @@ void fp_MathRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 	if(pG == NULL)
 	  pG = getGraphics();
 	m_iPointHeight = pG->getFontAscent(pFont) + pG->getFontDescent(pFont);
-	const char* pszSize = PP_evalProperty("font-size",pSpanAP,pBlockAP,pSectionAP,
+	const char* pszSize = PP_evalProperty(_PN("font-size"), pSpanAP, pBlockAP, pSectionAP,
 					      getBlock()->getDocument(), true);
 
 	// LUCA: It is fundamental to do this before the MathView object
@@ -151,15 +151,15 @@ void fp_MathRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 	getMathManager()->setDefaultFontSize(m_iMathUID,iFSize);
 	getMathManager()->setFont(m_iMathUID,pFont);
 	PD_Document * pDoc = getBlock()->getDocument();
-	auto prop = PP_evalPropertyType("color",pSpanAP,pBlockAP,pSectionAP, Property_type_color, pDoc, true);
+	auto prop = PP_evalPropertyType(_PN("color"), pSpanAP, pBlockAP, pSectionAP, Property_type_color, pDoc, true);
 	const PP_PropertyTypeColor *p_color = static_cast<const PP_PropertyTypeColor *>(prop.get());
 	getMathManager()->setColor(m_iMathUID, p_color->getColor());
 	
 	if(getMathManager()->isDefault())
 	{
-	  iWidth = _getLayoutPropFromObject("width");
-	  iAscent = _getLayoutPropFromObject("ascent");
-	  iDescent = _getLayoutPropFromObject("descent");
+	  iWidth = _getLayoutPropFromObject(_PN("width"));
+	  iAscent = _getLayoutPropFromObject(_PN("ascent"));
+	  iDescent = _getLayoutPropFromObject(_PN("descent"));
 	}
 	else
 	{
@@ -477,7 +477,7 @@ void fp_MathRun::_draw(dg_DrawArgs* pDA)
  * The properties are "height","width","ascent","decent".
  * If the propeties are not defined return -1
  */
-UT_sint32  fp_MathRun::_getLayoutPropFromObject(const char * szProp)
+UT_sint32  fp_MathRun::_getLayoutPropFromObject(PP_PropName szProp)
 {
   PT_AttrPropIndex api = getBlock()->getDocument()->getAPIFromSOH(m_OH);
   const PP_AttrProp * pAP = NULL;
@@ -509,7 +509,7 @@ bool fp_MathRun::_updatePropValuesIfNeeded(void)
   const char * szPropVal = NULL;
   getBlock()->getDocument()->getAttrProp(api, &pAP);
   UT_return_val_if_fail(pAP,false);
-  bool bFound = pAP->getProperty("height", szPropVal);
+  bool bFound = pAP->getProperty(_PN("height"), szPropVal);
   bool bDoUpdate = false;
   if(bFound)
     {
@@ -520,7 +520,7 @@ bool fp_MathRun::_updatePropValuesIfNeeded(void)
     {
       bDoUpdate = true;
     }
-  bFound = pAP->getProperty("width", szPropVal);
+  bFound = pAP->getProperty(_PN("width"), szPropVal);
   if(bFound && !bDoUpdate)
     {
       iVal = atoi(szPropVal);
@@ -530,7 +530,7 @@ bool fp_MathRun::_updatePropValuesIfNeeded(void)
     {
       bDoUpdate = true;
     }
-  bFound = pAP->getProperty("ascent", szPropVal);
+  bFound = pAP->getProperty(_PN("ascent"), szPropVal);
   if(bFound && !bDoUpdate)
     {
       iVal = atoi(szPropVal);
@@ -540,7 +540,7 @@ bool fp_MathRun::_updatePropValuesIfNeeded(void)
     {
       bDoUpdate = true;
     }
-  bFound = pAP->getProperty("descent", szPropVal);
+  bFound = pAP->getProperty(_PN("descent"), szPropVal);
   if(bFound && !bDoUpdate)
     {
       iVal = atoi(szPropVal);
@@ -553,10 +553,10 @@ bool fp_MathRun::_updatePropValuesIfNeeded(void)
   if(bDoUpdate)
     {
       PP_PropertyVector props = {
-        "height", UT_std_string_sprintf("%d", getHeight()),
-        "width", UT_std_string_sprintf("%d", getWidth()),
-        "ascent", UT_std_string_sprintf("%d", getAscent()),
-        "descent", UT_std_string_sprintf("%d", getDescent())
+        {"height", UT_std_string_sprintf("%d", getHeight())},
+        {"width", UT_std_string_sprintf("%d", getWidth())},
+        {"ascent", UT_std_string_sprintf("%d", getAscent())},
+        {"descent", UT_std_string_sprintf("%d", getDescent())}
       };
       getBlock()->getDocument()->changeObjectFormatNoUpdate(PTC_AddFmt,m_OH,
 							    PP_NOPROPS,

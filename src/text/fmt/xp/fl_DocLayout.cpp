@@ -452,15 +452,15 @@ void FL_DocLayout::_lookupProperties(void)
 	const gchar * pszFootnoteType = NULL;
 	const PP_AttrProp* pDocAP = getDocument()->getAttrProp();
 	UT_return_if_fail(pDocAP);
-	pDocAP->getProperty("document-footnote-type", (const gchar *&)pszFootnoteType);
+	pDocAP->getProperty(_PN("document-footnote-type"), (const gchar *&)pszFootnoteType);
 	m_FootnoteType = FootnoteTypeFromString(pszFootnoteType);
 
 	const gchar * pszEndnoteType = NULL;
-	pDocAP->getProperty("document-endnote-type", (const gchar *&)pszEndnoteType);
+	pDocAP->getProperty(_PN("document-endnote-type"), (const gchar *&)pszEndnoteType);
 	m_EndnoteType = FootnoteTypeFromString(pszEndnoteType);
 
 	const gchar * pszTmp = NULL;
-	pDocAP->getProperty("document-footnote-initial", (const gchar *&)pszTmp);
+	pDocAP->getProperty(_PN("document-footnote-initial"), (const gchar *&)pszTmp);
 	if(pszTmp && pszTmp[0])
 	{
 		m_iFootnoteVal =  atoi(pszTmp);
@@ -470,7 +470,7 @@ void FL_DocLayout::_lookupProperties(void)
 		m_iFootnoteVal = 1;
 	}
 
-	pDocAP->getProperty("document-footnote-restart-section", (const gchar *&)pszTmp);
+	pDocAP->getProperty(_PN("document-footnote-restart-section"), (const gchar *&)pszTmp);
 	if(pszTmp && pszTmp[0])
 	{
 		if(strcmp(pszTmp,"1") == 0)
@@ -487,7 +487,7 @@ void FL_DocLayout::_lookupProperties(void)
 		m_bRestartFootSection = false;
 	}
 
-	pDocAP->getProperty("document-footnote-restart-page", (const gchar *&)pszTmp);
+	pDocAP->getProperty(_PN("document-footnote-restart-page"), (const gchar *&)pszTmp);
 	if(pszTmp && pszTmp[0])
 	{
 		if(strcmp(pszTmp,"1") == 0)
@@ -504,7 +504,7 @@ void FL_DocLayout::_lookupProperties(void)
 		m_bRestartFootPage = false;
 	}
 
-	pDocAP->getProperty("document-endnote-initial", (const gchar *&)pszTmp);
+	pDocAP->getProperty(_PN("document-endnote-initial"), (const gchar *&)pszTmp);
 	if(pszTmp && pszTmp[0])
 	{
 		m_iEndnoteVal =  atoi(pszTmp);
@@ -514,7 +514,7 @@ void FL_DocLayout::_lookupProperties(void)
 		m_iEndnoteVal = 1;
 	}
 
-	pDocAP->getProperty("document-endnote-restart-section", (const gchar *&)pszTmp);
+	pDocAP->getProperty(_PN("document-endnote-restart-section"), (const gchar *&)pszTmp);
 	if(pszTmp && pszTmp[0])
 	{
 		if(strcmp(pszTmp,"1") == 0)
@@ -531,7 +531,7 @@ void FL_DocLayout::_lookupProperties(void)
 		m_bRestartEndSection = false;
 	}
 
-	pDocAP->getProperty("document-endnote-place-endsection", (const gchar *&)pszTmp);
+	pDocAP->getProperty(_PN("document-endnote-place-endsection"), (const gchar *&)pszTmp);
 	if(pszTmp && pszTmp[0])
 	{
 		if(strcmp(pszTmp,"1") == 0)
@@ -548,7 +548,7 @@ void FL_DocLayout::_lookupProperties(void)
 		m_bPlaceAtDocEnd = false;
 	}
 
-	pDocAP->getProperty("document-endnote-place-enddoc", (const gchar *&)pszTmp);
+	pDocAP->getProperty(_PN("document-endnote-place-enddoc"), (const gchar *&)pszTmp);
 	if(pszTmp && pszTmp[0])
 	{
 		if(strcmp(pszTmp,"1") == 0)
@@ -844,8 +844,8 @@ bool FL_DocLayout::loadPendingObjects(void)
 	  // Now define the Frame attributes strux
 	  //
 		PP_PropertyVector attributes = {
-			PT_STRUX_IMAGE_DATAID, sID.utf8_str(),
-			"props", allProps.utf8_str()
+			{PT_STRUX_IMAGE_DATAID, sID.utf8_str()},
+			{"props", allProps.utf8_str()}
 		};
 		pf_Frag_Strux * pfFrame = NULL;
 		pDoc->insertStrux(pos, PTX_SectionFrame, attributes, PP_NOPROPS, &pfFrame);
@@ -890,7 +890,7 @@ bool FL_DocLayout::loadPendingObjects(void)
 	  // Now define the Frame attributes strux
 	  //
 	    PP_PropertyVector attributes = {
-			"props", allProps.utf8_str()
+			{ "props", allProps.utf8_str() }
 		};
 	    pf_Frag_Strux * pfFrame = NULL;
 	    pDoc->insertStrux(pos, PTX_SectionFrame, attributes, PP_NOPROPS, &pfFrame);
@@ -2230,15 +2230,15 @@ const GR_Font* FL_DocLayout::findFont(const PP_AttrProp * pSpanAP,
 				      GR_Graphics * pG,
 				      bool isField) const
 {
-	const char* pszFamily	= PP_evalProperty("font-family",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
-	const char* pszField	= PP_evalProperty("field-font",NULL,pBlockAP,NULL, m_pDoc, true);
-	const char* pszStyle	= PP_evalProperty("font-style",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
-	const char* pszVariant	= PP_evalProperty("font-variant",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
-	const char* pszWeight	= PP_evalProperty("font-weight",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
-	const char* pszStretch	= PP_evalProperty("font-stretch",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
-	const char* pszSize		= PP_evalProperty("font-size",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
-	const char* pszPosition = PP_evalProperty("text-position",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
-	const char* pszLang     = PP_evalProperty("lang",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
+	const char* pszFamily	= PP_evalProperty(_PN("font-family"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
+	const char* pszField	= PP_evalProperty(_PN("field-font"), NULL, pBlockAP, NULL, m_pDoc, true);
+	const char* pszStyle	= PP_evalProperty(_PN("font-style"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
+	const char* pszVariant	= PP_evalProperty(_PN("font-variant"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
+	const char* pszWeight	= PP_evalProperty(_PN("font-weight"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
+	const char* pszStretch	= PP_evalProperty(_PN("font-stretch"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
+	const char* pszSize		= PP_evalProperty(_PN("font-size"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
+	const char* pszPosition = PP_evalProperty(_PN("text-position"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
+	const char* pszLang     = PP_evalProperty(_PN("lang"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
 
 	xxx_UT_DEBUGMSG(("findFont::field-font is %s isField %d \n",pszField,isField));
 	if ((pszField != NULL) && isField && (strcmp(pszField, "NULL") != 0))
@@ -2318,15 +2318,15 @@ const GR_Font* FL_DocLayout::findFont(const PP_AttrProp * pSpanAP,
 				      const PP_AttrProp * pSectionAP,
 				      bool isField) const
 {
-	const char* pszFamily	= PP_evalProperty("font-family",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
-	const char* pszField	= PP_evalProperty("field-font",NULL,pBlockAP,NULL, m_pDoc, true);
-	const char* pszStyle	= PP_evalProperty("font-style",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
-	const char* pszVariant	= PP_evalProperty("font-variant",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
-	const char* pszWeight	= PP_evalProperty("font-weight",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
-	const char* pszStretch	= PP_evalProperty("font-stretch",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
-	const char* pszSize		= PP_evalProperty("font-size",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
-	const char* pszPosition = PP_evalProperty("text-position",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
-	const char* pszLang     = PP_evalProperty("lang",pSpanAP,pBlockAP,pSectionAP, m_pDoc, true);
+	const char* pszFamily	= PP_evalProperty(_PN("font-family"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
+	const char* pszField	= PP_evalProperty(_PN("field-font"), NULL, pBlockAP, NULL, m_pDoc, true);
+	const char* pszStyle	= PP_evalProperty(_PN("font-style"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
+	const char* pszVariant	= PP_evalProperty(_PN("font-variant"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
+	const char* pszWeight	= PP_evalProperty(_PN("font-weight"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
+	const char* pszStretch	= PP_evalProperty(_PN("font-stretch"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
+	const char* pszSize		= PP_evalProperty(_PN("font-size"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
+	const char* pszPosition = PP_evalProperty(_PN("text-position"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
+	const char* pszLang     = PP_evalProperty(_PN("lang"), pSpanAP, pBlockAP, pSectionAP, m_pDoc, true);
 
 	if (pszField != NULL && isField && strcmp(pszField, "NULL"))
 		pszFamily = pszField;
@@ -3860,46 +3860,46 @@ fl_DocSectionLayout* FL_DocLayout::findSectionForHdrFtr(const char* pszHdrFtrID)
 	fl_DocSectionLayout* pDocSL = m_pFirstSection;
 	while (pDocSL)
 	{
-		pszAtt = pDocSL->getAttribute("header");
+		pszAtt = pDocSL->getAttribute(_PN("header"));
 		if ( pszAtt	&& (0 == strcmp(pszAtt, pszHdrFtrID)))
 		{
 			return pDocSL;
 		}
 
-		pszAtt = pDocSL->getAttribute("footer");
+		pszAtt = pDocSL->getAttribute(_PN("footer"));
 		if (pszAtt && (0 == strcmp(pszAtt, pszHdrFtrID)))
 		{
 			return pDocSL;
 		}
-		pszAtt = pDocSL->getAttribute("header-even");
+		pszAtt = pDocSL->getAttribute(_PN("header-even"));
 		if ( pszAtt	&& (0 == strcmp(pszAtt, pszHdrFtrID)))
 		{
 			return pDocSL;
 		}
 
-		pszAtt = pDocSL->getAttribute("footer-even");
+		pszAtt = pDocSL->getAttribute(_PN("footer-even"));
 		if (pszAtt && (0 == strcmp(pszAtt, pszHdrFtrID)))
 		{
 			return pDocSL;
 		}
-		pszAtt = pDocSL->getAttribute("header-last");
+		pszAtt = pDocSL->getAttribute(_PN("header-last"));
 		if ( pszAtt	&& (0 == strcmp(pszAtt, pszHdrFtrID)))
 		{
 			return pDocSL;
 		}
 
-		pszAtt = pDocSL->getAttribute("footer-last");
+		pszAtt = pDocSL->getAttribute(_PN("footer-last"));
 		if (pszAtt && (0 == strcmp(pszAtt, pszHdrFtrID)))
 		{
 			return pDocSL;
 		}
-		pszAtt = pDocSL->getAttribute("header-first");
+		pszAtt = pDocSL->getAttribute(_PN("header-first"));
 		if ( pszAtt	&& (0 == strcmp(pszAtt, pszHdrFtrID)))
 		{
 			return pDocSL;
 		}
 
-		pszAtt = pDocSL->getAttribute("footer-first");
+		pszAtt = pDocSL->getAttribute(_PN("footer-first"));
 		if (pszAtt && (0 == strcmp(pszAtt, pszHdrFtrID)))
 		{
 			return pDocSL;
@@ -4682,7 +4682,7 @@ void FL_DocLayout::considerSmartQuoteCandidateAt(fl_BlockLayout *block, UT_uint3
 				PP_PropertyVector props_in;
 
 				if (m_pView->getCharFormat(props_in)) {
-					const std::string & lang = PP_getAttribute("lang", props_in);
+					const std::string & lang = PP_getAttribute(_PN("lang"), props_in);
 
 					if (!lang.empty()) {
 						const XAP_LangInfo* found = XAP_EncodingManager::findLangInfoByLocale(lang.c_str());

@@ -517,7 +517,7 @@ void FV_View::_deleteSelection(PP_AttrProp *p_AttrProp_Before, bool bNoUpdate,
 		 if(pBL->isHidden() == FP_HIDDEN_TEXT)
 		 {
 			  const PP_PropertyVector props = {
-				  "display", ""
+				  { "display", "" }
 			  };
 			  PT_DocPosition pos = pBL->getPosition();
 			  PT_DocPosition posEnd = pos + pBL->getLength() -1;
@@ -697,7 +697,7 @@ bool FV_View::_restoreCellParams(PT_DocPosition posTable, pf_Frag_Strux * tableS
 	//
 	fl_TableLayout * pTL = static_cast<fl_TableLayout*>(m_pDoc->getNthFmtHandle(tableSDH,m_pLayout->getLID()));
 	PP_PropertyVector propsTable = {
-		"table-wait-index", ""
+		{ "table-wait-index", "" }
 	};
 	if (pTL->getTableWaitIndex() == 1)
 	{
@@ -705,7 +705,7 @@ bool FV_View::_restoreCellParams(PT_DocPosition posTable, pf_Frag_Strux * tableS
 	}
 	else
 	{
-		propsTable[1] =	UT_std_string_sprintf("%d", pTL->getTableWaitIndex() - 1);
+		propsTable[0].value =	UT_std_string_sprintf("%d", pTL->getTableWaitIndex() - 1);
 		m_pDoc->changeStruxFmt(PTC_AddFmt, posTable, posTable, PP_NOPROPS, propsTable, PTX_SectionTable);
 	}
 
@@ -748,7 +748,7 @@ bool FV_View::_changeCellParams(PT_DocPosition posTable, pf_Frag_Strux* tableSDH
 	//
 	fl_TableLayout * pTL = static_cast<fl_TableLayout*>(m_pDoc->getNthFmtHandle(tableSDH,m_pLayout->getLID()));
 	PP_PropertyVector propsTable = {
-		"table-wait-index", UT_std_string_sprintf("%d", pTL->getTableWaitIndex() + 1)
+		{ "table-wait-index", UT_std_string_sprintf("%d", pTL->getTableWaitIndex() + 1) }
 	};
 	m_pDoc->changeStruxFmt(PTC_AddFmt, posTable, posTable, PP_NOPROPS, propsTable, PTX_SectionTable);
 
@@ -823,10 +823,10 @@ bool FV_View::_changeCellTo(PT_DocPosition posTable, UT_sint32 rowold, UT_sint32
 		return false;
 	}
 	const PP_PropertyVector props = {
-		"left-attach", UT_std_string_sprintf("%d", left),
-		"right-attach", UT_std_string_sprintf("%d", right),
-		"top-attach", UT_std_string_sprintf("%d", top),
-		"bot-attach", UT_std_string_sprintf("%d", bot)
+		{ "left-attach", UT_std_string_sprintf("%d", left) },
+		{ "right-attach", UT_std_string_sprintf("%d", right) },
+		{ "top-attach", UT_std_string_sprintf("%d", top) },
+		{ "bot-attach", UT_std_string_sprintf("%d", bot) }
 	};
 
 //
@@ -848,10 +848,10 @@ bool FV_View::_insertCellAt(PT_DocPosition posCell, UT_sint32 left, UT_sint32 ri
 							const PP_PropertyVector & attrsBlock, const PP_PropertyVector & propsBlock)
 {
 	const PP_PropertyVector props = {
-		"left-attach", UT_std_string_sprintf("%d", left),
-		"right-attach", UT_std_string_sprintf("%d", right),
-		"top-attach", UT_std_string_sprintf("%d", top),
-		"bot-attach", UT_std_string_sprintf("%d", bot)
+		{ "left-attach", UT_std_string_sprintf("%d", left) },
+		{ "right-attach", UT_std_string_sprintf("%d", right) },
+		{ "top-attach", UT_std_string_sprintf("%d", top) },
+		{ "bot-attach", UT_std_string_sprintf("%d", bot) }
 	};
 
 	bool bres = true;
@@ -870,10 +870,10 @@ bool FV_View::_insertCellAt(PT_DocPosition posCell, UT_sint32 left, UT_sint32 ri
 bool FV_View::_changeCellAttach(PT_DocPosition posCell, UT_sint32 left, UT_sint32 right, UT_sint32 top, UT_sint32 bot)
 {
 	const PP_PropertyVector props = {
-		"left-attach", UT_std_string_sprintf("%d", left),
-		"right-attach", UT_std_string_sprintf("%d", right),
-		"top-attach", UT_std_string_sprintf("%d", top),
-		"bot-attach", UT_std_string_sprintf("%d", bot)
+		{ "left-attach", UT_std_string_sprintf("%d", left) },
+		{ "right-attach", UT_std_string_sprintf("%d", right) },
+		{ "top-attach", UT_std_string_sprintf("%d", top) },
+		{ "bot-attach", UT_std_string_sprintf("%d", bot) }
 	};
 
 	bool bres = m_pDoc->changeStruxFmt(PTC_AddFmt, posCell, posCell, PP_NOPROPS, props, PTX_SectionCell);
@@ -1434,7 +1434,7 @@ void FV_View::_insertSectionBreak(void)
 	pPrevDSL->getVecOfHdrFtrs( &vecPrevHdrFtr);
 	UT_sint32 i =0;
 	const PP_PropertyVector block_props = {
-		"text-align", "left"
+		{ "text-align", "left" }
 	};
 	HdrFtrType hfType;
 	fl_HdrFtrSectionLayout * pHdrFtrSrc = NULL;
@@ -3281,8 +3281,7 @@ bool FV_View::_insertField(const char* szName,
 	}
 
 	PP_PropertyVector attributes = extra_attrs;
-	attributes.push_back("type");
-	attributes.push_back(szName);
+	attributes.push_back({ "type", szName });
 
 
 	fd_Field * pField = NULL;
@@ -5803,7 +5802,7 @@ UT_UCSChar * FV_View::_lookupSuggestion(fl_BlockLayout* pBL,
 
 		if (getCharFormat(props_in))
 		{
-			lang = PP_getAttribute("lang", props_in);
+			lang = PP_getAttribute(_PN("lang"), props_in);
 		}
 
 		// get spellchecker engine for language code
@@ -6136,7 +6135,7 @@ void FV_View::_fixInsertionPointAfterRevision()
 		PT_DocPosition posEnd = posStart;
 
 		PP_PropertyVector attr = {
-			"revision", ""
+			{ "revision", "" }
 		};
 
 		bRet = m_pDoc->changeSpanFmt(PTC_RemoveFmt, posStart, posEnd, attr, PP_NOPROPS);
@@ -6224,7 +6223,7 @@ bool FV_View::_charInsert(const UT_UCSChar * text, UT_uint32 count, bool bForce)
 		}
 
 		if(pLR)
-			AttrProp_Before.setProperty("lang", pLR->m_szLangCode);
+			AttrProp_Before.setProperty(_PN("lang"), pLR->m_szLangCode);
 		insertParaBreakIfNeededAtPos(getPoint());
 		bResult = m_pDoc->insertSpan(getPoint(), text, count, &AttrProp_Before);
 		m_pDoc->endUserAtomicGlob();
@@ -6288,9 +6287,9 @@ bool FV_View::_charInsert(const UT_UCSChar * text, UT_uint32 count, bool bForce)
 					UT_uint32 currID = pBlock->getAutoNum()->getID();
 					curlevel++;
 					fl_AutoNumPtr pAuto = pBlock->getAutoNum();
-					const gchar * pszAlign = pBlock->getProperty("margin-left",true);
-					const gchar * pszIndent = pBlock->getProperty("text-indent",true);
-					const gchar * pszFieldF = pBlock->getProperty("field-font",true);
+					const gchar * pszAlign = pBlock->getProperty(_PN("margin-left"), true);
+					const gchar * pszIndent = pBlock->getProperty(_PN("text-indent"), true);
+					const gchar * pszFieldF = pBlock->getProperty(_PN("field-font"), true);
 					float fAlign = static_cast<float>(atof(pszAlign));
 					float fIndent = static_cast<float>(atof(pszIndent));
 //
@@ -6312,7 +6311,7 @@ bool FV_View::_charInsert(const UT_UCSChar * text, UT_uint32 count, bool bForce)
 			if(pLR)
 			{
 				PP_AttrProp AP;
-				AP.setProperty("lang", pLR->m_szLangCode);
+				AP.setProperty(_PN("lang"), pLR->m_szLangCode);
 				m_pDoc->insertFmtMark(PTC_AddFmt,getPoint(), &AP);
 			}
 			insertParaBreakIfNeededAtPos(getPoint());

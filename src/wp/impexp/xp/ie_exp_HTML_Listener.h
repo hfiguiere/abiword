@@ -204,8 +204,7 @@ public:
     bool get_HasMathML() const
 		{ return m_bHasMathMl; }
 private:
-    const gchar* _getObjectKey(const PT_AttrPropIndex& api,
-            const gchar* key);
+    const gchar* _getObjectKey(const PT_AttrPropIndex& api, PP_PropName key);
     virtual bool _beginOfDocument(const PT_AttrPropIndex& api);
     void _outputData(const UT_UCSChar* pData, UT_uint32 length);
     void _openSpan(PT_AttrPropIndex api);

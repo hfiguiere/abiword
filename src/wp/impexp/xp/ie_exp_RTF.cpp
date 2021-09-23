@@ -819,7 +819,7 @@ bool IE_Exp_RTF::_write_rtf_header(void)
 	const gchar * pszFootnoteType = NULL;
 	const PP_AttrProp* pDocAP = getDoc()->getAttrProp();
 	UT_return_val_if_fail (pDocAP, false);
-	pDocAP->getProperty("document-footnote-type", (const gchar *&)pszFootnoteType);
+	pDocAP->getProperty(_PN("document-footnote-type"), (const gchar *&)pszFootnoteType);
 	if (pszFootnoteType == NULL)
 	{
 		_rtf_keyword("ftnnar");			// Numeric Footnotes
@@ -890,7 +890,7 @@ bool IE_Exp_RTF::_write_rtf_header(void)
 	}
 
 	const gchar * pszEndnoteType = NULL;
-	pDocAP->getProperty("document-endnote-type", (const gchar *&)pszEndnoteType);
+	pDocAP->getProperty(_PN("document-endnote-type"), (const gchar *&)pszEndnoteType);
 	if (pszEndnoteType == NULL)
 	{
 		_rtf_keyword("aftnnar");			// Numeric Endnotes
@@ -961,7 +961,7 @@ bool IE_Exp_RTF::_write_rtf_header(void)
 	}
 
 	const gchar * pszTmp = NULL;
-	pDocAP->getProperty("document-footnote-initial", (const gchar *&)pszTmp);
+	pDocAP->getProperty(_PN("document-footnote-initial"), (const gchar *&)pszTmp);
 	if(pszTmp && pszTmp[0])
 	{
 		_rtf_keyword("ftnstart",atoi(pszTmp));			// First footnote
@@ -971,7 +971,7 @@ bool IE_Exp_RTF::_write_rtf_header(void)
 		_rtf_keyword("ftnstart",1);			// First footnote
 	}
 
-	pDocAP->getProperty("document-footnote-restart-section", (const gchar *&)pszTmp);
+	pDocAP->getProperty(_PN("document-footnote-restart-section"), (const gchar *&)pszTmp);
 	if(pszTmp && pszTmp[0])
 	{
 		if(strcmp(pszTmp,"1") == 0)
@@ -980,7 +980,7 @@ bool IE_Exp_RTF::_write_rtf_header(void)
 		}
 	}
 
-	pDocAP->getProperty("document-footnote-restart-page", (const gchar *&)pszTmp);
+	pDocAP->getProperty(_PN("document-footnote-restart-page"), (const gchar *&)pszTmp);
 	if(pszTmp && pszTmp[0])
 	{
 		if(strcmp(pszTmp,"1") == 0)
@@ -989,12 +989,12 @@ bool IE_Exp_RTF::_write_rtf_header(void)
 		}
 	}
 
-	pDocAP->getProperty("document-endnote-initial", (const gchar *&)pszTmp);
+	pDocAP->getProperty(_PN("document-endnote-initial"), (const gchar *&)pszTmp);
 	if(pszTmp && pszTmp[0])
 	{
 		_rtf_keyword("aftnstart", atoi(pszTmp)); // initial endnote value
 	}
-	pDocAP->getProperty("document-endnote-restart-section", (const gchar *&)pszTmp);
+	pDocAP->getProperty(_PN("document-endnote-restart-section"), (const gchar *&)pszTmp);
 	if(pszTmp && pszTmp[0])
 	{
 		if(strcmp(pszTmp,"1") == 0)
@@ -1003,7 +1003,7 @@ bool IE_Exp_RTF::_write_rtf_header(void)
 		}
 	}
 
-	pDocAP->getProperty("document-endnote-place-endsection", (const gchar *&)pszTmp);
+	pDocAP->getProperty(_PN("document-endnote-place-endsection"), (const gchar *&)pszTmp);
 	if(pszTmp && pszTmp[0])
 	{
 		if(strcmp(pszTmp,"1") == 0)
@@ -1012,7 +1012,7 @@ bool IE_Exp_RTF::_write_rtf_header(void)
 		}
 	}
 
-	pDocAP->getProperty("document-endnote-place-enddoc", (const gchar *&)pszTmp);
+	pDocAP->getProperty(_PN("document-endnote-place-enddoc"), (const gchar *&)pszTmp);
 	if(pszTmp && pszTmp[0])
 	{
 		if(strcmp(pszTmp,"1") == 0)
@@ -1034,19 +1034,19 @@ bool IE_Exp_RTF::_write_rtf_header(void)
 		const char * pszAtt = NULL;
 		if(pSectionAP != NULL)
 		{
-		     if(pSectionAP->getAttribute("header-even",pszAtt))
+		     if(pSectionAP->getAttribute(_PN("header-even"),pszAtt))
 		     {
 		          _rtf_keyword("facingp"); // Allow odd-even headers/footers
 		     }
-		     else if(pSectionAP->getAttribute("footer-even",pszAtt))
+		     else if(pSectionAP->getAttribute(_PN("footer-even"),pszAtt))
 		     {
 		          _rtf_keyword("facingp"); // Allow odd-even headers/footers
 		     }
-		     if(pSectionAP->getAttribute("header-first",pszAtt))
+		     if(pSectionAP->getAttribute(_PN("header-first"),pszAtt))
 		     {
 			 _rtf_keyword("titlepg"); // Allow first page headers/footers
 		     }
-		     else if(pSectionAP->getAttribute("footer-first",pszAtt))
+		     else if(pSectionAP->getAttribute(_PN("footer-first"),pszAtt))
 		     {
 			 _rtf_keyword("titlepg"); // Allow first page headers/footers
 		     }
@@ -1160,11 +1160,11 @@ bool IE_Exp_RTF::_write_rtf_header(void)
  *                     doesn't have the default value.
  */
 void IE_Exp_RTF::_write_prop_ifnotdefault(const PD_Style * pStyle,
-					  const gchar * szPropName,
+					  PP_PropName szPropName,
 					  const char * szRTFName)
 {
 	const gchar * sz = NULL;
-	if (pStyle->getProperty((const gchar *)szPropName, sz)) {
+	if (pStyle->getProperty(szPropName, sz)) {
 		_rtf_keyword_ifnotdefault_twips(szRTFName, sz, 0);
 	}
 }
@@ -1173,11 +1173,11 @@ void IE_Exp_RTF::_write_prop_ifnotdefault(const PD_Style * pStyle,
  * Write an RTF keyword if the given property is "yes".
  */
 void IE_Exp_RTF::_write_prop_ifyes(const PD_Style * pStyle,
-				   const gchar * szPropName,
+				   PP_PropName szPropName,
 				   const char * szRTFName)
 {
     const gchar * sz = NULL;
-    if (pStyle->getProperty((const gchar *)szPropName, sz) && strcmp(sz, "yes") == 0) {
+    if (pStyle->getProperty(szPropName, sz) && strcmp(sz, "yes") == 0) {
 	    _rtf_keyword(szRTFName);
     }
 }
@@ -1315,7 +1315,7 @@ void IE_Exp_RTF::_write_tabdef(const char * szTabStops)
 const gchar * IE_Exp_RTF::_getStyleProp(
 	s_RTF_AttrPropAdapter_Style * pADStyle,
 	const s_RTF_AttrPropAdapter * apa,
-	const char * szProp)
+	PP_PropName szProp)
 {
 	const gchar *szVal = NULL;
 	if(pADStyle != NULL)
@@ -1345,49 +1345,49 @@ void IE_Exp_RTF::_write_parafmt(const PP_AttrProp * pSpanAP, const PP_AttrProp *
 								bool & bStartedList, pf_Frag_Strux* sdh, UT_uint32 & iCurrID, bool &bIsListBlock,
 								UT_sint32 iNestLevel)
 {
-	const gchar * szTextAlign = PP_evalProperty("text-align",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * szFirstLineIndent = PP_evalProperty("text-indent",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * szLeftIndent = PP_evalProperty("margin-left",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * szRightIndent = PP_evalProperty("margin-right",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * szTopMargin = PP_evalProperty("margin-top",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * szBottomMargin = PP_evalProperty("margin-bottom",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * szLineHeight = PP_evalProperty("line-height",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * szKeepTogether = PP_evalProperty("keep-together",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * szKeepWithNext = PP_evalProperty("keep-with-next",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * szTabStops = PP_evalProperty("tabstops",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * szTextAlign = PP_evalProperty(_PN("text-align"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * szFirstLineIndent = PP_evalProperty(_PN("text-indent"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * szLeftIndent = PP_evalProperty(_PN("margin-left"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * szRightIndent = PP_evalProperty(_PN("margin-right"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * szTopMargin = PP_evalProperty(_PN("margin-top"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * szBottomMargin = PP_evalProperty(_PN("margin-bottom"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * szLineHeight = PP_evalProperty(_PN("line-height"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * szKeepTogether = PP_evalProperty(_PN("keep-together"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * szKeepWithNext = PP_evalProperty(_PN("keep-with-next"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * szTabStops = PP_evalProperty(_PN("tabstops"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
 
 	// Borders
 
-	const gchar * pszCanMergeBorders = PP_evalProperty("border-merge",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * pszBotBorderColor = PP_evalProperty("bot-color",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * pszCanMergeBorders = PP_evalProperty(_PN("border-merge"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * pszBotBorderColor = PP_evalProperty(_PN("bot-color"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
 	const gchar * pszBotBorderStyle = NULL;
-	pBlockAP->getProperty ("bot-style",pszBotBorderStyle );
-	const gchar * pszBotBorderWidth = PP_evalProperty("bot-thickness",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * pszBotBorderSpacing = PP_evalProperty("bot-space",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	pBlockAP->getProperty(_PN("bot-style"),pszBotBorderStyle );
+	const gchar * pszBotBorderWidth = PP_evalProperty(_PN("bot-thickness"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * pszBotBorderSpacing = PP_evalProperty(_PN("bot-space"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
 
-	const gchar * pszLeftBorderColor = PP_evalProperty("left-color",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * pszLeftBorderColor = PP_evalProperty(_PN("left-color"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
 	const gchar * pszLeftBorderStyle = NULL;
-	pBlockAP->getProperty ("left-style",pszLeftBorderStyle );
-	const gchar * pszLeftBorderWidth = PP_evalProperty("left-thickness",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * pszLeftBorderSpacing = PP_evalProperty("left-space",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	pBlockAP->getProperty(_PN("left-style"),pszLeftBorderStyle );
+	const gchar * pszLeftBorderWidth = PP_evalProperty(_PN("left-thickness"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * pszLeftBorderSpacing = PP_evalProperty(_PN("left-space"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
 
-	const gchar * pszRightBorderColor = PP_evalProperty("right-color",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * pszRightBorderColor = PP_evalProperty(_PN("right-color"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
 	const gchar * pszRightBorderStyle = NULL;
-	pBlockAP->getProperty ("right-style",pszRightBorderStyle );
-	const gchar * pszRightBorderWidth = PP_evalProperty("right-thickness",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * pszRightBorderSpacing = PP_evalProperty("right-space",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	pBlockAP->getProperty(_PN("right-style"),pszRightBorderStyle );
+	const gchar * pszRightBorderWidth = PP_evalProperty(_PN("right-thickness"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * pszRightBorderSpacing = PP_evalProperty(_PN("right-space"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
 
-	const gchar * pszTopBorderColor = PP_evalProperty("top-color",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * pszTopBorderColor = PP_evalProperty(_PN("top-color"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
 	const gchar * pszTopBorderStyle = NULL;
-	pBlockAP->getProperty ("top-style",pszTopBorderStyle );
-	const gchar * pszTopBorderWidth = PP_evalProperty("top-thickness",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * pszTopBorderSpacing = PP_evalProperty("top-space",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	pBlockAP->getProperty(_PN("top-style"),pszTopBorderStyle );
+	const gchar * pszTopBorderWidth = PP_evalProperty(_PN("top-thickness"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * pszTopBorderSpacing = PP_evalProperty(_PN("top-space"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
 
 	// Shading
 
-	const gchar * szPattern = PP_evalProperty("shading-pattern",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * szShadingForeCol =  PP_evalProperty("shading-foreground-color",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	//const gchar * szShadingBackCol =  PP_evalProperty("shading-background-color",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * szPattern = PP_evalProperty(_PN("shading-pattern"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * szShadingForeCol =  PP_evalProperty(_PN("shading-foreground-color"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	//const gchar * szShadingBackCol =  PP_evalProperty(_PN("shading-background-color"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
 
 
 	// TODO add other properties here
@@ -1398,8 +1398,9 @@ void IE_Exp_RTF::_write_parafmt(const PP_AttrProp * pSpanAP, const PP_AttrProp *
 	const gchar * szParentid=NULL;
 	const gchar * szListStyle=NULL;
 
-	if (!pBlockAP || !pBlockAP->getAttribute(static_cast<const gchar*>("listid"), szListid))		szListid = NULL;
-	if (!pBlockAP || !pBlockAP->getAttribute(static_cast<const gchar*>("parentid"), szParentid))
+	if (!pBlockAP || !pBlockAP->getAttribute(_PN("listid"), szListid))
+        szListid = NULL;
+	if (!pBlockAP || !pBlockAP->getAttribute(_PN("parentid"), szParentid))
 		szParentid = NULL;
 	UT_uint32 listid = 0;
 	const gchar * szAbiListDelim = NULL;
@@ -1421,8 +1422,8 @@ void IE_Exp_RTF::_write_parafmt(const PP_AttrProp * pSpanAP, const PP_AttrProp *
 			}
 		}
 	}
-	szListStyle = PP_evalProperty("list-style",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
-	const gchar * szAbiFieldFont = PP_evalProperty("field-font",pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	szListStyle = PP_evalProperty(_PN("list-style"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
+	const gchar * szAbiFieldFont = PP_evalProperty(_PN("field-font"),pSpanAP,pBlockAP,pSectionAP,getDoc(),true);
 
 		
 	UT_uint32 id = 0;
@@ -1497,7 +1498,7 @@ void IE_Exp_RTF::_write_parafmt(const PP_AttrProp * pSpanAP, const PP_AttrProp *
 
 	// it is essential that the \rtlpar and \ltrpar tokens are issued
 	// before any formatting, otherwise it can cause difficulties
-	const gchar * szBidiDir = PP_evalProperty("dom-dir",
+	const gchar * szBidiDir = PP_evalProperty(_PN("dom-dir"),
 												 pSpanAP,
 												 pBlockAP,
 												 pSectionAP,
@@ -1537,7 +1538,7 @@ void IE_Exp_RTF::_write_parafmt(const PP_AttrProp * pSpanAP, const PP_AttrProp *
 	_rtf_keyword_ifnotdefault_twips("sa",static_cast<const char*>(szBottomMargin),0);
 
 	const gchar * szStyle = NULL;
-	if (pBlockAP->getAttribute("style", szStyle))
+	if (pBlockAP->getAttribute(_PN("style"), szStyle))
 	{
 	    _rtf_keyword("s", _getStyleNumber(szStyle));
 	}
@@ -1911,7 +1912,7 @@ void IE_Exp_RTF::_write_charfmt(const s_RTF_AttrPropAdapter & apa)
 //
 	}
 #endif
-	const gchar * szColor = _getStyleProp(pADStyle,&apa,"color");
+	const gchar * szColor = _getStyleProp(pADStyle, &apa, _PN("color"));
 
 	UT_sint32 ndxColor = -1;
 	if(szColor)
@@ -1927,7 +1928,7 @@ void IE_Exp_RTF::_write_charfmt(const s_RTF_AttrPropAdapter & apa)
 			_rtf_keyword("cf",ndxColor);
 	}
 
-	szColor = _getStyleProp(pADStyle,&apa,"bgcolor");
+	szColor = _getStyleProp(pADStyle, &apa, _PN("bgcolor"));
 
 	if (szColor && g_ascii_strcasecmp (szColor, "transparent") != 0)
 	{
@@ -1942,7 +1943,7 @@ void IE_Exp_RTF::_write_charfmt(const s_RTF_AttrPropAdapter & apa)
 	const gchar * szFont = NULL;
 	if(pADStyle != NULL)
 	{
-		szFont = pADStyle->getProperty("font-family");
+		szFont = pADStyle->getProperty(_PN("font-family"));
 	}
 	if(szFont == NULL)
 	{
@@ -1951,7 +1952,7 @@ void IE_Exp_RTF::_write_charfmt(const s_RTF_AttrPropAdapter & apa)
 			_rtf_keyword("f",ndxFont);	// font index in fonttbl
 	}
 
-	const gchar * szFontSize = _getStyleProp(pADStyle,&apa,"font-size");
+	const gchar * szFontSize = _getStyleProp(pADStyle, &apa, _PN("font-size"));
 	double dbl = UT_convertToPoints(szFontSize);
 	UT_sint32 d = (UT_sint32)(dbl*2.0);
 
@@ -1962,15 +1963,15 @@ void IE_Exp_RTF::_write_charfmt(const s_RTF_AttrPropAdapter & apa)
 			d = 24;
 		_rtf_keyword("fs",d);	// font size in half points
 	}
-	const gchar * szFontStyle = _getStyleProp(pADStyle,&apa,"font-style");
+	const gchar * szFontStyle = _getStyleProp(pADStyle, &apa, _PN("font-style"));
 	if (szFontStyle && *szFontStyle && (strcmp(szFontStyle,"italic")==0))
 		_rtf_keyword("i");
 
-	const gchar * szFontWeight = _getStyleProp(pADStyle,&apa,"font-weight");
+	const gchar * szFontWeight = _getStyleProp(pADStyle, &apa, _PN("font-weight"));
 	if (szFontWeight && *szFontWeight && (strcmp(szFontWeight,"bold")==0))
 		_rtf_keyword("b");
 
-	const gchar * szFontDecoration = _getStyleProp(pADStyle,&apa,"text-decoration");
+	const gchar * szFontDecoration = _getStyleProp(pADStyle, &apa, _PN("text-decoration"));
 	if (szFontDecoration && *szFontDecoration)
 	{
 		if (strstr(szFontDecoration,"underline") != nullptr)
@@ -1989,7 +1990,7 @@ void IE_Exp_RTF::_write_charfmt(const s_RTF_AttrPropAdapter & apa)
 		}
 	}
 
-	const gchar * szFontPosition = _getStyleProp(pADStyle,&apa,"text-position");
+	const gchar * szFontPosition = _getStyleProp(pADStyle, &apa, _PN("text-position"));
 	if (szFontPosition && *szFontPosition)
 	{
 		if (!strcmp(szFontPosition,"superscript"))
@@ -1999,15 +2000,15 @@ void IE_Exp_RTF::_write_charfmt(const s_RTF_AttrPropAdapter & apa)
 	}
 
 	// export the language of the run of text
-	const gchar * szLang = _getStyleProp(pADStyle,&apa,"lang");
+	const gchar * szLang = _getStyleProp(pADStyle, &apa, _PN("lang"));
 	if ( szLang )
 	  {
 	    xxx_UT_DEBUGMSG(("DOM: lang,lid = %s,%d\n", szLang, wvLangToLIDConverter(szLang)));
 	    _rtf_keyword("lang", wvLangToLIDConverter(szLang));
 	  }
 
-	//###TF const gchar * szDir = apa.getProperty("dir");
-	const gchar * szDirOvrr = _getStyleProp(pADStyle,&apa,"dir-override");
+	//###TF const gchar * szDir = apa.getProperty(_PN("dir"));
+	const gchar * szDirOvrr = _getStyleProp(pADStyle, &apa, _PN("dir-override"));
 
 	//bool bProceed = true;
 	if (szDirOvrr)
@@ -2036,14 +2037,14 @@ void IE_Exp_RTF::_write_charfmt(const s_RTF_AttrPropAdapter & apa)
 			_rtf_keyword ("rtlch");
 	}  */
 
-	const gchar * szHidden = _getStyleProp(pADStyle,&apa,"display");
+	const gchar * szHidden = _getStyleProp(pADStyle, &apa, _PN("display"));
 	if(szHidden && *szHidden && !strcmp(szHidden, "none"))
 	{
 		_rtf_keyword ("v");
 	}
 	
 	
-	const gchar * szListTag = apa.getProperty("list-tag");
+	const gchar * szListTag = apa.getProperty(_PN("list-tag"));
 	if (szListTag && *szListTag)
 	{
 		_rtf_open_brace();
@@ -2066,7 +2067,7 @@ void IE_Exp_RTF::_output_revision(const s_RTF_AttrPropAdapter & apa, bool bPara,
 								  pf_Frag_Strux* sdh, UT_sint32 iNestLevel,
 								  bool & bStartedList,  bool &bIsListBlock, UT_uint32 &iCurrID)
 {
-	const gchar *szRevisions = apa.getAttribute("revision");
+	const gchar *szRevisions = apa.getAttribute(_PN("revision"));
 	if (szRevisions && *szRevisions)
 	{
 		PP_RevisionAttr RA(szRevisions);
@@ -2257,11 +2258,11 @@ void IE_Exp_RTF::_write_style_fmt(const PD_Style * pStyle)
     // at time of this writing.
 
     // parfmt
-    _write_prop_ifyes(pStyle, "keep-together", "keep");
-    _write_prop_ifyes(pStyle, "keep-with-next", "keepn");
+    _write_prop_ifyes(pStyle, _PN("keep-together"), "keep");
+    _write_prop_ifyes(pStyle, _PN("keep-with-next"), "keepn");
 
     const gchar * sz = NULL;
-    if (pStyle->getProperty((const gchar *)"text-align", sz))
+    if (pStyle->getProperty(_PN("text-align"), sz))
 	{
 		if (strcmp(sz, "left") == 0)
 		{
@@ -2286,7 +2287,7 @@ void IE_Exp_RTF::_write_style_fmt(const PD_Style * pStyle)
     }
 
     const gchar * szLineHeight = NULL;
-    if (pStyle->getProperty((const gchar *) "line-height", szLineHeight)
+    if (pStyle->getProperty(_PN("line-height"), szLineHeight)
 		&& strcmp(szLineHeight,"1.0") != 0)
 	{
 		double f = UT_convertDimensionless(szLineHeight);
@@ -2298,16 +2299,17 @@ void IE_Exp_RTF::_write_style_fmt(const PD_Style * pStyle)
 		}
     }
 
-    _write_prop_ifnotdefault(pStyle, "text-indent", "fi");
-    _write_prop_ifnotdefault(pStyle, "margin-left", "li");
-    _write_prop_ifnotdefault(pStyle, "margin-right", "ri");
-    _write_prop_ifnotdefault(pStyle, "margin-top", "sb");
-    _write_prop_ifnotdefault(pStyle, "margin-bottom", "sa");
+    _write_prop_ifnotdefault(pStyle, _PN("text-indent"), "fi");
+    _write_prop_ifnotdefault(pStyle, _PN("margin-left"), "li");
+    _write_prop_ifnotdefault(pStyle, _PN("margin-right"), "ri");
+    _write_prop_ifnotdefault(pStyle, _PN("margin-top"), "sb");
+    _write_prop_ifnotdefault(pStyle, _PN("margin-bottom"), "sa");
 
     // apoctl
 
     // tabdef
-    if (pStyle->getProperty((const gchar *) "tabstops", sz)) _write_tabdef(sz);
+    if (pStyle->getProperty(_PN("tabstops"), sz))
+        _write_tabdef(sz);
 
 
     // shading
@@ -3076,15 +3078,17 @@ void IE_Exp_RTF::_output_ListRTF(const fl_AutoNumConstPtr & pAuto, UT_uint32 iLe
 		// 
 		if(sdh != NULL)
 		{
-			bool bres = getDoc()->getPropertyFromSDH(sdh,true,PD_MAX_REVISION,"text-indent",&szIndent);
+			bool bres = getDoc()->getPropertyFromSDH(sdh, true, PD_MAX_REVISION,
+                                                     _PN("text-indent"), &szIndent);
 			if(bres)
 			{
-				_rtf_keyword_ifnotdefault_twips("fi",(char*)szIndent,0);
+				_rtf_keyword_ifnotdefault_twips("fi", szIndent, 0);
 			}
-			bres = getDoc()->getPropertyFromSDH(sdh,true,PD_MAX_REVISION,"margin-left",&szAlign);
+			bres = getDoc()->getPropertyFromSDH(sdh, true, PD_MAX_REVISION,
+                                                _PN("margin-left"), &szAlign);
 			if(bres)
 			{
-				_rtf_keyword_ifnotdefault_twips("li",(char*)szAlign,0);
+				_rtf_keyword_ifnotdefault_twips("li", szAlign, 0);
 			}
 		}
 	}
@@ -3315,7 +3319,7 @@ bool _rtf_font_info::init(const s_RTF_AttrPropAdapter & apa, bool bDoFieldFont)
 	const char * szName = NULL;
 	if(!bDoFieldFont)
 	{
-		szName = apa.getProperty("font-family");
+		szName = apa.getProperty(_PN("font-family"));
 		if(szName != NULL)
 		{
 			m_szName = szName;
@@ -3323,7 +3327,7 @@ bool _rtf_font_info::init(const s_RTF_AttrPropAdapter & apa, bool bDoFieldFont)
 	}
 	else
 	{
-		szName = apa.getProperty("field-font");
+		szName = apa.getProperty(_PN("field-font"));
 		if(szName != NULL)
 		{
 			m_szName = szName;

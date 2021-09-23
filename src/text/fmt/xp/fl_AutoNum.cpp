@@ -151,7 +151,7 @@ void fl_AutoNum::fixHierarchy(void)
 		bool bFound = m_pDoc->getAttributeFromSDH(sdh,
 												  pView ? pView->isShowRevisions() : true,
 												  pView ? pView->getRevisionLevel(): PD_MAX_REVISION,
-												  PT_PARENTID_ATTRIBUTE_NAME,&pszParentID);
+												  PT_PARENTID_ATTRIBUTE_NAME, &pszParentID);
 		if(bFound)
 		{
 			docParentID= atoi(pszParentID);

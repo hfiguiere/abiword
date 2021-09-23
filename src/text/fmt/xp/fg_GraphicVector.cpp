@@ -53,7 +53,7 @@ FG_GraphicPtr FG_GraphicVector::createFromChangeRecord(const fl_ContainerLayout*
 	pFL->getSpanAP(blockOffset, false, pFG->m_pSpanAP);
 	if (pFG->m_pSpanAP)
 	{
-		bool bFoundDataID = pFG->m_pSpanAP->getAttribute("dataid", pFG->m_pszDataID);
+		bool bFoundDataID = pFG->m_pSpanAP->getAttribute(_PN("dataid"), pFG->m_pszDataID);
 		if (bFoundDataID && pFG->m_pszDataID)
 		{
 			bFoundDataItem = pDoc->getDataItemDataByName(static_cast<const char*>(pFG->m_pszDataID), pFG->m_pbbSVG, NULL, NULL);
@@ -157,7 +157,7 @@ double FG_GraphicVector::getHeight(void) const
 const char * FG_GraphicVector::getWidthProp(void)
 {
 	const gchar * szWidth = NULL;
-	m_pSpanAP->getProperty("width", szWidth);
+	m_pSpanAP->getProperty(_PN("width"), szWidth);
 	if(szWidth == NULL)
 	{
 		szWidth = "0in";
@@ -172,7 +172,7 @@ const char * FG_GraphicVector::getWidthProp(void)
 const char * FG_GraphicVector::getHeightProp(void)
 {
 	const gchar * szHeight = NULL;
-	m_pSpanAP->getProperty("height", szHeight);
+	m_pSpanAP->getProperty(_PN("height"), szHeight);
 	if(szHeight == NULL)
 	{
 		szHeight = "0in";
@@ -211,8 +211,8 @@ GR_Image* FG_GraphicVector::generateImage(GR_Graphics* pG,
 		m_pSpanAP = pSpanAP;
 	}
 
-	bool bFoundWidthProperty = m_pSpanAP->getProperty("width", pszWidth);
-	bool bFoundHeightProperty = m_pSpanAP->getProperty("height", pszHeight);
+	bool bFoundWidthProperty = m_pSpanAP->getProperty(_PN("width"), pszWidth);
+	bool bFoundHeightProperty = m_pSpanAP->getProperty(_PN("height"), pszHeight);
 
 	m_iMaxH = maxH;
 	m_iMaxW = maxW;
@@ -225,8 +225,8 @@ GR_Image* FG_GraphicVector::generateImage(GR_Graphics* pG,
 	UT_sint32 iDisplayHeight = 0;
 	if(!bFoundWidthProperty || !bFoundHeightProperty)
 	{
-	     bFoundWidthProperty = m_pSpanAP->getProperty("frame-width", pszWidth);
-	     bFoundHeightProperty = m_pSpanAP->getProperty("frame-height", pszHeight);
+		bFoundWidthProperty = m_pSpanAP->getProperty(_PN("frame-width"), pszWidth);
+		bFoundHeightProperty = m_pSpanAP->getProperty(_PN("frame-height"), pszHeight);
 	}
 	if (bFoundWidthProperty && bFoundHeightProperty && pszWidth && pszHeight && pszWidth[0] && pszHeight[0])
 	{
@@ -287,8 +287,8 @@ UT_Error FG_GraphicVector::insertIntoDocument(PD_Document* pDoc, UT_uint32 res,
 	szProps += UT_convertInchesToDimensionString(DIM_IN, static_cast<double>(m_iHeight)/res, "3.2");
 
 	const PP_PropertyVector attributes = {
-        	"dataid", szName,
-		PT_PROPS_ATTRIBUTE_NAME, szProps
+		{ "dataid", szName },
+		{ PT_PROPS_ATTRIBUTE_NAME, szProps }
 	};
 	pDoc->insertObject(iPos, PTO_Image, attributes, PP_NOPROPS);
 
@@ -327,8 +327,8 @@ UT_Error FG_GraphicVector::insertAtStrux(PD_Document* pDoc,
 	szProps += UT_convertInchesToDimensionString(DIM_IN, static_cast<double>(m_iHeight)/res, "3.2");
 
 	PP_PropertyVector attributes = {
-		PT_STRUX_IMAGE_DATAID, szName,
-		PT_PROPS_ATTRIBUTE_NAME, szProps
+		{ PT_STRUX_IMAGE_DATAID, szName },
+		{ PT_PROPS_ATTRIBUTE_NAME, szProps }
 	};
 
 	pDoc->changeStruxFmt(PTC_AddFmt, iPos, iPos, attributes, PP_NOPROPS, iStruxType);

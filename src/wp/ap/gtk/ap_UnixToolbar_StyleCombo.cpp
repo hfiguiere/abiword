@@ -219,22 +219,22 @@ AP_UnixToolbar_StyleCombo::getPangoAttrs (PD_Style *pStyle,
 
 	const gchar *value = NULL;
 
-	if (pStyle->getPropertyExpand ("font-family", value)) {
+	if (pStyle->getPropertyExpand(_PN("font-family"), value)) {
 		pango_font_description_set_family (desc, value);
 	}
 
-	if (pStyle->getPropertyExpand ("font-size", value)) {
+	if (pStyle->getPropertyExpand(_PN("font-size"), value)) {
 		pango_font_description_set_size (desc, (gint)(UT_convertToDimension (value, DIM_PT) * PANGO_SCALE));
 	}
 
-	if (pStyle->getPropertyExpand ("font-style", value)) {
+	if (pStyle->getPropertyExpand(_PN("font-style"), value)) {
 		PangoStyle style = PANGO_STYLE_NORMAL;
 		if (!strcmp (value, "italic"))
 			style = PANGO_STYLE_ITALIC;
 		pango_font_description_set_style (desc, style);
 	}
 
-	if (pStyle->getPropertyExpand ("font-weight", value)) {
+	if (pStyle->getPropertyExpand(_PN("font-weight"), value)) {
 		PangoWeight weight = PANGO_WEIGHT_NORMAL;
 		if (!strcmp (value, "bold"))
 			weight = PANGO_WEIGHT_BOLD;
@@ -242,7 +242,7 @@ AP_UnixToolbar_StyleCombo::getPangoAttrs (PD_Style *pStyle,
 	}
 }
 
-void 
+void
 AP_UnixToolbar_StyleCombo::freeStyles()
 {
 	std::map<std::string, PangoFontDescription*>::iterator iter = m_mapStyles.begin();

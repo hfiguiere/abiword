@@ -49,8 +49,8 @@ class ABI_EXPORT ie_PartTable
 	UT_sint32        getPrevRight(void) const {return m_iPrevRight;}
 	UT_sint32        getTop(void) const;
 	UT_sint32        getBot(void) const;
-	const char *     getTableProp(const char * pPropName) const;
-	const char *     getCellProp(const char * pPropName) const;
+	const char *     getTableProp(PP_PropName pPropName) const;
+	const char *     getCellProp(PP_PropName pPropName) const;
 	PT_AttrPropIndex getTableAPI(void) const {return m_apiTable;}
 	PT_AttrPropIndex getCellAPI(void) const { return m_apiCell;}
 	UT_sint32        getNumRows(void) const;
@@ -104,8 +104,8 @@ class ABI_EXPORT ie_Table
 	UT_sint32        getBot(void) const;
 	UT_sint32        getNumRows(void) const;
 	UT_sint32        getNumCols(void) const;
-	const char *     getTableProp(const char * pPropName) const;
-	const char *     getCellProp(const char * pPropName) const;
+	const char *     getTableProp(PP_PropName pPropName) const;
+	const char *     getCellProp(PP_PropName pPropName) const;
 	UT_sint32        getNestDepth(void) const;
 	void             setCellRowCol(UT_sint32 row, UT_sint32 col);
 	pf_Frag_Strux*   getTableSDH(void) const;

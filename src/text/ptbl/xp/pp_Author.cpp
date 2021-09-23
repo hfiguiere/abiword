@@ -41,7 +41,7 @@ const PP_AttrProp * pp_Author::getAttrProp(void) const
   return & m_AP;
 }
 
-bool pp_Author::getProperty(const gchar * szName, const gchar *& szValue) const
+bool pp_Author::getProperty(PP_PropName  szName, const gchar *& szValue) const
 {
   return  m_AP.getProperty(szName,szValue);
 }

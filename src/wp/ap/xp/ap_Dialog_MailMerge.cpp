@@ -140,7 +140,7 @@ void AP_Dialog_MailMerge::addClicked()
 
 	if(pParam && *pParam) {
 		PP_PropertyVector pAttr = {
-			"param", pParam
+			{ "param", pParam }
 		};
 		pView->cmdInsertField("mail_merge",pAttr);
 	}

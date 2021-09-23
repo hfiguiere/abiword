@@ -526,7 +526,7 @@ void fl_FootnoteLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	// I can't think of any properties we need for now.
 	// If we need any later, we'll add them. -PL
 	const gchar *pszFootnotePID = NULL;
-	if(!pSectionAP->getAttribute("footnote-id",pszFootnotePID))
+	if(!pSectionAP->getAttribute(_PN("footnote-id"), pszFootnotePID))
 	{
 		m_iFootnotePID = 0;
 	}
@@ -780,7 +780,7 @@ void fl_AnnotationLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	// I can't think of any properties we need for now.
 	// If we need any later, we'll add them. -PL
 	const gchar *pszAnnotationPID = NULL;
-	if(!pSectionAP->getAttribute("annotation-id",pszAnnotationPID))
+	if(!pSectionAP->getAttribute(_PN("annotation-id"),pszAnnotationPID))
 	{
 		m_iAnnotationPID = 0;
 	}
@@ -791,17 +791,17 @@ void fl_AnnotationLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	const char* pszAuthor;
 	const char* pszTitle;
 	const char *pszDate;
-	if(!pSectionAP->getProperty("annotation-author", (const char *&)pszAuthor))
+	if(!pSectionAP->getProperty(_PN("annotation-author"), (const char *&)pszAuthor))
 	{
 	        pszAuthor = "";
 	}
 	m_sAuthor = pszAuthor;
-	if(!pSectionAP->getProperty("annotation-title", (const char *&)pszTitle))
+	if(!pSectionAP->getProperty(_PN("annotation-title"), (const char *&)pszTitle))
 	{
 	        pszTitle = "";
 	}
 	m_sTitle = pszTitle;
-	if(!pSectionAP->getProperty("annotation-date", (const char *&)pszDate))
+	if(!pSectionAP->getProperty(_PN("annotation-date"), (const char *&)pszDate))
 	{
 	        pszDate = "";
 	}
@@ -1076,7 +1076,7 @@ void fl_EndnoteLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 	// I can't think of any properties we need for now.
 	// If we need any later, we'll add them. -PL
 	const gchar *pszEndnotePID = NULL;
-	if(!pSectionAP->getAttribute("endnote-id",pszEndnotePID))
+	if(!pSectionAP->getAttribute(_PN("endnote-id"), pszEndnotePID))
 	{
 		m_iEndnotePID = 0;
 	}

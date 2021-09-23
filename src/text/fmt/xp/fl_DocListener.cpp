@@ -359,7 +359,7 @@ bool fl_DocListener::populateStrux(pf_Frag_Strux* sdh,
 		if (m_pDoc->getAttrProp(indexAP, &pAP) && pAP)
 		{
 			const gchar* pszSectionType = NULL;
-			pAP->getAttribute("type", pszSectionType);
+			pAP->getAttribute(_PN("type"), pszSectionType);
 			UT_DEBUGMSG(("fl_DocListener::populateStrux for '%s'\n",
 						 pszSectionType ? pszSectionType : "(null)"));
 			if (!pszSectionType	|| (0 == strcmp(pszSectionType, "doc")))
@@ -395,7 +395,7 @@ bool fl_DocListener::populateStrux(pf_Frag_Strux* sdh,
 				if(hfType != FL_HDRFTR_NONE)
 				{
 					const gchar* pszID = NULL;
-					pAP->getAttribute("id", pszID);
+					pAP->getAttribute(_PN("id"), pszID);
 					UT_DEBUGMSG(("Populating header/footer header strux \n"));
 					fl_DocSectionLayout* pDocSL = m_pLayout->findSectionForHdrFtr((char*)pszID);
 					UT_ASSERT(pDocSL);
@@ -563,7 +563,7 @@ bool fl_DocListener::populateStrux(pf_Frag_Strux* sdh,
 		if (m_pDoc->getAttrProp(indexAP, &pAP) && pAP)
 		{
 			const gchar* pszSectionType = NULL;
-			pAP->getAttribute("type", pszSectionType);
+			pAP->getAttribute(_PN("type"), pszSectionType);
 			if (
 				!pszSectionType
 				|| (0 == strcmp(pszSectionType, "doc"))
@@ -577,7 +577,7 @@ bool fl_DocListener::populateStrux(pf_Frag_Strux* sdh,
 				if(hfType != FL_HDRFTR_NONE)
 				{
 					const gchar* pszID = NULL;
-					pAP->getAttribute("id", pszID);
+					pAP->getAttribute(_PN("id"), pszID);
 
 					fl_DocSectionLayout* pDocSL = NULL;
 					if(pszID)
@@ -1281,7 +1281,7 @@ bool fl_DocListener::change(fl_ContainerLayout* sfh,
 			pf_Frag_Strux* sdh = pL2->getStruxDocHandle();
 	
 			const gchar* pszSectionType = NULL;
-			pAP->getAttribute("type", pszSectionType);
+			pAP->getAttribute(_PN("type"), pszSectionType);
 			//
 			// OK Sevior adds code to actually change a 
 			// sectionlayout to
@@ -1300,7 +1300,7 @@ bool fl_DocListener::change(fl_ContainerLayout* sfh,
 				//  matching ID
 				//
 				const gchar* pszID = NULL;
-				pAP->getAttribute("id", pszID);
+				pAP->getAttribute(_PN("id"), pszID);
 
 				fl_DocSectionLayout* pDocSL = m_pLayout->findSectionForHdrFtr((char*)pszID);
 				UT_ASSERT(pDocSL); 
@@ -1401,7 +1401,7 @@ bool fl_DocListener::change(fl_ContainerLayout* sfh,
 			}
 	
 			const gchar* pszHFSectionType = NULL;
-			pHFAP->getAttribute("type", pszHFSectionType);
+			pHFAP->getAttribute(_PN("type"), pszHFSectionType);
 			//
             // Look for type of Hdr/Ftr
 			//
@@ -1413,7 +1413,7 @@ bool fl_DocListener::change(fl_ContainerLayout* sfh,
 				//  matching ID
 				//
 				const gchar* pszHFID = NULL;
-				pHFAP->getAttribute("id", pszHFID);
+				pHFAP->getAttribute(_PN("id"), pszHFID);
 
 				fl_DocSectionLayout* pDocSL = m_pLayout->findSectionForHdrFtr((char*)pszHFID);
 				
@@ -1688,7 +1688,7 @@ bool fl_DocListener::change(fl_ContainerLayout* sfh,
 		const PP_AttrProp * pAP = NULL;
 		m_pLayout->getDocument()->getAttrProp(iAP, &pAP);
 		const gchar * szValue=NULL;
-		bool b= pAP->getAttribute( PT_DOCPROP_ATTRIBUTE_NAME,szValue);
+		bool b= pAP->getAttribute(PT_DOCPROP_ATTRIBUTE_NAME, szValue);
 		UT_DEBUGMSG(("Doing DocProp change value %s \n",szValue));
 		if(!b)
 		{
@@ -1709,7 +1709,7 @@ bool fl_DocListener::change(fl_ContainerLayout* sfh,
 		  	m_pLayout->refreshRunProperties();
 			FV_View * pView = m_pLayout->getView();
 			const gchar * szAuthorId = NULL;
-			pAP->getProperty("id",szAuthorId);
+			pAP->getProperty(_PN("id"), szAuthorId);
 			if(szAuthorId && *szAuthorId)
 			{
 			  UT_sint32 id = atoi(szAuthorId);

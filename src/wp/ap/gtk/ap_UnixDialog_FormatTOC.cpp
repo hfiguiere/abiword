@@ -73,7 +73,7 @@ void AP_UnixDialog_FormatTOC::s_NumType_changed(GtkWidget * wid,
 
 	std::string sVal = value2;
 	sProp += UT_std_string_sprintf("%d",me->getDetailsLevel());
-	me->setTOCProperty(sProp,sVal);
+	me->setTOCProperty(sProp, sVal);
 	g_free(value2);
 }
 
@@ -93,7 +93,7 @@ static void s_TabLeader_changed(GtkWidget * wid, AP_UnixDialog_FormatTOC * me )
 	std::string sVal = value2;
 	UT_String sNum =  UT_String_sprintf("%d",me->getDetailsLevel());
 	sProp += sNum.c_str();
-	me->setTOCProperty(sProp,sVal);
+	me->setTOCProperty(sProp.c_str(), sVal);
 }
 
 
@@ -146,7 +146,7 @@ static void s_check_changedDetails(GtkWidget * wid, AP_UnixDialog_FormatTOC * me
 	}
 	UT_String sNum =  UT_String_sprintf("%d",me->getDetailsLevel());
 	sProp += sNum.c_str();
-	me->setTOCProperty(sProp,sVal);
+	me->setTOCProperty(sProp, sVal);
 }
 
 static void s_response_triggered(GtkWidget * widget, gint resp, AP_UnixDialog_FormatTOC * dlg)
@@ -215,7 +215,7 @@ void AP_UnixDialog_FormatTOC::setStyle(GtkWidget * wid)
 		sProp += UT_std_string_sprintf("%d",getMainLevel());
 	}
 	sVal = getNewStyle(sProp);
-	setTOCProperty(sProp,sVal);
+	setTOCProperty(sProp, sVal);
 	applyTOCPropsToDoc();
 }
 
@@ -276,7 +276,7 @@ void AP_UnixDialog_FormatTOC::event_HasHeadingChanged(GtkWidget * wid)
 		UT_String sNum =  UT_String_sprintf("%d",getMainLevel());
 		sProp += sNum.c_str();
 	}
-	setTOCProperty(sProp,sVal);
+	setTOCProperty(sProp, sVal);
 }
 
 void AP_UnixDialog_FormatTOC::_setHasHeadingSensitivity(bool bSensitive)
@@ -299,7 +299,7 @@ void AP_UnixDialog_FormatTOC::event_HasLabelChanged(GtkWidget * wid)
 	{
 		sVal = "0";
 	}
-	setTOCProperty(sProp,sVal);
+	setTOCProperty(sProp, sVal);
 }
 
 void AP_UnixDialog_FormatTOC::event_IndentChanged(GtkWidget * wSpin)
@@ -317,7 +317,7 @@ void AP_UnixDialog_FormatTOC::event_IndentChanged(GtkWidget * wSpin)
 	}
 	m_iIndentValue = iNew;
 	incrementIndent(getDetailsLevel(),bInc);
-	std::string sVal = getTOCPropVal("toc-indent",getDetailsLevel());
+	std::string sVal = getTOCPropVal("toc-indent", getDetailsLevel());
 	GtkWidget * pW = _getWidget("wIndentEntry");
 	XAP_gtk_entry_set_text(GTK_ENTRY(pW),sVal.c_str());
 }
@@ -607,7 +607,7 @@ void  AP_UnixDialog_FormatTOC::event_Apply(void)
 	GtkWidget * pW = _getWidget("edHeadingText");
 	std::string sVal;
 	sVal = XAP_gtk_entry_get_text(GTK_ENTRY(pW));
-	setTOCProperty("toc-heading",sVal.c_str());
+	setTOCProperty("toc-heading", sVal);
 
 // Text before and after
 
@@ -617,13 +617,13 @@ void  AP_UnixDialog_FormatTOC::event_Apply(void)
 	sProp = static_cast<const char *> (g_object_get_data(G_OBJECT(pW),"toc-prop"));
 	UT_String sNum =  UT_String_sprintf("%d",getDetailsLevel());
 	sProp += sNum.c_str();
-	setTOCProperty(sProp,sVal);
+	setTOCProperty(sProp, sVal);
 
 	pW = _getWidget("edTextBefore");
 	sVal = XAP_gtk_entry_get_text(GTK_ENTRY(pW));
 	sProp = static_cast<const char *> (g_object_get_data(G_OBJECT(pW),"toc-prop"));
 	sProp += sNum.c_str();
-	setTOCProperty(sProp,sVal);
+	setTOCProperty(sProp, sVal);
 	Apply();
 }
 

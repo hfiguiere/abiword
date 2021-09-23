@@ -1029,7 +1029,7 @@ void FV_VisualInlineImage::mouseRelease(UT_sint32 x, UT_sint32 y)
 	  const gchar* szEmbed = nullptr;
 	  if(!m_bDoingCopy)
 	  {
-	    bool bFound = m_pImageAP->getAttribute("dataid",szDataID);
+	    bool bFound = m_pImageAP->getAttribute(_PN("dataid"),szDataID);
 	    if(!bFound)
 	    {
 	      return;
@@ -1041,7 +1041,7 @@ void FV_VisualInlineImage::mouseRelease(UT_sint32 x, UT_sint32 y)
 	  }
 	  if(m_bIsEmbedded)
 	  {
-	    bool bFound = m_pImageAP->getProperty("embed-type",szEmbed);
+	    bool bFound = m_pImageAP->getProperty(_PN("embed-type"), szEmbed);
 	    if(!bFound)
 	    {
 	      return;
@@ -1049,49 +1049,42 @@ void FV_VisualInlineImage::mouseRelease(UT_sint32 x, UT_sint32 y)
 	  }
 	  m_bDoingCopy = false;
 	  std::string sProps;
-	  std::string sProp;
 	  std::string sVal;
-	  bool bFound = m_pImageAP->getProperty("width",szWidth);
+	  bool bFound = m_pImageAP->getProperty(_PN("width"), szWidth);
 	  if(bFound)
 	  {
-	    sProp = "width";
 	    sVal = szWidth;
-	    UT_std_string_setProperty(sProps,sProp,sVal);
+	    UT_std_string_setProperty(sProps, "width", sVal);
 	  }
-	  bFound = m_pImageAP->getProperty("height",szHeight);
+	  bFound = m_pImageAP->getProperty(_PN("height"), szHeight);
 	  if(bFound)
 	  {
-	    sProp = "height";
 	    sVal = szHeight;
-	    UT_std_string_setProperty(sProps,sProp,sVal);
+	    UT_std_string_setProperty(sProps, "height", sVal);
 	  }
-	  bFound = m_pImageAP->getAttribute("title",szTitle);
+	  bFound = m_pImageAP->getAttribute(_PN("title"), szTitle);
 	  if(!bFound)
 	  {
 	    szTitle = "";
 	  }
-	  bFound = m_pImageAP->getAttribute("alt",szDescription);
+	  bFound = m_pImageAP->getAttribute(_PN("alt"), szDescription);
 	  if(!bFound)
 	  {
 	    szDescription = "";
 	  }
 	  PP_PropertyVector attributes = {
-              "dataid", szDataID
+            { "dataid", szDataID }
 	  };
 	  if(m_bIsEmbedded)
 	  {
-	      sProp="embed-type";
 	      sVal = szEmbed;
-	      UT_std_string_setProperty(sProps, sProp, sVal);
+	      UT_std_string_setProperty(sProps, "embed-type", sVal);
 	  }
 	  if(!sProps.empty())
 	  {
-	      attributes.push_back(PT_PROPS_ATTRIBUTE_NAME);
-	      attributes.push_back(sProps);
-	      attributes.push_back(PT_IMAGE_TITLE);
-	      attributes.push_back(szTitle);
-	      attributes.push_back(PT_IMAGE_DESCRIPTION);
-	      attributes.push_back(szDescription);
+            attributes.push_back({ PT_PROPS_ATTRIBUTE_NAME, sProps });
+            attributes.push_back({ PT_IMAGE_TITLE, szTitle });
+            attributes.push_back({ PT_IMAGE_DESCRIPTION, szDescription });
 	  }
 	  m_pView->_saveAndNotifyPieceTableChange();
 	  UT_DEBUGMSG(("Doing Insert Image at %d \n",m_pView->getPoint()));
@@ -1165,8 +1158,8 @@ void FV_VisualInlineImage::mouseRelease(UT_sint32 x, UT_sint32 y)
 	    {
 	      UT_LocaleTransactor t(LC_NUMERIC, "C");
 	      const PP_PropertyVector properties = {
-		"width", UT_std_string_sprintf("%fin", static_cast<double>(newImgBounds.width)/UT_LAYOUT_RESOLUTION),
-		"height", UT_std_string_sprintf("%fin", static_cast<double>(newImgBounds.height)/UT_LAYOUT_RESOLUTION)
+		{"width", UT_std_string_sprintf("%fin", static_cast<double>(newImgBounds.width)/UT_LAYOUT_RESOLUTION)},
+                {"height", UT_std_string_sprintf("%fin", static_cast<double>(newImgBounds.height)/UT_LAYOUT_RESOLUTION)}
 	      };
 	      m_pView->setCharFormat(properties);
 	    }

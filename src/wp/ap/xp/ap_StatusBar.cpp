@@ -294,7 +294,7 @@ void ap_sbf_Language::notify(AV_View * pavView, const AV_ChangeMask /*mask*/)
         PP_PropertyVector props_in;
         if (pavView && static_cast<FV_View *>(pavView)->getCharFormat(props_in))
         {
-            const std::string & lang = PP_getAttribute("lang", props_in);
+            const std::string & lang = PP_getAttribute(_PN("lang"), props_in);
 
             if (m_sBuf != lang) {
                 m_sBuf = lang;

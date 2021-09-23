@@ -67,7 +67,7 @@ bool pt_PieceTable::_translateRevisionAttribute(PP_RevisionAttr & Revisions, PT_
 	const PP_AttrProp * pRevisedAP = NULL;
 	const PP_AttrProp * pAP = NULL;
 	getAttrProp(indexAP, &pAP);
-	const gchar name[] = "revision";
+	PP_PropName name("revision");
 
 	if(pAP)
 	{

@@ -1,7 +1,7 @@
 /* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t -*- */
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (c) 2016 Hubert Figuiere
+ * Copyright (c) 2016-2021 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -28,12 +28,13 @@
 #include <utility>
 
 #include "ut_types.h"
-#include "ut_vector.h"
+#include "ut_conversion.h"
 #include "ut_xml.h"
 #include "pp_Property.h"
 #include "pt_Types.h"
 
 class PD_Document;
+class PP_Revision;
 
 // the following class holds the state of the view when we set
 // m_iRevisionIndex
@@ -80,8 +81,8 @@ class ABI_EXPORT PP_RevisionState
 class ABI_EXPORT PP_AttrProp
 {
 public:
-	typedef std::unordered_map<std::string, std::string> attributes_t;
-	typedef std::unordered_map<std::string, std::string> properties_t;
+	typedef std::unordered_map<PP_PropName, std::string> attributes_t;
+	typedef std::unordered_map<PP_PropName, std::string> properties_t;
 
 	PP_AttrProp();
 	virtual ~PP_AttrProp();
@@ -92,16 +93,16 @@ public:
 	PP_PropertyVector getAttributes () const;
 	PP_PropertyVector getProperties () const;
 
-	bool	setAttribute(const gchar * szName, const gchar * szValue);
-	bool	setProperty(const std::string &name, const std::string &value);
+	bool	setAttribute(PP_PropName name, const gchar * szValue);
+	bool	setProperty(PP_PropName name, const std::string &value);
 
-	bool	getNthAttribute(int ndx, const gchar *& szName, const gchar *& szValue) const;
-	bool	getNthProperty(int ndx, const gchar *& szName, const gchar *& szValue) const;
+	bool	getNthAttribute(int ndx, PP_PropName& szName, const gchar *& szValue) const;
+	bool	getNthProperty(int ndx, PP_PropName& szName, const gchar *& szValue) const;
 
-	bool getAttribute(const std::string & name, const gchar *& szValue) const;
-	bool getProperty(const std::string & name, const gchar *& szValue) const;
+	bool getAttribute(PP_PropName name, const gchar *& szValue) const;
+	bool getProperty(PP_PropName name, const gchar *& szValue) const;
 
-	std::unique_ptr<PP_PropertyType> getPropertyType(const gchar * szName, tProperty_type Type) const;
+	std::unique_ptr<PP_PropertyType> getPropertyType(PP_PropName szName, tProperty_type Type) const;
 
 	bool hasProperties(void) const;
 	bool hasAttributes(void) const;
@@ -174,6 +175,26 @@ protected:
 };
 
 
+template <typename T>
+T PP_getAttributeTyped(const PP_AttrProp *pAP,
+					   PP_PropName name,
+					   T def)
+{
+    const gchar * pAttrValue = NULL;
+    if (pAP->getAttribute( name, pAttrValue)) {
+        return toType<T>(pAttrValue);
+    }
+    return def;
+}
+
+template <typename T>
+T PP_getAttributeTyped(const PP_Revision* pAP,
+					   PP_PropName name,
+					   T def)
+{
+    return PP_getAttributeTyped((const PP_AttrProp*)pAP, name, def);
+}
+
 
 /// Turn a PP_PropertyVector into a style string as used by the "props"
 /// attributes.
@@ -195,21 +216,21 @@ PP_PropertyVector PP_cloneAndDecodeAttributes (const gchar ** attrs);
 
 // XXX ineficient
 /// Tell if the attribute name is in the vector.
-ABI_EXPORT bool PP_hasAttribute(const char* name, const PP_PropertyVector & atts);
+ABI_EXPORT bool PP_hasAttribute(PP_PropName name, const PP_PropertyVector & atts);
 
 // XXX ineficient
-ABI_EXPORT const std::string & PP_getAttribute(const char* name, const PP_PropertyVector & atts);
+ABI_EXPORT const std::string & PP_getAttribute(PP_PropName name, const PP_PropertyVector & atts);
 
 // XXX ineficient
 /// Set the attribute %name to %value if it exists
 /// \retval Return true is the property was set.
-bool PP_setAttribute(const char* name, const std::string & value, PP_PropertyVector & atts);
+bool PP_setAttribute(PP_PropName name, const std::string & value, PP_PropertyVector & atts);
 
 // XXX ineficient
 /// Set the attribute %name or add it.
-void PP_addOrSetAttribute(const char* name, const std::string & value, PP_PropertyVector & atts);
+void PP_addOrSetAttribute(PP_PropName name, const std::string & value, PP_PropertyVector & atts);
 
 // XXX ineficient
-bool PP_removeAttribute(const char* name, PP_PropertyVector & atts);
+bool PP_removeAttribute(PP_PropName name, PP_PropertyVector & atts);
 
 #endif /* PP_ATTRPROP_H */

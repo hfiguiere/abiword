@@ -83,7 +83,7 @@ void fp_DirectionMarkerRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 	}
 	const gchar* pRevision = NULL;
 
-	if(pBlockAP && pBlockAP->getAttribute("revision", pRevision))
+	if(pBlockAP && pBlockAP->getAttribute(_PN("revision"), pRevision))
 	{
 		_setRevisions(std::unique_ptr<PP_RevisionAttr>(new PP_RevisionAttr(pRevision)));
 	}

@@ -208,7 +208,7 @@ bool IE_Imp_Text::_insertBlock()
 	{
 	    // text gets applied in the Normal style
 	    const PP_PropertyVector propsArray = {
-	        "style", "Normal"
+	        { "style", "Normal" }
 	    };
 
 	    ret = appendStrux(PTX_Block, propsArray);
@@ -270,7 +270,7 @@ bool IE_Imp_Text::_insertSpan(UT_GrowBuf &b)
 					props += "ltr;text-align:left";
 
 				const PP_PropertyVector propsArray = {
-					"props", props
+					{ "props", props }
 				};
 				// we need to modify the existing formatting ...
 				if(m_pBlock == NULL)
@@ -785,7 +785,7 @@ UT_Error IE_Imp_Text::_writeHeader(GsfInput * /* fp */)
 {
 	// text gets applied in the Normal style
 	const PP_PropertyVector propsArray = {
-		"style", "Normal"
+		{ "style", "Normal" }
 	};
 
 	X_ReturnNoMemIfError(appendStrux(PTX_Section, PP_NOPROPS));

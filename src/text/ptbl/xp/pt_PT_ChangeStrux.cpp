@@ -156,7 +156,7 @@ bool pt_PieceTable::changeStruxFmt(PTChangeFmt ptc,
 							// get attributes for this fragement
 							const PP_AttrProp * pAP;
 							const gchar * pRevision = NULL;
-							const gchar name[] = "revision";
+							PP_PropName name("revision");
 
 							if(getAttrProp(pfs->getIndexAP(),&pAP))
 							{
@@ -194,7 +194,7 @@ bool pt_PieceTable::changeStruxFmt(PTChangeFmt ptc,
 							Revisions.addRevision(m_pDocument->getRevisionId(), PP_REVISION_FMT_CHANGE, attrs, props);
 
 							const PP_PropertyVector ppRevAttrib = {
-								name, Revisions.getXMLstring()
+								{ name, Revisions.getXMLstring() }
 							};
 							bResult = _fmtChangeStruxWithNotify(revPtc, pfs, ppRevAttrib, PP_NOPROPS,false);
 							UT_return_val_if_fail (bResult,false);
@@ -351,12 +351,14 @@ bool pt_PieceTable::_realChangeStruxForLists(pf_Frag_Strux* sdh,
 	pf_Frag_Strux * pfs = (pf_Frag_Strux *) sdh;
 	PTStruxType pts = pfs->getStruxType();
 
-	const char * attributes[3] = {PT_PARENTID_ATTRIBUTE_NAME,pszParentID,NULL};
+	PP_PropertyVector attributes = {
+		{ PT_PARENTID_ATTRIBUTE_NAME, pszParentID }
+	};
 
 	PT_AttrPropIndex indexNewAP;
 	PT_AttrPropIndex indexOldAP = pfs->getIndexAP();
 	UT_DebugOnly<bool> bMerged;
-	bMerged = m_varset.mergeAP(PTC_AddFmt, indexOldAP, PP_std_copyProps(attributes), PP_NOPROPS, &indexNewAP, getDocument());
+	bMerged = m_varset.mergeAP(PTC_AddFmt, indexOldAP, attributes, PP_NOPROPS, &indexNewAP, getDocument());
 	UT_ASSERT_HARMLESS(bMerged);
 	xxx_UT_DEBUGMSG(("Merging atts/props oldindex=%d , newindex =%d \n",indexOldAP,indexNewAP));
 	if (indexOldAP == indexNewAP)		// the requested change will have no effect on this fragment.
@@ -594,12 +596,9 @@ bool pt_PieceTable::_realChangeStruxFmt(PTChangeFmt ptc,
 		// Changing block style should not affect character styles
 		PP_PropertyVector attrSpan = attributes;
 
-		ASSERT_PV_SIZE(attrSpan);
-
-		for(auto iter = attrSpan.begin(); iter != attrSpan.end();
-			iter += 2) {
-			if (*iter == PT_STYLE_ATTRIBUTE_NAME) {
-				attrSpan.erase(iter, iter + 2);
+		for(auto iter = attrSpan.begin(); iter != attrSpan.end(); iter++) {
+			if (iter->name == PT_STYLE_ATTRIBUTE_NAME) {
+				attrSpan.erase(iter, iter + 1);
 				break;
 			}
 		}

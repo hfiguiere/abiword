@@ -2,7 +2,7 @@
 
 /* AbiWord
 * Copyright (C) 2011 Volodymyr Rudyj <vladimir.rudoy@gmail.com>
-* Copyright (C) 2007, 2009 Hubert Figuiere
+* Copyright (C) 2007, 2009-2021 Hubert Figuiere
 * Copyright (C) 2003-2005 Mark Gilbert <mg_abimail@yahoo.com>
 * Copyright (C) 2002, 2004 Francis James Franklin <fjf@alinameridon.com>
 * Copyright (C) 2001-2002 AbiSource, Inc.
@@ -183,7 +183,7 @@ bool IE_Exp_HTML_Listener::populate(fl_ContainerLayout* /*sfh*/, const PX_Change
             m_pDocument->getAttrProp(api, &pAP);
             const gchar* pValue = NULL;
 
-            if (pAP && pAP->getAttribute("type", pValue) && pValue 
+            if (pAP && pAP->getAttribute(_PN("type"), pValue) && pValue 
 				&& (strcmp(pValue, "start") == 0))
             {
                 _openBookmark(api);
@@ -204,7 +204,7 @@ bool IE_Exp_HTML_Listener::populate(fl_ContainerLayout* /*sfh*/, const PX_Change
             m_pDocument->getAttrProp(api, &pAP);
             const gchar* pValue = NULL;
 
-            if (pAP && pAP->getAttribute("xlink:href", pValue) && pValue)
+            if (pAP && pAP->getAttribute(_PN("xlink:href"), pValue) && pValue)
             {
                 _openHyperlink(api);
             }
@@ -283,9 +283,9 @@ bool IE_Exp_HTML_Listener::populateStrux(pf_Frag_Strux* sdh,
     //         if( AP )
     //         {
     //             const gchar * v = NULL;
-    //             if(AP->getAttribute("xml:id", v))
+    //             if(AP->getAttribute(_PN("xml:id"), v))
     //                 UT_DEBUGMSG(("TESTING AAA ... xmlid:%s\n",v));
-    //             if(AP->getAttribute("props", v))
+    //             if(AP->getAttribute(_PN("props"), v))
     //                 UT_DEBUGMSG(("TESTING AAA ... props:%s\n",v));
     //         }
     //         api = pcr->getIndexAP();
@@ -293,9 +293,9 @@ bool IE_Exp_HTML_Listener::populateStrux(pf_Frag_Strux* sdh,
     //         if( AP )
     //         {
     //             const gchar * v = NULL;
-    //             if(AP->getAttribute("xml:id", v))
+    //             if(AP->getAttribute(_PN("xml:id"), v))
     //                 UT_DEBUGMSG(("TESTING AAA2 ... xmlid:%s\n",v));
-    //             if(AP->getAttribute("props", v))
+    //             if(AP->getAttribute(_PN("props"), v))
     //                 UT_DEBUGMSG(("TESTING AAA2 ... props:%s\n",v));
     //         }
     //     }
@@ -856,16 +856,16 @@ void IE_Exp_HTML_Listener::_openSpan(PT_AttrPropIndex api)
 	const gchar * szP_BgColor = nullptr;
 	const gchar * szP_Display = nullptr;
 
-	pAP->getProperty("font-weight", szP_FontWeight);
-	pAP->getProperty("font-style", szP_FontStyle);
-	pAP->getProperty("font-size", szP_FontSize);
-	pAP->getProperty("font-family", szP_FontFamily);
-	pAP->getProperty("text-decoration", szP_TextDecoration);
-	pAP->getProperty("text-position", szP_TextPosition);
-	pAP->getProperty("text-transform", szP_TextTransform);
-	pAP->getProperty("color", szP_Color);
-	pAP->getProperty("bgcolor", szP_BgColor);
-	pAP->getProperty("display", szP_Display);
+	pAP->getProperty(_PN("font-weight"), szP_FontWeight);
+	pAP->getProperty(_PN("font-style"), szP_FontStyle);
+	pAP->getProperty(_PN("font-size"), szP_FontSize);
+	pAP->getProperty(_PN("font-family"), szP_FontFamily);
+	pAP->getProperty(_PN("text-decoration"), szP_TextDecoration);
+	pAP->getProperty(_PN("text-position"), szP_TextPosition);
+	pAP->getProperty(_PN("text-transform"), szP_TextTransform);
+	pAP->getProperty(_PN("color"), szP_Color);
+	pAP->getProperty(_PN("bgcolor"), szP_BgColor);
+	pAP->getProperty(_PN("display"), szP_Display);
 
 	UT_UTF8String style;
 	UT_UTF8String tmp;
@@ -1061,16 +1061,16 @@ void IE_Exp_HTML_Listener::_openBlock(PT_AttrPropIndex api)
 	const gchar * szP_MarginRight = nullptr;
 	const gchar * szP_TextIndent = nullptr;
 
-	pAP->getProperty("text-align", szP_TextAlign);
-	pAP->getProperty("margin-bottom", szP_MarginBottom);
-	pAP->getProperty("margin-top", szP_MarginTop);
-	pAP->getProperty("margin-right", szP_MarginRight);
+	pAP->getProperty(_PN("text-align"), szP_TextAlign);
+	pAP->getProperty(_PN("margin-bottom"), szP_MarginBottom);
+	pAP->getProperty(_PN("margin-top"), szP_MarginTop);
+	pAP->getProperty(_PN("margin-right"), szP_MarginRight);
 
-	if (pAP->getProperty("margin-left", szP_MarginLeft))
+	if (pAP->getProperty(_PN("margin-left"), szP_MarginLeft))
 		if (strstr(szP_MarginLeft, "0.0000"))
 			szP_MarginLeft = nullptr;
 
-	if (pAP->getProperty("text-indent", szP_TextIndent))
+	if (pAP->getProperty(_PN("text-indent"), szP_TextIndent))
 		if (strstr(szP_TextIndent, "0.0000"))
 			szP_TextIndent = nullptr;
 
@@ -1191,10 +1191,10 @@ void IE_Exp_HTML_Listener::_openSection(PT_AttrPropIndex api, bool recursiveCall
 	const char* pszRightMargin = NULL;
 	const char* pszTopMargin = NULL;
 	const char* pszBottomMargin = NULL;
-	pAP->getProperty("page-margin-left", (const gchar *&)pszLeftMargin);
-	pAP->getProperty("page-margin-right", (const gchar *&)pszRightMargin);
-	pAP->getProperty("page-margin-top", (const gchar *&)pszTopMargin);
-	pAP->getProperty("page-margin-bottom", (const gchar *&)pszBottomMargin);
+	pAP->getProperty(_PN("page-margin-left"), (const gchar *&)pszLeftMargin);
+	pAP->getProperty(_PN("page-margin-right"), (const gchar *&)pszRightMargin);
+	pAP->getProperty(_PN("page-margin-top"), (const gchar *&)pszTopMargin);
+	pAP->getProperty(_PN("page-margin-bottom"), (const gchar *&)pszBottomMargin);
 	
 	if(pszLeftMargin && pszLeftMargin[0])
 	{
@@ -1271,7 +1271,7 @@ void IE_Exp_HTML_Listener::_openField(const PX_ChangeRecord_Object* pcro,
     UT_UTF8String fieldType;
     const gchar * szValue = NULL;
 
-    UT_return_if_fail(pAP->getAttribute("type", szValue) && szValue);
+    UT_return_if_fail(pAP->getAttribute(_PN("type"), szValue) && szValue);
     fieldType = szValue;
     
     if (fieldType != "list_label")
@@ -1426,7 +1426,7 @@ void IE_Exp_HTML_Listener::_openTable(PT_AttrPropIndex api, bool recursiveCall)
 	//UT_sint32 cellPadding = 0;
 	UT_UTF8String styles;
 
-	const char * prop = m_tableHelper.getTableProp ("table-line-thickness");
+	const char * prop = m_tableHelper.getTableProp(_PN("table-line-thickness"));
 
 	UT_sint32 border = 0;
 
@@ -1446,12 +1446,12 @@ void IE_Exp_HTML_Listener::_openTable(PT_AttrPropIndex api, bool recursiveCall)
 	const gchar * pszRightOffset = nullptr;
 	const gchar * pszBottomOffset = nullptr;
 
-	pSectionAP->getProperty ("cell-margin-left",   pszLeftOffset);
-	pSectionAP->getProperty ("cell-margin-top",    pszTopOffset);
-	pSectionAP->getProperty ("cell-margin-right",  pszRightOffset);
-	pSectionAP->getProperty ("cell-margin-bottom", pszBottomOffset);
+	pSectionAP->getProperty(_PN("cell-margin-left"),   pszLeftOffset);
+	pSectionAP->getProperty(_PN("cell-margin-top"),    pszTopOffset);
+	pSectionAP->getProperty(_PN("cell-margin-right"),  pszRightOffset);
+	pSectionAP->getProperty(_PN("cell-margin-bottom"), pszBottomOffset);
 #endif
-	const char * pszWidth = m_tableHelper.getTableProp ("width");
+	const char * pszWidth = m_tableHelper.getTableProp(_PN("width"));
 	if (m_bAbsUnits) {
 		if (pszWidth) {
 			if (styles.byteLength ()) styles += ";";
@@ -1483,9 +1483,9 @@ void IE_Exp_HTML_Listener::_openTable(PT_AttrPropIndex api, bool recursiveCall)
 		styles += "width:100%";
 	}
 
-	const char * pszBgColor = m_tableHelper.getTableProp ("bgcolor");
+	const char * pszBgColor = m_tableHelper.getTableProp(_PN("bgcolor"));
 	if (pszBgColor == NULL)
-		pszBgColor = m_tableHelper.getTableProp ("background-color");
+		pszBgColor = m_tableHelper.getTableProp(_PN("background-color"));
 	if (pszBgColor)
 	{
 		if (styles.byteLength ()) styles += ";";
@@ -1501,7 +1501,7 @@ void IE_Exp_HTML_Listener::_openTable(PT_AttrPropIndex api, bool recursiveCall)
 
 	const char * pszBorderColor = NULL;
 
-	pszBorderColor = m_tableHelper.getTableProp ("color");
+	pszBorderColor = m_tableHelper.getTableProp(_PN("color"));
 	if (pszBorderColor)
 	{
 		if (styles.byteLength ()) styles += ";";
@@ -1523,7 +1523,7 @@ void IE_Exp_HTML_Listener::_openTable(PT_AttrPropIndex api, bool recursiveCall)
 	UT_UTF8String sC[4];
 	UT_UTF8String sS[4];
 	
-	pszBorderColor = m_tableHelper.getTableProp ("bot-color");
+	pszBorderColor = m_tableHelper.getTableProp(_PN("bot-color"));
 	if (pszBorderColor)
 	{
 		UT_HashColor color;
@@ -1533,7 +1533,7 @@ void IE_Exp_HTML_Listener::_openTable(PT_AttrPropIndex api, bool recursiveCall)
 		else
 			sC[3]= pszBorderColor;
 	}
-	pszBorderColor = m_tableHelper.getTableProp ("left-color");
+	pszBorderColor = m_tableHelper.getTableProp(_PN("left-color"));
 	if (pszBorderColor)
 	{
 		UT_HashColor color;
@@ -1543,7 +1543,7 @@ void IE_Exp_HTML_Listener::_openTable(PT_AttrPropIndex api, bool recursiveCall)
 		else
 			sC[0] = pszBorderColor;
 	}
-	pszBorderColor = m_tableHelper.getTableProp ("right-color");
+	pszBorderColor = m_tableHelper.getTableProp(_PN("right-color"));
 	if (pszBorderColor)
 	{
 		UT_HashColor color;
@@ -1553,7 +1553,7 @@ void IE_Exp_HTML_Listener::_openTable(PT_AttrPropIndex api, bool recursiveCall)
 		else
 			sC[1] = pszBorderColor;
 	}
-	pszBorderColor = m_tableHelper.getTableProp ("top-color");
+	pszBorderColor = m_tableHelper.getTableProp(_PN("top-color"));
 	if (pszBorderColor)
 	{
 		UT_HashColor color;
@@ -1566,22 +1566,22 @@ void IE_Exp_HTML_Listener::_openTable(PT_AttrPropIndex api, bool recursiveCall)
 
 	const char * pszBorderStyle = NULL;
 
-	pszBorderStyle = m_tableHelper.getTableProp ("bot-style");
+	pszBorderStyle = m_tableHelper.getTableProp(_PN("bot-style"));
 	if (pszBorderStyle)
 	{
 		sS[3]= PP_PropertyMap::linestyle_for_CSS (pszBorderStyle);
 	}
-	pszBorderStyle = m_tableHelper.getTableProp ("left-style");
+	pszBorderStyle = m_tableHelper.getTableProp(_PN("left-style"));
 	if (pszBorderStyle)
 	{
 		sS[0] = PP_PropertyMap::linestyle_for_CSS (pszBorderStyle);
 	}
-	pszBorderStyle = m_tableHelper.getTableProp ("right-style");
+	pszBorderStyle = m_tableHelper.getTableProp(_PN("right-style"));
 	if (pszBorderStyle)
 	{
 		sS[1] = PP_PropertyMap::linestyle_for_CSS (pszBorderStyle);
 	}
-	pszBorderStyle = m_tableHelper.getTableProp ("top-style");
+	pszBorderStyle = m_tableHelper.getTableProp(_PN("top-style"));
 	if (pszBorderStyle)
 	{
 		sS[2] = PP_PropertyMap::linestyle_for_CSS (pszBorderStyle);
@@ -1589,7 +1589,7 @@ void IE_Exp_HTML_Listener::_openTable(PT_AttrPropIndex api, bool recursiveCall)
 
 	const char * pszBorderWidth = NULL;
 
-	pszBorderWidth = m_tableHelper.getTableProp ("bot-thickness");
+	pszBorderWidth = m_tableHelper.getTableProp(_PN("bot-thickness"));
 	if (pszBorderWidth)
 	{
 		dB[3] = UT_convertToDimension(pszBorderWidth, DIM_PT);
@@ -1597,7 +1597,7 @@ void IE_Exp_HTML_Listener::_openTable(PT_AttrPropIndex api, bool recursiveCall)
 	}
 	else
 		sB[3] += border_default;
-	pszBorderWidth = m_tableHelper.getTableProp ("left-thickness");
+	pszBorderWidth = m_tableHelper.getTableProp(_PN("left-thickness"));
 	if (pszBorderWidth)
 	{
 		dB[0] = UT_convertToDimension(pszBorderWidth, DIM_PT);
@@ -1605,7 +1605,7 @@ void IE_Exp_HTML_Listener::_openTable(PT_AttrPropIndex api, bool recursiveCall)
 	}
 	else
 		sB[0] = border_default;
-	pszBorderWidth = m_tableHelper.getTableProp ("right-thickness");
+	pszBorderWidth = m_tableHelper.getTableProp(_PN("right-thickness"));
 	if (pszBorderWidth)
 	{
 		dB[1] = UT_convertToDimension(pszBorderWidth, DIM_PT);
@@ -1613,7 +1613,7 @@ void IE_Exp_HTML_Listener::_openTable(PT_AttrPropIndex api, bool recursiveCall)
 	}
 	else
 		sB[1] = border_default;
-	pszBorderWidth = m_tableHelper.getTableProp ("top-thickness");
+	pszBorderWidth = m_tableHelper.getTableProp(_PN("top-thickness"));
 	if (pszBorderWidth)
 	{
 		dB[2] = UT_convertToDimension(pszBorderWidth, DIM_PT);
@@ -1863,8 +1863,8 @@ void IE_Exp_HTML_Listener::_openCell(PT_AttrPropIndex api, bool recursiveCall)
 	_setCellWidthInches();
 	double dColSpacePT = 0;
 	double dRowSpacePT = 0;
-	const gchar * pszTableColSpacing = m_tableHelper.getTableProp("table-col-spacing");
-	const gchar * pszTableRowSpacing = m_tableHelper.getTableProp("table-row-spacing");
+	const gchar * pszTableColSpacing = m_tableHelper.getTableProp(_PN("table-col-spacing"));
+	const gchar * pszTableRowSpacing = m_tableHelper.getTableProp(_PN("table-row-spacing"));
 
 	if (pszTableColSpacing)
 		dColSpacePT = UT_convertToDimension(pszTableColSpacing, DIM_PT);
@@ -1884,9 +1884,9 @@ void IE_Exp_HTML_Listener::_openCell(PT_AttrPropIndex api, bool recursiveCall)
 	UT_sint32 rowspan = m_tableHelper.getBot() - m_tableHelper.getTop();
 	UT_sint32 colspan = m_tableHelper.getRight() - m_tableHelper.getLeft();
 
-	const char * pszBgColor = m_tableHelper.getCellProp("bgcolor");
+	const char * pszBgColor = m_tableHelper.getCellProp(_PN("bgcolor"));
 	if (pszBgColor == NULL)
-		pszBgColor = m_tableHelper.getCellProp("background-color");
+		pszBgColor = m_tableHelper.getCellProp(_PN("background-color"));
 	if (pszBgColor) {
 		if (styles.byteLength()) styles += ";";
 		styles += "background-color:";
@@ -1901,7 +1901,7 @@ void IE_Exp_HTML_Listener::_openCell(PT_AttrPropIndex api, bool recursiveCall)
 
 	const char * pszBorderColor = NULL;
 
-	pszBorderColor = m_tableHelper.getCellProp("color");
+	pszBorderColor = m_tableHelper.getCellProp(_PN("color"));
 	if (pszBorderColor) {
 		if (styles.byteLength()) styles += ";";
 		styles += "color:";
@@ -1922,7 +1922,7 @@ void IE_Exp_HTML_Listener::_openCell(PT_AttrPropIndex api, bool recursiveCall)
 	UT_UTF8String sC[4];
 	UT_UTF8String sS[4];
 
-	pszBorderColor = m_tableHelper.getCellProp("bot-color");
+	pszBorderColor = m_tableHelper.getCellProp(_PN("bot-color"));
 	if (pszBorderColor) {
 		UT_HashColor color;
 		const char * hash = color.setHashIfValid(pszBorderColor);
@@ -1931,7 +1931,7 @@ void IE_Exp_HTML_Listener::_openCell(PT_AttrPropIndex api, bool recursiveCall)
 		else
 			sC[3] = pszBorderColor;
 	}
-	pszBorderColor = m_tableHelper.getCellProp("left-color");
+	pszBorderColor = m_tableHelper.getCellProp(_PN("left-color"));
 	if (pszBorderColor) {
 		UT_HashColor color;
 		const char * hash = color.setHashIfValid(pszBorderColor);
@@ -1940,7 +1940,7 @@ void IE_Exp_HTML_Listener::_openCell(PT_AttrPropIndex api, bool recursiveCall)
 		else
 			sC[0] = pszBorderColor;
 	}
-	pszBorderColor = m_tableHelper.getCellProp("right-color");
+	pszBorderColor = m_tableHelper.getCellProp(_PN("right-color"));
 	if (pszBorderColor) {
 		UT_HashColor color;
 		const char * hash = color.setHashIfValid(pszBorderColor);
@@ -1949,7 +1949,7 @@ void IE_Exp_HTML_Listener::_openCell(PT_AttrPropIndex api, bool recursiveCall)
 		else
 			sC[1] = pszBorderColor;
 	}
-	pszBorderColor = m_tableHelper.getCellProp("top-color");
+	pszBorderColor = m_tableHelper.getCellProp(_PN("top-color"));
 	if (pszBorderColor) {
 		UT_HashColor color;
 		const char * hash = color.setHashIfValid(pszBorderColor);
@@ -1961,41 +1961,41 @@ void IE_Exp_HTML_Listener::_openCell(PT_AttrPropIndex api, bool recursiveCall)
 
 	const char * pszBorderStyle = NULL;
 
-	pszBorderStyle = m_tableHelper.getCellProp("bot-style");
+	pszBorderStyle = m_tableHelper.getCellProp(_PN("bot-style"));
 	if (pszBorderStyle) {
 		sS[3] = PP_PropertyMap::linestyle_for_CSS(pszBorderStyle);
 	}
-	pszBorderStyle = m_tableHelper.getCellProp("left-style");
+	pszBorderStyle = m_tableHelper.getCellProp(_PN("left-style"));
 	if (pszBorderStyle) {
 		sS[0] = PP_PropertyMap::linestyle_for_CSS(pszBorderStyle);
 	}
-	pszBorderStyle = m_tableHelper.getCellProp("right-style");
+	pszBorderStyle = m_tableHelper.getCellProp(_PN("right-style"));
 	if (pszBorderStyle) {
 		sS[1] = PP_PropertyMap::linestyle_for_CSS(pszBorderStyle);
 	}
-	pszBorderStyle = m_tableHelper.getCellProp("top-style");
+	pszBorderStyle = m_tableHelper.getCellProp(_PN("top-style"));
 	if (pszBorderStyle) {
 		sS[2] = PP_PropertyMap::linestyle_for_CSS(pszBorderStyle);
 	}
 
 	const char * pszBorderWidth = NULL;
 
-	pszBorderWidth = m_tableHelper.getCellProp("bot-thickness");
+	pszBorderWidth = m_tableHelper.getCellProp(_PN("bot-thickness"));
 	if (pszBorderWidth) {
 		dB[3] = UT_convertToDimension(pszBorderWidth, DIM_PT);
 		sB[3] = UT_UTF8String_sprintf("%.2fpt", dB[3]);
 	}
-	pszBorderWidth = m_tableHelper.getCellProp("left-thickness");
+	pszBorderWidth = m_tableHelper.getCellProp(_PN("left-thickness"));
 	if (pszBorderWidth) {
 		dB[0] = UT_convertToDimension(pszBorderWidth, DIM_PT);
 		sB[0] = UT_UTF8String_sprintf("%.2fpt", dB[0]);
 	}
-	pszBorderWidth = m_tableHelper.getCellProp("right-thickness");
+	pszBorderWidth = m_tableHelper.getCellProp(_PN("right-thickness"));
 	if (pszBorderWidth) {
 		dB[1] = UT_convertToDimension(pszBorderWidth, DIM_PT);
 		sB[1] = UT_UTF8String_sprintf("%.2fpt", dB[1]);
 	}
-	pszBorderWidth = m_tableHelper.getCellProp("top-thickness");
+	pszBorderWidth = m_tableHelper.getCellProp(_PN("top-thickness"));
 	if (pszBorderWidth) {
 		dB[2] = UT_convertToDimension(pszBorderWidth, DIM_PT);
 		sB[2] = UT_UTF8String_sprintf("%.2fpt", dB[2]);
@@ -2255,7 +2255,7 @@ void IE_Exp_HTML_Listener::_openList(PT_AttrPropIndex api, bool recursiveCall)
     else
     {
         const gchar* szListStyle = NULL;
-        pAP->getProperty("list-style", szListStyle);
+        pAP->getProperty(_PN("list-style"), szListStyle);
         bool isOrdered = szListStyle
 			&& (g_ascii_strcasecmp(szListStyle, "Bullet List") != 0);
 #ifdef DEBUG
@@ -2365,7 +2365,7 @@ void IE_Exp_HTML_Listener::_openFrame(PT_AttrPropIndex api, const PX_ChangeRecor
     }
     
     const gchar *szType;
-    if (pAP->getProperty("frame-type", szType))
+    if (pAP->getProperty(_PN("frame-type"), szType))
     {
         if (!strcmp(szType, "textbox"))
         {
@@ -2486,7 +2486,7 @@ void IE_Exp_HTML_Listener::_insertTOC(PT_AttrPropIndex api)
 
     const gchar *pValue = nullptr;
     bool hasHeading = true; // AbiWord's default
-    ok = pAP->getProperty("toc-has-heading", pValue);
+    ok = pAP->getProperty(_PN("toc-has-heading"), pValue);
     if (ok && pValue)
     {
         hasHeading = (*pValue == '1');
@@ -2494,14 +2494,14 @@ void IE_Exp_HTML_Listener::_insertTOC(PT_AttrPropIndex api)
 
     // determine the style of the TOC heading
     UT_UTF8String headingStyle;
-    ok = pAP->getProperty("toc-heading-style", pValue);
+    ok = pAP->getProperty(_PN("toc-heading-style"), pValue);
     if (ok && pValue)
     {
         headingStyle = pValue;
     }
     else
     {
-        const PP_Property* pProp = PP_lookupProperty("toc-heading-style");
+        const PP_Property* pProp = PP_lookupProperty(_PN("toc-heading-style"));
         UT_ASSERT_HARMLESS(pProp);
         if (pProp)
             headingStyle = pProp->getInitial();
@@ -2509,7 +2509,7 @@ void IE_Exp_HTML_Listener::_insertTOC(PT_AttrPropIndex api)
 
     std::string szTOCHeading;
     pValue = nullptr;
-    ok = pAP->getProperty("toc-heading", pValue);
+    ok = pAP->getProperty(_PN("toc-heading"), pValue);
     if (ok && pValue) {
         szTOCHeading = pValue;
     } else {
@@ -2569,7 +2569,7 @@ void IE_Exp_HTML_Listener::_openBookmark(PT_AttrPropIndex api)
     if (ok && pAP)
     {
         const gchar* pValue = NULL;
-        if (pAP->getAttribute("name", pValue) && pValue)
+        if (pAP->getAttribute(_PN("name"), pValue) && pValue)
         {
             m_bookmarkName = pValue;
             m_pCurrentImpl->openBookmark(pValue);
@@ -2610,7 +2610,7 @@ void IE_Exp_HTML_Listener::_openHyperlink(PT_AttrPropIndex api)
         m_bInHyperlink = true;
 
         const gchar *szEscapedUrl = NULL;
-        const gchar *szUrl = _getObjectKey(api, "xlink:href");
+        const gchar *szUrl = _getObjectKey(api, _PN("xlink:href"));
         UT_UTF8String url = szUrl;
         if (szUrl != NULL)
         {
@@ -2672,16 +2672,17 @@ void IE_Exp_HTML_Listener::_openTextbox(PT_AttrPropIndex api)
         // TODO: { abiprop, cssprop }.  It would still require that the units used for both specs be compatible.
         //
         //	TODO: Take care of padding as well.
-        const gchar * propNames[20] = {"bot-thickness", "border-bottom-width",
-            "top-thickness", "border-top-width",
-            "right-thickness", "border-right-width",
-            "left-thickness", "border-left-width",
-            "bot-color", "border-bottom-color",
-            "top-color", "border-top-color",
-            "right-color", "border-right-color",
-            "left-color", "border-left-color",
-            "background-color", "background-color",
-            NULL, NULL}; // [AbiWord property name, CSS21 property name]
+        const PP_PropName propNames[18] = {
+			_PN("bot-thickness"), _PN("border-bottom-width"),
+            _PN("top-thickness"), _PN("border-top-width"),
+            _PN("right-thickness"), _PN("border-right-width"),
+            _PN("left-thickness"), _PN("border-left-width"),
+            _PN("bot-color"), _PN("border-bottom-color"),
+            _PN("top-color"), _PN("border-top-color"),
+            _PN("right-color"), _PN("border-right-color"),
+            _PN("left-color"), _PN("border-left-color"),
+            _PN("background-color"), _PN("background-color")
+		}; // [AbiWord property name, CSS21 property name]
         const gchar * tempProp = nullptr;
         UT_UTF8String style;
 
@@ -2689,16 +2690,17 @@ void IE_Exp_HTML_Listener::_openTextbox(PT_AttrPropIndex api)
         {
             if (pAP->getProperty(propNames[propIdx], tempProp)) // If we successfully retrieve a value (IOW, it's defined)
             {
-                style += propNames[propIdx + 1]; // Add the property name of the CSS equivalent
+                style += propNames[propIdx + 1].c_str(); // Add the property name of the CSS equivalent
                 style += ": "; // Don't ask (:
-                if (strstr(propNames[propIdx + 1], "color")) style += "#"; // AbiWord tends to store colors as hex, which must be prefixed by # in CSS
+                if (strstr(propNames[propIdx + 1].c_str(), "color"))
+					style += "#"; // AbiWord tends to store colors as hex, which must be prefixed by # in CSS
                 style += tempProp; // Add the value
                 style += "; "; // Terminate the property
             }
         }
 
 
-        //pAP->getProperty("bot-style", tempProp); // Get the bottom border style
+        //pAP->getProperty(_PN("bot-style"), tempProp); // Get the bottom border style
         //<...>
         // We don't do this right now because we don't support multiple styles right now.
         // See bug 7935.  Until we support multiple styles, it is sufficient to set all solid.
@@ -2708,7 +2710,7 @@ void IE_Exp_HTML_Listener::_openTextbox(PT_AttrPropIndex api)
         // occurred in 2.3.
 
         // Get the wrap mode
-        if (!pAP->getProperty("wrap-mode", tempProp) || !tempProp || !*tempProp)
+        if (!pAP->getProperty(_PN("wrap-mode"), tempProp) || !tempProp || !*tempProp)
             tempProp = "wrapped-both"; // this seems like a sane default
 
         if (!strcmp(tempProp, "wrapped-both"))
@@ -2741,7 +2743,7 @@ void IE_Exp_HTML_Listener::_closeTextbox()
  * 
  */
 const gchar* IE_Exp_HTML_Listener::_getObjectKey(const PT_AttrPropIndex& api,
-                                                 const gchar* key)
+                                                 PP_PropName key)
 {
     const PP_AttrProp * pAP = NULL;
     bool bHaveProp = m_pDocument->getAttrProp(api, &pAP);
@@ -2771,7 +2773,7 @@ void IE_Exp_HTML_Listener::_insertImage(PT_AttrPropIndex api)
     }
 
     szDataId =
-            _getObjectKey(api, static_cast<const gchar*> ("dataid"));
+            _getObjectKey(api, _PN("dataid"));
     _handleImage(api, szDataId, false);
 }
 
@@ -2792,7 +2794,7 @@ void IE_Exp_HTML_Listener::_insertEmbeddedImage(PT_AttrPropIndex api)
     }
 
     szDataId =
-            _getObjectKey(api, static_cast<const gchar*> ("dataid"));
+            _getObjectKey(api, _PN("dataid"));
 
     if (szDataId)
     {
@@ -2841,7 +2843,7 @@ void IE_Exp_HTML_Listener::_handleImage(PT_AttrPropIndex api,
 
     const gchar * szTitle = nullptr;
     UT_UTF8String title;
-    pAP->getAttribute("title", szTitle);
+    pAP->getAttribute(_PN("title"), szTitle);
     if (szTitle) {
         title = szTitle;
         title.escapeXML();
@@ -2849,7 +2851,7 @@ void IE_Exp_HTML_Listener::_handleImage(PT_AttrPropIndex api,
 
     const gchar * szAlt = nullptr;
     UT_UTF8String alt;
-    pAP->getAttribute("alt", szAlt);
+    pAP->getAttribute(_PN("alt"), szAlt);
     if (szAlt) {
         alt = szAlt;
         alt.escapeXML();
@@ -2867,13 +2869,13 @@ void IE_Exp_HTML_Listener::_handleImage(PT_AttrPropIndex api,
     if (bIsPositioned) {
         const gchar * szXPos = NULL;
         UT_sint32 ixPos = 0;
-        if (pAP->getProperty("xpos", szXPos)) {
+        if (pAP->getProperty(_PN("xpos"), szXPos)) {
             ixPos = UT_convertToLogicalUnits(szXPos);
         }
-        else if (pAP->getProperty("frame-col-xpos", szXPos)) {
+        else if (pAP->getProperty(_PN("frame-col-xpos"), szXPos)) {
             ixPos = UT_convertToLogicalUnits(szXPos);
         }
-        else if (pAP->getProperty("frame-page-xpos", szXPos)) {
+        else if (pAP->getProperty(_PN("frame-page-xpos"), szXPos)) {
             ixPos = UT_convertToLogicalUnits(szXPos);
         }
         if (ixPos > UT_convertToLogicalUnits("1.0in")) {
@@ -2889,8 +2891,8 @@ void IE_Exp_HTML_Listener::_handleImage(PT_AttrPropIndex api,
     const gchar * szHeight = nullptr;
     double widthPercentage = 0;
     UT_UTF8String style = "";
-    if (!getPropertySize(pAP, !bIsPositioned ? "width" : "frame-width",
-                         "height", &szWidth, widthPercentage, &szHeight,
+    if (!getPropertySize(pAP, !bIsPositioned ? _PN("width") : _PN("frame-width"),
+                         _PN("height"), &szWidth, widthPercentage, &szHeight,
                          m_dPageWidthInches, m_dSecLeftMarginInches, m_dSecRightMarginInches,
                          m_dCellWidthInches, m_tableHelper))
         return;
@@ -2910,7 +2912,7 @@ void IE_Exp_HTML_Listener::_insertMath(PT_AttrPropIndex api)
 {
     
         const gchar* szMath = NULL;
-        szMath = _getObjectKey(api, static_cast<const gchar*>("dataid"));
+        szMath = _getObjectKey(api, _PN("dataid"));
 
         UT_return_if_fail(szMath);
 
@@ -2933,14 +2935,14 @@ void IE_Exp_HTML_Listener::_insertMath(PT_AttrPropIndex api)
 
         UT_return_if_fail(bHaveProp && pAP);
 
-        if(pAP->getProperty("width", szMath)) {
+        if(pAP->getProperty(_PN("width"), szMath)) {
             dWidth = static_cast<double>(atoi(szMath))/UT_LAYOUT_RESOLUTION;
         } else {
             UT_ASSERT_HARMLESS(UT_SHOULD_NOT_HAPPEN);
             return;
         }
 
-        if(pAP->getProperty("height", szMath)) {
+        if(pAP->getProperty(_PN("height"), szMath)) {
             dHeight = static_cast<double>(atoi(szMath))/UT_LAYOUT_RESOLUTION;
         } else {
             UT_ASSERT_HARMLESS(UT_SHOULD_NOT_HAPPEN);
@@ -3006,8 +3008,8 @@ void IE_Exp_HTML_Listener::_handleAnnotationData(PT_AttrPropIndex api)
     const gchar *szAuthor = nullptr;
     if (pAP)
     {
-        pAP->getProperty("annotation-title", szTitle);
-        pAP->getProperty("annotation-author", szAuthor);
+        pAP->getProperty(_PN("annotation-title"), szTitle);
+        pAP->getProperty(_PN("annotation-author"), szAuthor);
     }
     
     m_annotationTitles.push_back(szTitle);
@@ -3024,33 +3026,32 @@ void IE_Exp_HTML_Listener::_makeStylesheet(PT_AttrPropIndex api)
     {
         pAP = NULL;
     }
-	
+
     UT_ByteBuf buffer;
     StyleListener styleListener(buffer);
     m_pStyleTree->print(&styleListener);
-    
+
     m_stylesheet = sStyleSheet; // Stylesheet for TOC`s and so on
 	if( const char* p = reinterpret_cast<const char*>(buffer.getPointer(0)))
 		m_stylesheet += p;
 
 	UT_UTF8String bodyStyle = "body{\n";
-	const gchar* szName = NULL;
+	PP_PropName szName;
 	const gchar* szValue = NULL;
 	// Set margins for paged media to match those set in AbiWord
 	// TODO: consolidate all places of awml-css21 matching into one UT/PP function
-	const gchar * marginProps [10] = {"page-margin-top", "padding-top",
-		"page-margin-bottom", "padding-bottom",
-		"page-margin-left", "padding-left",
-		"page-margin-right", "padding-right",
-		NULL, NULL};
+	const PP_PropName marginProps [8] = {
+		_PN("page-margin-top"), _PN("padding-top"),
+		_PN("page-margin-bottom"), _PN("padding-bottom"),
+		_PN("page-margin-left"), _PN("padding-left"),
+		_PN("page-margin-right"), _PN("padding-right"),
+	};
 	for (unsigned short int propIdx = 0; propIdx < 8; propIdx += 2) {
 		szValue = PP_evalProperty(marginProps[propIdx], nullptr, nullptr, pAP,
 								 m_pDocument, true);
-		bodyStyle += UT_UTF8String_sprintf("%s : %s;\n", 
-										 marginProps[propIdx + 1], szValue);
+		bodyStyle += UT_UTF8String_sprintf("%s : %s;\n",
+										   marginProps[propIdx + 1].c_str(), szValue);
 	}
-
-	
 
 	PD_Style * pStyle = nullptr;
 	m_pDocument->getStyle("Normal", &pStyle);
@@ -3058,37 +3059,40 @@ void IE_Exp_HTML_Listener::_makeStylesheet(PT_AttrPropIndex api)
 	for (UT_uint32 i = 0; i < pStyle->getPropertyCount(); i++) {
 		pStyle->getNthProperty(i, szName, szValue);
 
-		if ((szName == nullptr) || (szValue == nullptr))
+		if (!szName || (szValue == nullptr))
 			continue; // paranoid? moi?
-		if ((*szName == 0) || (*szValue == 0)) continue;
+		if ((*szName.c_str() == 0) || (*szValue == 0))
+			continue;
 
-		if (strstr(szName, "margin")) continue;
-		if (!is_CSS(reinterpret_cast<const char *> (szName))) continue;
+		if (strstr(szName.c_str(), "margin"))
+			continue;
+		if (!is_CSS(szName.c_str()))
+			continue;
 
-		if (strcmp(szName, "font-family") == 0) {
+		if (szName == "font-family") {
 			if ((strcmp(szValue, "serif") == 0) ||
 				(strcmp(szValue, "sans-serif") == 0) ||
 				(strcmp(szValue, "cursive") == 0) ||
 				(strcmp(szValue, "fantasy") == 0) ||
 				(strcmp(szValue, "monospace") == 0)) {
-				value = static_cast<const char *> (szValue);
+				value = szValue;
 			}
 			else {
 				value = "'";
-				value += static_cast<const char *> (szValue);
+				value += szValue;
 				value += "'";
 			}
 		}
-		else if (strcmp(szName, "color") == 0) {
+		else if (szName == "color") {
 			if (IS_TRANSPARENT_COLOR(szValue)) continue;
 
 			value = UT_colorToHex(szValue, true);
 		}
 		else value = static_cast<const char *> (szValue);
 
-		bodyStyle += UT_UTF8String_sprintf("%s:%s;\n", szName, value.utf8_str());
+		bodyStyle += UT_UTF8String_sprintf("%s:%s;\n", szName.c_str(), value.utf8_str());
 	}
-	szValue = PP_evalProperty("background-color", nullptr, nullptr, pAP, m_pDocument, true);
+	szValue = PP_evalProperty(_PN("background-color"), nullptr, nullptr, pAP, m_pDocument, true);
 	if (szValue && *szValue && !IS_TRANSPARENT_COLOR(szValue)) {
 		value= UT_colorToHex(szValue, true);
 
@@ -3128,7 +3132,7 @@ void IE_Exp_HTML_Listener::_fillColWidthsVector()
 	//
 	// Positioned columns controls
 	//
-	const char * pszColumnProps = m_tableHelper.getTableProp("table-column-props");
+	const char * pszColumnProps = m_tableHelper.getTableProp(_PN("table-column-props"));
 	UT_DEBUGMSG(("Number columns in table %d \n",m_tableHelper.getNumCols ()));
 	if(m_vecDWidths.getItemCount() > 0)
 	{

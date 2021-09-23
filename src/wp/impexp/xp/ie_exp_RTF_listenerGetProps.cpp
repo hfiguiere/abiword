@@ -303,7 +303,8 @@ bool s_RTF_ListenerGetProps::populateStrux(pf_Frag_Strux* /*sdh*/,
 
 			const PP_AttrProp * pBlockAP = NULL;
 			m_pDocument->getAttrProp(m_apiThisBlock,&pBlockAP);
-			const gchar * szColor = PP_evalProperty("bot-color",pBlockAP,NULL,NULL,m_pDocument,true);
+			const gchar * szColor = PP_evalProperty(_PN("bot-color"), pBlockAP,
+                                                                NULL, NULL, m_pDocument, true);
 			UT_sint32 ndxColor = 0;
 			if (szColor)
 			{
@@ -311,7 +312,7 @@ bool s_RTF_ListenerGetProps::populateStrux(pf_Frag_Strux* /*sdh*/,
 			    if (ndxColor == -1)
 			      m_pie->_addColor(static_cast<const char*>(szColor));
 			}
-			szColor = PP_evalProperty("left-color",pBlockAP,NULL,NULL,m_pDocument,true);
+			szColor = PP_evalProperty(_PN("left-color"),pBlockAP,NULL,NULL,m_pDocument,true);
 			if (szColor)
 			{
 			    ndxColor = m_pie->_findColor(static_cast<const char*>(szColor));
@@ -319,7 +320,7 @@ bool s_RTF_ListenerGetProps::populateStrux(pf_Frag_Strux* /*sdh*/,
 			      m_pie->_addColor(static_cast<const char*>(szColor));
 			}
 
-			szColor = PP_evalProperty("right-color",pBlockAP,NULL,NULL,m_pDocument,true);
+			szColor = PP_evalProperty(_PN("right-color"),pBlockAP,NULL,NULL,m_pDocument,true);
 			if (szColor)
 			{
 			    ndxColor = m_pie->_findColor(static_cast<const char*>(szColor));
@@ -327,7 +328,7 @@ bool s_RTF_ListenerGetProps::populateStrux(pf_Frag_Strux* /*sdh*/,
 			      m_pie->_addColor(static_cast<const char*>(szColor));
 			}
 
-			szColor = PP_evalProperty("top-color",pBlockAP,NULL,NULL,m_pDocument,true);
+			szColor = PP_evalProperty(_PN("top-color"),pBlockAP,NULL,NULL,m_pDocument,true);
 			if (szColor)
 			{
 			    ndxColor = m_pie->_findColor(static_cast<const char*>(szColor));
@@ -335,7 +336,7 @@ bool s_RTF_ListenerGetProps::populateStrux(pf_Frag_Strux* /*sdh*/,
 			      m_pie->_addColor(static_cast<const char*>(szColor));
 			}
 
-			szColor =  PP_evalProperty("shading-foreground-color",pBlockAP,NULL,NULL,m_pDocument,true);
+			szColor =  PP_evalProperty(_PN("shading-foreground-color"),pBlockAP,NULL,NULL,m_pDocument,true);
 			if (szColor)
 			{
 			    ndxColor = m_pie->_findColor(static_cast<const char*>(szColor));
@@ -343,7 +344,7 @@ bool s_RTF_ListenerGetProps::populateStrux(pf_Frag_Strux* /*sdh*/,
 			      m_pie->_addColor(static_cast<const char*>(szColor));
 			}
 
-			szColor =  PP_evalProperty("shading-background-color",pBlockAP,NULL,NULL,m_pDocument,true);
+			szColor =  PP_evalProperty(_PN("shading-background-color"),pBlockAP,NULL,NULL,m_pDocument,true);
 			if (szColor)
 			{
 			    ndxColor = m_pie->_findColor(static_cast<const char*>(szColor));
@@ -395,7 +396,7 @@ void s_RTF_ListenerGetProps::_searchTableAPI(PT_AttrPropIndex api)
 
 // Background
 
-	szColor = PP_evalProperty("background-color",pTableAP,NULL,NULL,m_pDocument,true);
+	szColor = PP_evalProperty(_PN("background-color"),pTableAP,NULL,NULL,m_pDocument,true);
 
 	if (szColor && g_ascii_strcasecmp (szColor, "transparent") != 0)
 	{
@@ -406,7 +407,7 @@ void s_RTF_ListenerGetProps::_searchTableAPI(PT_AttrPropIndex api)
 
 // bgcolor
 
-	szColor = PP_evalProperty("bgcolor",pTableAP,NULL,NULL,m_pDocument,true);
+	szColor = PP_evalProperty(_PN("bgcolor"),pTableAP,NULL,NULL,m_pDocument,true);
 
 	if (szColor && g_ascii_strcasecmp (szColor, "transparent") != 0)
 	{
@@ -417,7 +418,7 @@ void s_RTF_ListenerGetProps::_searchTableAPI(PT_AttrPropIndex api)
 
 // Left
 
-	szColor = PP_evalProperty("left-color",pTableAP,NULL,NULL,m_pDocument,true);
+	szColor = PP_evalProperty(_PN("left-color"),pTableAP,NULL,NULL,m_pDocument,true);
 
 	if (szColor && (g_ascii_strcasecmp (szColor, "transparent") != 0) && (g_ascii_strcasecmp (szColor, "inherit") != 0) )
 	{
@@ -428,7 +429,7 @@ void s_RTF_ListenerGetProps::_searchTableAPI(PT_AttrPropIndex api)
 
 // Right
 
-	szColor = PP_evalProperty("right-color",pTableAP,NULL,NULL,m_pDocument,true);
+	szColor = PP_evalProperty(_PN("right-color"),pTableAP,NULL,NULL,m_pDocument,true);
 
 	if (szColor && (g_ascii_strcasecmp (szColor, "transparent") != 0) && (g_ascii_strcasecmp (szColor, "inherit") != 0) )
 	{
@@ -439,7 +440,7 @@ void s_RTF_ListenerGetProps::_searchTableAPI(PT_AttrPropIndex api)
 
 // Bottom
 
-	szColor = PP_evalProperty("bot-color",pTableAP,NULL,NULL,m_pDocument,true);
+	szColor = PP_evalProperty(_PN("bot-color"),pTableAP,NULL,NULL,m_pDocument,true);
 
 	if (szColor && (g_ascii_strcasecmp (szColor, "transparent") != 0) && (g_ascii_strcasecmp (szColor, "inherit") != 0) )
 	{
@@ -450,7 +451,7 @@ void s_RTF_ListenerGetProps::_searchTableAPI(PT_AttrPropIndex api)
 
 // top
 
-	szColor = PP_evalProperty("top-color",pTableAP,NULL,NULL,m_pDocument,true);
+	szColor = PP_evalProperty(_PN("top-color"),pTableAP,NULL,NULL,m_pDocument,true);
 
 	if (szColor && (g_ascii_strcasecmp (szColor, "transparent") != 0) && (g_ascii_strcasecmp (szColor, "inherit") != 0) )
 	{
@@ -472,7 +473,7 @@ void s_RTF_ListenerGetProps::_searchCellAPI(PT_AttrPropIndex api)
 
 // top
 
-	szColor = PP_evalProperty("top-color",pCellAP,NULL,NULL,m_pDocument,true);
+	szColor = PP_evalProperty(_PN("top-color"),pCellAP,NULL,NULL,m_pDocument,true);
 
 	if (szColor && (g_ascii_strcasecmp (szColor, "transparent") != 0) && (g_ascii_strcasecmp (szColor, "inherit") != 0) )
 	{
@@ -483,7 +484,7 @@ void s_RTF_ListenerGetProps::_searchCellAPI(PT_AttrPropIndex api)
 
 // left
 
-	szColor = PP_evalProperty("left-color",pCellAP,NULL,NULL,m_pDocument,true);
+	szColor = PP_evalProperty(_PN("left-color"),pCellAP,NULL,NULL,m_pDocument,true);
 
 	if (szColor && (g_ascii_strcasecmp (szColor, "transparent") != 0) && (g_ascii_strcasecmp (szColor, "inherit") != 0) )
 	{
@@ -494,7 +495,7 @@ void s_RTF_ListenerGetProps::_searchCellAPI(PT_AttrPropIndex api)
 
 // right
 
-	szColor = PP_evalProperty("right-color",pCellAP,NULL,NULL,m_pDocument,true);
+	szColor = PP_evalProperty(_PN("right-color"),pCellAP,NULL,NULL,m_pDocument,true);
 
 	if (szColor && (g_ascii_strcasecmp (szColor, "transparent") != 0) && (g_ascii_strcasecmp (szColor, "inherit") != 0) )
 	{
@@ -505,7 +506,7 @@ void s_RTF_ListenerGetProps::_searchCellAPI(PT_AttrPropIndex api)
 
 // Bottom
 
-	szColor = PP_evalProperty("bot-color",pCellAP,NULL,NULL,m_pDocument,true);
+	szColor = PP_evalProperty(_PN("bot-color"),pCellAP,NULL,NULL,m_pDocument,true);
 
 	if (szColor && (g_ascii_strcasecmp (szColor, "transparent") != 0) && (g_ascii_strcasecmp (szColor, "inherit") != 0) )
 	{
@@ -516,7 +517,7 @@ void s_RTF_ListenerGetProps::_searchCellAPI(PT_AttrPropIndex api)
 
 // Background
 
-	szColor = PP_evalProperty("background-color",pCellAP,NULL,NULL,m_pDocument,true);
+	szColor = PP_evalProperty(_PN("background-color"),pCellAP,NULL,NULL,m_pDocument,true);
 
 	if (szColor && (g_ascii_strcasecmp (szColor, "transparent") != 0) && (g_ascii_strcasecmp (szColor, "inherit") != 0) )
 	{
@@ -549,7 +550,7 @@ void s_RTF_ListenerGetProps::_check_revs_for_color(const PP_AttrProp * pAP1,
 		const gchar * pRev;
 		char *pDup  = NULL;
 
-		if(pAP->getAttribute("revision", pRev))
+		if(pAP->getAttribute(_PN("revision"), pRev))
 		{
 			char * p;
 			pDup = p = g_strdup(pRev);
@@ -649,7 +650,7 @@ void s_RTF_ListenerGetProps::_check_revs_for_font(const PP_AttrProp * pAP1,
 		const gchar * pRev;
 		char *pDup  = NULL;
 
-		if(pAP->getAttribute("revision", pRev))
+		if(pAP->getAttribute(_PN("revision"), pRev))
 		{
 			char * p;
 			pDup = p = g_strdup(pRev);
@@ -743,12 +744,12 @@ void s_RTF_ListenerGetProps::_compute_span_properties(const PP_AttrProp * pSpanA
 {
 	// see if we have a previously unused color reference.
 	
-	const gchar * szColor = PP_evalProperty("color",pSpanAP,pBlockAP,pSectionAP,m_pDocument,true);
+	const gchar * szColor = PP_evalProperty(_PN("color"),pSpanAP,pBlockAP,pSectionAP,m_pDocument,true);
 	UT_sint32 ndxColor = m_pie->_findColor(static_cast<const char*>(szColor));
 	if (ndxColor == -1)
 		m_pie->_addColor(static_cast<const char*>(szColor));
 	
-	szColor = PP_evalProperty("bgcolor",pSpanAP,pBlockAP,pSectionAP,m_pDocument,true);
+	szColor = PP_evalProperty(_PN("bgcolor"),pSpanAP,pBlockAP,pSectionAP,m_pDocument,true);
 
 	if (g_ascii_strcasecmp (szColor, "transparent") != 0)
 	{

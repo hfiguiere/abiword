@@ -51,14 +51,14 @@ PD_Bookmark::PD_Bookmark( PD_Document* pDoc, PT_AttrPropIndex api )
     
     const gchar* pValue = NULL;
     if(m_pAP
-       && m_pAP->getAttribute("type",pValue)
+       && m_pAP->getAttribute(_PN("type"), pValue)
        && pValue
        && (strcmp(pValue, "start") == 0))
     {
         m_isEnd = false;
     }
 
-    if(m_pAP->getAttribute("name",pValue) && pValue)
+    if (m_pAP->getAttribute(_PN("name"), pValue) && pValue)
     {
         m_id = pValue;
     }

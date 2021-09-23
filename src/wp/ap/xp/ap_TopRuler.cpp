@@ -2320,9 +2320,9 @@ void AP_TopRuler::mousePress(EV_EditModifierState /* ems */,
 			}
 
 			PP_PropertyVector properties = {
-				"tabstops", buf
+				{ "tabstops", buf }
 			};
-			UT_DEBUGMSG(("TopRuler: Tab Stop [%s]\n",properties[1].c_str()));
+			UT_DEBUGMSG(("TopRuler: Tab Stop [%s]\n", properties[0].value.c_str()));
 			m_draggingWhat = DW_NOTHING;
 			pView->setBlockFormat(properties);
  			m_pG->setCursor(GR_Graphics::GR_CURSOR_DEFAULT);
@@ -2669,10 +2669,12 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 			if((m_infoCache.m_mode != AP_TopRulerInfo::TRI_MODE_FRAME) && !isInFrame)
 			{
 				const PP_PropertyVector properties = {
-					"page-margin-left",
-					pView->getGraphics()->invertDimension(tick.dimType,dxrel)
+					{
+						"page-margin-left",
+						pView->getGraphics()->invertDimension(tick.dimType,dxrel)
+					}
 				};
-				UT_DEBUGMSG(("TopRuler: page-margin-left [%s]\n",properties[1].c_str()));
+				UT_DEBUGMSG(("TopRuler: page-margin-left [%s]\n", properties[0].value.c_str()));
 
 				_xorGuide(true);
 				m_draggingWhat = DW_NOTHING;
@@ -2689,7 +2691,7 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 					const gchar * pszWidth = NULL;
 					UT_sint32 iX;
 					UT_sint32 iWidth;
-					if(!pSectionAP || !pSectionAP->getProperty("xpos",pszXpos))
+					if(!pSectionAP || !pSectionAP->getProperty(_PN("xpos"),pszXpos))
 					{
 						UT_DEBUGMSG(("No xpos defined for Frame !\n"));
 						UT_ASSERT_HARMLESS(UT_SHOULD_NOT_HAPPEN);
@@ -2699,7 +2701,7 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 					{
 						iX = UT_convertToLogicalUnits(pszXpos);
 					}
-					if(!pSectionAP || !pSectionAP->getProperty("frame-width",pszWidth))
+					if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-width"),pszWidth))
 					{
 						UT_DEBUGMSG(("No Width defined for Frame !\n"));
 						UT_ASSERT_HARMLESS(UT_SHOULD_NOT_HAPPEN);
@@ -2723,8 +2725,8 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 					double dWidth = static_cast<double>(iWidth)/static_cast<double>(UT_LAYOUT_RESOLUTION);
 					sWidth = UT_formatDimensionedValue(dWidth,"in", NULL);
 					const PP_PropertyVector props = {
-						"frame-width", sWidth.c_str(),
-						"xpos", sXpos.c_str()
+						{ "frame-width", sWidth.c_str() },
+						{ "xpos", sXpos.c_str() }
 					};
 					pView->setFrameFormat(props);
 				}
@@ -2756,10 +2758,10 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 				double dxrel = tick.scalePixelDistanceToUnits(xAbsRight - m_draggingCenter);
 
 				const PP_PropertyVector properties = {
-					"page-margin-right",
-					pView1->getGraphics()->invertDimension(tick.dimType,dxrel)
+					{ "page-margin-right",
+					  pView1->getGraphics()->invertDimension(tick.dimType,dxrel) }
 				};
-				UT_DEBUGMSG(("TopRuler: page-margin-right [%s] (x %d, xAbsRight %d)\n",properties[1].c_str(), x, xAbsRight));
+				UT_DEBUGMSG(("TopRuler: page-margin-right [%s] (x %d, xAbsRight %d)\n", properties[0].value.c_str(), x, xAbsRight));
 				FV_View *pView = static_cast<FV_View *>(m_pView);
 
 				pView->setSectionFormat(properties);
@@ -2778,7 +2780,7 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 					pFrame->getAP(pSectionAP);
 					const gchar * pszWidth = NULL;
 					UT_sint32 iWidth;
-					if(!pSectionAP || !pSectionAP->getProperty("frame-width",pszWidth))
+					if(!pSectionAP || !pSectionAP->getProperty(_PN("frame-width"), pszWidth))
 					{
 						UT_DEBUGMSG(("No Width defined for Frame !\n"));
 						UT_ASSERT_HARMLESS(UT_SHOULD_NOT_HAPPEN);
@@ -2798,7 +2800,7 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 					double dWidth = static_cast<double>(iWidth)/static_cast<double>(UT_LAYOUT_RESOLUTION);
 					sWidth = UT_formatDimensionedValue(dWidth,"in", NULL);
 					PP_PropertyVector props = {
-						"frame-width", sWidth.c_str()
+						{ "frame-width", sWidth.c_str() }
 					};
 					pView->setFrameFormat(props);
 				}
@@ -2823,10 +2825,10 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 			double dxrel = tick.scalePixelDistanceToUnits(m_draggingRect.width);
 
 			PP_PropertyVector properties = {
-				"column-gap",
-				pView1->getGraphics()->invertDimension(tick.dimType,dxrel)
+				{ "column-gap",
+				  pView1->getGraphics()->invertDimension(tick.dimType,dxrel) }
 			};
-			UT_DEBUGMSG(("TopRuler: ColumnGap [%s]\n",properties[1].c_str()));
+			UT_DEBUGMSG(("TopRuler: ColumnGap [%s]\n", properties[0].value.c_str()));
 
 			m_draggingWhat = DW_NOTHING;
 			FV_View *pView = static_cast<FV_View *>(m_pView);
@@ -2859,7 +2861,7 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 			double dxrel2;
 			UT_sint32 xdelta;
 
-			PP_PropertyVector properties(4);
+			PP_PropertyVector properties(2);
 
 			// in rtl block we drag the right indent
 			xxx_UT_DEBUGMSG(("DW_LEFTINDENT (release): m_draggingCenter %d\n", m_draggingCenter));
@@ -2867,23 +2869,23 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 			{
 				dxrel = tick.scalePixelDistanceToUnits(xAbsRight1 - m_draggingCenter);
 				xdelta = (xAbsRight1 - m_draggingCenter) - m_infoCache.m_xrRightIndent;
-				properties[0] = "margin-right";
+				properties[0].name = _PN("margin-right");
 			}
 			else
 			{
 				dxrel  = tick.scalePixelDistanceToUnits(m_draggingCenter - xAbsLeft1);
 				xdelta = (m_draggingCenter-xAbsLeft1) - m_infoCache.m_xrLeftIndent;
-				properties[0] = "margin-left";
+				properties[0].name = _PN("margin-left");
 			}
 
 			dxrel2 = tick.scalePixelDistanceToUnits(m_infoCache.m_xrFirstLineIndent - xdelta);
 
 
-			properties[1] = pView->getGraphics()->invertDimension(tick.dimType,dxrel);
-			properties[2] = "text-indent";
-			properties[3] = pView->getGraphics()->invertDimension(tick.dimType,dxrel2);
+			properties[0].value = pView->getGraphics()->invertDimension(tick.dimType,dxrel);
+			properties[1].name = _PN("text-indent");
+			properties[1].value = pView->getGraphics()->invertDimension(tick.dimType,dxrel2);
 			xxx_UT_DEBUGMSG(("TopRuler: LeftIndent [%s] TextIndent [%s] (xAbsRight %d, dxrel %f, m_draggingCenter %d)\n",
-							 properties[1],properties[3],xAbsRight, dxrel,m_draggingCenter));
+							 properties[0].value.c_str(), properties[1].value.c_str(), xAbsRight, dxrel, m_draggingCenter));
 
 			m_draggingWhat = DW_NOTHING;
 
@@ -2903,7 +2905,7 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 			// the paragraph.  since first-line-indent is stored in the
 			// document in relative coordinates, we don't need to do anything.
 			double dxrel;
-			PP_PropertyVector properties(2);
+			PP_PropertyVector properties(1);
 			FV_View * pView = static_cast<FV_View *>(m_pView);
 
 			// in rtl block we drag the right margin, of course :-);
@@ -2911,16 +2913,16 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 			if(bRTL1)
 			{
 				dxrel = tick.scalePixelDistanceToUnits(xAbsRight1 - m_draggingCenter);
-				properties[0] = "margin-right";
+				properties[0].name = _PN("margin-right");
 			}
 			else
 			{
 				dxrel = tick.scalePixelDistanceToUnits(m_draggingCenter - xAbsLeft1);
-				properties[0] = "margin-left";
+				properties[0].name = _PN("margin-left");
 			}
 
-			properties[1] = pView->getGraphics()->invertDimension(tick.dimType,dxrel);
-			UT_DEBUGMSG(("TopRuler: LeftIndent [%s]\n",properties[1].c_str()));
+			properties[0].value = pView->getGraphics()->invertDimension(tick.dimType,dxrel);
+			UT_DEBUGMSG(("TopRuler: LeftIndent [%s]\n", properties[0].value.c_str()));
 
 			m_draggingWhat = DW_NOTHING;
 			pView->setBlockFormat(properties);
@@ -2937,23 +2939,23 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 
 			double dxrel;
 			FV_View * pView = static_cast<FV_View *>(m_pView);
-			PP_PropertyVector properties(2);
+			PP_PropertyVector properties(1);
 
 			// in rtl block we drag the left indent
 			xxx_UT_DEBUGMSG(("DW_RIGHTINDENT (release): m_draggingCenter %d\n", m_draggingCenter));
 			if(bRTL1)
 			{
 				dxrel = tick.scalePixelDistanceToUnits(m_draggingCenter - xAbsLeft1);
-				properties[0] = "margin-left";
+				properties[0].name = _PN("margin-left");
 			}
 			else
 			{
 				dxrel = tick.scalePixelDistanceToUnits(xAbsRight1 - m_draggingCenter);
-				properties[0] = "margin-right";
+				properties[0].name = _PN("margin-right");
 			}
 
-			properties[1] = pView->getGraphics()->invertDimension(tick.dimType,dxrel);
-			UT_DEBUGMSG(("TopRuler: RightIndent [%s]\n",properties[1].c_str()));
+			properties[0].value = pView->getGraphics()->invertDimension(tick.dimType,dxrel);
+			UT_DEBUGMSG(("TopRuler: RightIndent [%s]\n", properties[0].value.c_str()));
 
 
 			m_draggingWhat = DW_NOTHING;
@@ -2978,10 +2980,10 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 
 
 			PP_PropertyVector properties = {
-				"text-indent",
-				pView->getGraphics()->invertDimension(tick.dimType,dxrel)
+				{ "text-indent",
+				  pView->getGraphics()->invertDimension(tick.dimType,dxrel) }
 			};
-			UT_DEBUGMSG(("TopRuler: FirstLineIndent [%s]\n",properties[1].c_str()));
+			UT_DEBUGMSG(("TopRuler: FirstLineIndent [%s]\n", properties[0].value.c_str()));
 
 			m_draggingWhat = DW_NOTHING;
 			pView->setBlockFormat(properties);
@@ -3221,12 +3223,11 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 			UT_String sRelWidths;
 
 			PP_PropertyVector props = {
-				"", ""
+				{ "", "" }
 			};
 			if(!bDragLeftMost)
 			{
-			     props[0] = "table-column-props";
-			     props[1] = sColWidths.c_str();
+			     props[0] = { "table-column-props", sColWidths.c_str() };
 			     if(pTL->getTableRelWidth()>1.0e-6)
 			     {
 			          UT_GenericVector<UT_sint32> vecRelWidths;
@@ -3265,19 +3266,16 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 				  UT_String_sprintf(sVal,"%f",relTab);
 				  srelTab = sVal;
 				  srelTab += "%";
-				  props.push_back("table-width");
-				  props.push_back(stot.c_str());
-				  props.push_back("table-rel-width");
-				  props.push_back(srelTab.c_str());
-				  sRelWidths.clear();;
+				  props.push_back({ "table-width", stot.c_str() });
+				  props.push_back({ "table-rel-width", srelTab.c_str() });
+				  sRelWidths.clear();
 				  for(i=0;i<vecRelWidths.getItemCount();i++)
 				  {
 				      UT_String_sprintf(sVal,"%d",vecRelWidths.getNthItem(i));
 				      sRelWidths += sVal;
 				      sRelWidths += "*/";
 				  }
-				  props.push_back("table-rel-column-props");
-				  props.push_back(sRelWidths.c_str());
+				  props.push_back({ "table-rel-column-props", sRelWidths.c_str() });
 			     }
 			}
 			else
@@ -3290,8 +3288,7 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 				xxx_UT_DEBUGMSG(("ap_TopRuler - set Left most leftCol %d dragging center %d M-iCellContainerLeftPos %d \n",leftCol,m_draggingCenter,  m_iCellContainerLeftPos));
 				double dLeft = tick.scalePixelDistanceToUnits(leftCol);
 				sCellPos = pView->getGraphics()->invertDimension(tick.dimType,dLeft);
-				props[0] = "table-column-leftpos";
-				props[1] = sCellPos.c_str();
+				props[0] = { "table-column-leftpos", sCellPos.c_str() };
 			}
 
 //
@@ -3392,9 +3389,9 @@ void AP_TopRuler::_setTabStops(ap_RulerTicks tick, UT_sint32 iTab, eTabLeader iL
 	}
 
 	PP_PropertyVector properties = {
-		"tabstops", buf.c_str()
+		{ "tabstops", buf.c_str() }
 	};
-	UT_DEBUGMSG(("TopRuler: Tab Stop [%s]\n",properties[1].c_str()));
+	UT_DEBUGMSG(("TopRuler: Tab Stop [%s]\n",properties[0].value.c_str()));
 
 	m_draggingWhat = DW_NOTHING;
 	(static_cast<FV_View *>(m_pView))->setBlockFormat(properties);
