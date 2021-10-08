@@ -2,6 +2,7 @@
 
 /* AbiSource Application Framework
  * Copyright (C) 2005 Francis James Franklin
+ * Copyright (C) 2021 Hubert Figuière
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -772,16 +773,14 @@ static const char * s_GetMenuItemComputedLabel_Fn (const EV_Menu_Label * pLabel,
 
 - (void)insertDocumentMailMergeField:(NSString *)field_name
 {
-	if (field_name) {
-		if ([field_name length]) {
-			if ([AP_CocoaPlugin_Document frameExists:m_pFrame]) {
-				if (FV_View * pView = static_cast<FV_View *>(m_pFrame->getCurrentView())) {
-						const PP_PropertyVector pAttr = {
-							"param", [field_name UTF8String]
-						};
+	if (field_name && [field_name length]) {
+		if ([AP_CocoaPlugin_Document frameExists:m_pFrame]) {
+			if (FV_View* pView = static_cast<FV_View*>(m_pFrame->getCurrentView())) {
+				const PP_PropertyVector pAttr = {
+					{ "param", [field_name UTF8String] }
+				};
 
-						pView->cmdInsertField("mail_merge", pAttr);
-					}
+				pView->cmdInsertField("mail_merge", pAttr);
 			}
 		}
 	}

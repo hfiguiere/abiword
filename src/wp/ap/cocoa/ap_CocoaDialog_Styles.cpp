@@ -1,7 +1,7 @@
 /* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2003, 2005, 2009, 2011 Hubert Figuiere
+ * Copyright (C) 2003, 2005, 2009, 2011-2021 Hubert Figuière
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -420,7 +420,7 @@ void AP_CocoaDialog_Styles::new_styleName(void)
 void AP_CocoaDialog_Styles::event_RemoveProperty(void)
 {
 	const char * psz = [[m_modifyDlg->_removePropCombo stringValue] UTF8String];
-	PP_removeAttribute(psz, m_vecAllProps);
+	PP_removeAttribute(UT_StaticString::Interned(psz), m_vecAllProps);
 	rebuildDeleteProps();
 	updateCurrentStyle();
 }
@@ -431,17 +431,10 @@ void AP_CocoaDialog_Styles::rebuildDeleteProps(void)
 
 	[delCombo removeAllItems];
 
-	for (auto iter = m_vecAllProps.cbegin(); iter != m_vecAllProps.cend();
-		 ++iter)
-	{
-		const std::string & value = *iter;
-		NSString *str =  [[NSString alloc] initWithUTF8String:value.c_str()];
+	for (const auto& entry: m_vecAllProps) {
+		NSString *str =  [[NSString alloc] initWithUTF8String:entry.name.c_str()];
 		[delCombo addItemWithObjectValue:str];
 		[str release];
-		++iter;
-		if (iter == m_vecAllProps.cend()) {
-			break;
-		}
 	}
 }
 
@@ -452,7 +445,7 @@ void AP_CocoaDialog_Styles::event_basedOn(void)
 {
 	const char * psz = [[m_modifyDlg->_basedOnCombo stringValue] UTF8String];
 	snprintf((char *) m_basedonName, sizeof(m_basedonName), "%s", psz);
-	PP_addOrSetAttribute("basedon", getBasedonName(), m_vecAllAttribs);
+	PP_addOrSetAttribute(_PN("basedon"), getBasedonName(), m_vecAllAttribs);
 	fillVecWithProps(getBasedonName(),false);
 	updateCurrentStyle();
 }
@@ -465,7 +458,7 @@ void AP_CocoaDialog_Styles::event_followedBy(void)
 {
 	const char * psz = [[m_modifyDlg->_followStyleCombo stringValue] UTF8String];
 	snprintf((char *) m_followedbyName, sizeof(m_followedbyName), "%s", psz);
-	PP_addOrSetAttribute("followedby", getFollowedbyName(), m_vecAllAttribs);
+	PP_addOrSetAttribute(_PN("followedby"), getFollowedbyName(), m_vecAllAttribs);
 }
 
 
@@ -483,7 +476,7 @@ void AP_CocoaDialog_Styles::event_styleType(void)
 	if(m_styleType != label) {
 		pszSt = "C";
 	}
-	PP_addOrSetAttribute("type", pszSt, m_vecAllAttribs);
+	PP_addOrSetAttribute(_PN("type"), pszSt, m_vecAllAttribs);
 }
 
 void AP_CocoaDialog_Styles::event_Modify_Cancel(void)
@@ -712,9 +705,8 @@ bool  AP_CocoaDialog_Styles::_populateModify(void)
 			[m_modifyDlg->_followStyleCombo setStringValue:[NSString stringWithUTF8String:szFollowedBy]];
 		else
 			[m_modifyDlg->_followStyleCombo setStringValue:LocalizedString(pSS, AP_STRING_ID_DLG_Styles_DefCurrent)];
-		const std::string & type = PP_getAttribute("type", m_vecAllAttribs);
-		if(type.find("P") != std::string::npos)
-		{
+		const std::string& type = PP_getAttribute(_PN("type"), m_vecAllAttribs);
+		if (type.find("P") != std::string::npos) {
 			[m_modifyDlg->_styleTypeCombo setStringValue:
 								LocalizedString(pSS, AP_STRING_ID_DLG_Styles_ModifyParagraph)];
 		}

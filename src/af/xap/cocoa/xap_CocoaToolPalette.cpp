@@ -1,8 +1,8 @@
 /* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
-
 /* AbiSource Application Framework
  * Copyright (C) 2004 AbiSource, Inc.
  * Copyright (C) 2004 Francis James Franklin <fjf@alinameridon.com>
+ * Copyright (C) 2021 Hubert Figuière
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -415,12 +415,12 @@ enum _XAP_CocoaTool_Id
 			return nil;
 		}
 		for (UT_sint32 i = 0; i < count; i++) {
-			const char * szName  = NULL;
-			const char * szValue = NULL;
+			PP_PropName szName;
+			const char* szValue = nullptr;
 
 			if (pAP->getNthProperty(i, szName, szValue)) {
-				NSString * name  = [NSString stringWithUTF8String:(szName )];
-				NSString * value = [NSString stringWithUTF8String:(szValue)];
+				NSString* name = [NSString stringWithUTF8String:szName.c_str()];
+				NSString* value = [NSString stringWithUTF8String:szValue];
 
 				XAP_PaletteProperties_Level * property = [[XAP_PaletteProperties_Level alloc] initWithPropertyName:name propertyValue:value];
 				if (property) {
@@ -456,12 +456,12 @@ enum _XAP_CocoaTool_Id
 			return nil;
 		}
 		for (UT_sint32 i = 0; i < count; i++) {
-			const char * szName  = NULL;
-			const char * szValue = NULL;
+			PP_PropName szName;
+			const char* szValue = nullptr;
 
 			if (style->getNthProperty(i, szName, szValue)) {
-				NSString * name  = [NSString stringWithUTF8String:(szName )];
-				NSString * value = [NSString stringWithUTF8String:(szValue)];
+				NSString* name  = [NSString stringWithUTF8String:szName.c_str()];
+				NSString* value = [NSString stringWithUTF8String:szValue];
 
 				XAP_PaletteProperties_Level * property = [[XAP_PaletteProperties_Level alloc] initWithPropertyName:name propertyValue:value];
 				if (property) {
@@ -1991,8 +1991,7 @@ static XAP_CocoaToolPalette * s_instance = nil;
 
 		UT_UTF8String szColorValue;
 
-		if (pFView->queryCharFormat("color", szColorValue, bExplicitlyDefined, bMixedSelection))
-		{
+		if (pFView->queryCharFormat(_PN("color"), szColorValue, bExplicitlyDefined, bMixedSelection)) {
 			[oSwitch_FG setState:(bExplicitlyDefined ? NSControlStateValueOn : NSControlStateValueOff)];
 
 			UT_HashColor hash;
@@ -2018,8 +2017,7 @@ static XAP_CocoaToolPalette * s_instance = nil;
 				UT_DEBUGMSG(("XAP_CocoaToolPalette -sync: fg=\"%s\"?\n", szColorValue.utf8_str()));
 			}
 		}
-		if (pFView->queryCharFormat("bgcolor", szColorValue, bExplicitlyDefined, bMixedSelection))
-		{
+		if (pFView->queryCharFormat(_PN("bgcolor"), szColorValue, bExplicitlyDefined, bMixedSelection)) {
 			[oSwitch_BG setState:(bExplicitlyDefined ? NSControlStateValueOn : NSControlStateValueOff)];
 
 			if (strcmp (szColorValue.utf8_str(), "transparent") == 0)
