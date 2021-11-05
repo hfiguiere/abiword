@@ -155,7 +155,7 @@ int abi_plugin_register (XAP_ModuleInfo * mi)
     pAbiGrammar = new AbiGrammar();
     pApp->addListener(pAbiGrammar, &listenerID);
     pAbiGrammar->setID(listenerID);
-    UT_DEBUGMSG(("Class AbiGrammar %p created! Listener Id %d \n",pAbiGrammar,listenerID));
+    UT_DEBUGMSG(("Class AbiGrammar %p created! Listener Id %d \n", (void*)pAbiGrammar, listenerID));
     
     return 1;
 }

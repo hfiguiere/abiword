@@ -82,7 +82,7 @@ public:
     virtual void drawGlyph(UT_uint32 /*glyph_idx*/, UT_sint32 /*xoff*/, UT_sint32 /*yoff*/) override
     {
         UT_ASSERT(UT_NOT_IMPLEMENTED);
-    };
+    }
     virtual void drawChars(const UT_UCS4Char* pChars, int iCharOffset,
         int iLength, UT_sint32 xoff, UT_sint32 yoff,
         int* pCharWidhths = nullptr) override;

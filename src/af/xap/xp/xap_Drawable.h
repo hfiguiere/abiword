@@ -28,6 +28,7 @@ class GR_Graphics;
 class ABI_EXPORT XAP_Drawable
 {
 public:
+    virtual ~XAP_Drawable() {}
     virtual GR_Graphics* getGraphics() const = 0;
     /// Queue a drawing
     virtual void queueDraw(const UT_Rect* pRect = nullptr) = 0;

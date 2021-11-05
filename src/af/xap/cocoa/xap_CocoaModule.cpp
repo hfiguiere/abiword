@@ -70,8 +70,9 @@ bool XAP_CocoaModule::load (const char *name)
 
     if (!(m_module = g_module_open(name, G_MODULE_BIND_LAZY)))
     {
+        const char* error = g_module_error();
         UT_WARNINGMSG(("Module \"%s\" cannot be loaded\n"
-                       "    ERROR: %s\n", name, g_module_error() ? : "(null)"));
+                       "    ERROR: %s\n", name, error ? error : "(null)"));
         return false;
     }
 
