@@ -1,6 +1,6 @@
 /* AbiSource Application Framework
  * Copyright (C) 1998-2000 AbiSource, Inc.
- * Copyright (C) 2001-2021 Hubert Figuière
+ * Copyright (C) 2001-2022 Hubert Figuière
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -272,20 +272,23 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-	if (NSInputManager * inputManager = [NSInputManager currentInputManager])
-		[inputManager markedTextAbandoned:[theEvent window]];
+	if (NSTextInputContext* inputContext = [NSTextInputContext currentInputContext]) {
+		[inputContext.client unmarkText];
+	}
 	[_eventDelegate mouseDown:theEvent from:self];
 }
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
-	if (NSInputManager * inputManager = [NSInputManager currentInputManager])
-		[inputManager markedTextAbandoned:[theEvent window]];
+	if (NSTextInputContext* inputContext = [NSTextInputContext currentInputContext]) {
+		[inputContext.client unmarkText];
+	}
 	[_eventDelegate mouseDown:theEvent from:self];
 }
 - (void)otherMouseDown:(NSEvent *)theEvent
 {
-	if (NSInputManager * inputManager = [NSInputManager currentInputManager])
-		[inputManager markedTextAbandoned:[theEvent window]];
+	if (NSTextInputContext* inputContext = [NSTextInputContext currentInputContext]) {
+		[inputContext.client unmarkText];
+	}
 	[_eventDelegate mouseDown:theEvent from:self];
 }
 

@@ -1,7 +1,7 @@
 /* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
 
 /* AbiSource Application Framework
- * Copyright (C) 2003 Hubert Figuiere
+ * Copyright (C) 2003-2022 Hubert Figuiere
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,7 +19,7 @@
  * 02110-1301 USA.
  */
 /*
-	Implements the text view that supports the NSTextInput protocol
+	Implements the text view that supports the NSTextInputClient protocol
  */
  
 #include "ut_assert.h"
@@ -325,149 +325,261 @@
 	[self invokeEditMethod:"scrollToBottom"];
 }
 
-
-/* NSTextInput protocol */
-- (NSAttributedString *)attributedSubstringFromRange:(NSRange)theRange
-{
-	UT_UNUSED(theRange);
-	UT_ASSERT_NOT_REACHED();
-	return nil;
+- (nullable NSAttributedString *)attributedSubstringForProposedRange:(NSRange)range actualRange:(nullable NSRangePointer)actualRange {
+    if (actualRange) {
+        *actualRange = range;
+    }
+    UT_ASSERT_NOT_REACHED();
+    return nil;
 }
 
-
-- (NSUInteger)characterIndexForPoint:(NSPoint)thePoint
-{
-	UT_UNUSED(thePoint);
-	UT_ASSERT_NOT_REACHED();
-	return NSNotFound;
+- (NSUInteger)characterIndexForPoint:(NSPoint)point {
+    UT_UNUSED(point);
+    UT_ASSERT_NOT_REACHED();
+    return NSNotFound;
 }
 
-
-- (long)conversationIdentifier
-{
-	return (long)self;
+- (void)doCommandBySelector:(nonnull SEL)selector {
+    if ([self respondsToSelector:selector]) {
+        [self performSelector:selector withObject:self];
+        return;
+    }
+    UT_DEBUGMSG(("Unrecognized selector:%s\n", [NSStringFromSelector(selector) UTF8String]));
+//    UT_ASSERT_NOT_REACHED();
 }
 
-- (void)doCommandBySelector:(SEL)aSelector
-{
-	if ([self respondsToSelector:aSelector]) {
-		[self performSelector:aSelector withObject:self];
-		return;
-	}
-	UT_DEBUGMSG(("Unrecognized selector:%s\n", [NSStringFromSelector(aSelector) UTF8String]));
-//	UT_ASSERT_NOT_REACHED();
+- (NSRect)firstRectForCharacterRange:(NSRange)range actualRange:(nullable NSRangePointer)actualRange {
+    // UT_ASSERT_NOT_REACHED();
+    UT_DEBUG_ONLY_ARG(range);
+    UT_DEBUGMSG(("characterRange=(location=%lu,length=%lu)\n", range.location, range.length));
+    if (actualRange) {
+        *actualRange = range;
+    }
+    return NSZeroRect;
 }
 
-
-- (NSRect)firstRectForCharacterRange:(NSRange)theRange
-{
-	// UT_ASSERT_NOT_REACHED();
-	UT_DEBUG_ONLY_ARG(theRange);
-	UT_DEBUGMSG(("characterRange=(location=%u,length=%u)\n",theRange.location,theRange.length));
-	return NSZeroRect;
+- (BOOL)hasMarkedText {
+    UT_DEBUGMSG(("m_hasMarkedText=%s\n",m_hasMarkedText ? "YES" : "NO"));
+    return m_hasMarkedText;
 }
 
+- (void)insertText:(nonnull id)string replacementRange:(NSRange)replacementRange {
+    /* UT_DEBUGMSG(("insertText '%s' in window '%s'\n", [str UTF8String], [[[self window] title] UTF8String]));
+    */
+   UT_DEBUGMSG(("insertText: length=%lu\n", [(NSString *)string length]));
+//      pFrame->setTimeOfLastEvent([theEvent timestamp]);
+   AV_View * pView = m_pFrame->getCurrentView();
+   ev_CocoaKeyboard * pCocoaKeyboard = static_cast<ev_CocoaKeyboard *>
+       (m_pFrame->getKeyboard());
 
-- (BOOL)hasMarkedText
-{
-	UT_DEBUGMSG(("m_hasMarkedText=%s\n",m_hasMarkedText ? "YES" : "NO"));
-	return m_hasMarkedText;
+   if (pView)
+       pCocoaKeyboard->insertTextEvent(pView, string);
+
+   [XAP_CocoaToolPalette setPreviewText:@""];
+
+   m_selectedRange = NSMakeRange(NSNotFound, 0);
+   m_hasMarkedText = NO;
 }
 
+- (NSRange)markedRange {
+    // UT_ASSERT_NOT_REACHED();
+    UT_DEBUGMSG(("markedRange (m_hasMarkedText=%s)\n",m_hasMarkedText ? "YES" : "NO"));
 
-- (void)insertText:(id)aString
-{
-	 /* UT_DEBUGMSG(("insertText '%s' in window '%s'\n", [str UTF8String], [[[self window] title] UTF8String]));
-	 */
-	UT_DEBUGMSG(("insertText: length=%u\n", [(NSString *)aString length]));
-//  	pFrame->setTimeOfLastEvent([theEvent timestamp]);
-	AV_View * pView = m_pFrame->getCurrentView();
-	ev_CocoaKeyboard * pCocoaKeyboard = static_cast<ev_CocoaKeyboard *>
-		(m_pFrame->getKeyboard());
+    /* This method gets called when you delete the current character sequence to 0 length,
+     * so let's clear the preview...
+     */
+    [XAP_CocoaToolPalette setPreviewText:@""];
 
-	if (pView)
-		pCocoaKeyboard->insertTextEvent(pView, aString);	
+    m_selectedRange = NSMakeRange(NSNotFound, 0);
+    m_hasMarkedText = NO;
 
-	[XAP_CocoaToolPalette setPreviewText:@""];
-
-	m_selectedRange = NSMakeRange(NSNotFound, 0);
-	m_hasMarkedText = NO;
+    return m_selectedRange;
 }
 
-
-- (NSRange)markedRange
-{
-	// UT_ASSERT_NOT_REACHED();
-	UT_DEBUGMSG(("markedRange (m_hasMarkedText=%s)\n",m_hasMarkedText ? "YES" : "NO"));
-
-	/* This method gets called when you delete the current character sequence to 0 length,
-	 * so let's clear the preview...
-	 */
-	[XAP_CocoaToolPalette setPreviewText:@""];
-
-	m_selectedRange = NSMakeRange(NSNotFound, 0);
-	m_hasMarkedText = NO;
-
-	return m_selectedRange;
+- (NSRange)selectedRange {
+    UT_DEBUGMSG(("selectedRange=(location=%lu,length=%lu)\n", m_selectedRange.location, m_selectedRange.length));
+    return m_selectedRange;
 }
 
-- (NSRange)selectedRange
-{
-	UT_DEBUGMSG(("selectedRange=(location=%u,length=%u)\n",m_selectedRange.location,m_selectedRange.length));
-	return m_selectedRange;
+- (void)setMarkedText:(nonnull id)aString selectedRange:(NSRange)selectedRange replacementRange:(NSRange)replacementRange {
+
+    [XAP_CocoaToolPalette setPreviewText:aString];
+
+    m_selectedRange = selectedRange;
+    m_hasMarkedText = (selectedRange.length != 0);
+
+    UT_DEBUGMSG(("range=(location=%lu,length=%lu) [aString length]=%lu\n", selectedRange.location, selectedRange.length, [(NSString*)aString length]));
+    /*
+        Steal code from the selection handling code in XP land. We have the AV_View
+        so everything is here.
+     */
+
+    if (FV_View * pView = static_cast<FV_View *>(m_pFrame->getCurrentView())) {
+        NSString * str = nil;
+
+        if ([aString isKindOfClass:[NSString class]]) {
+            str = (NSString *) aString;
+        }
+        else if ([aString isKindOfClass:[NSAttributedString class]]) {
+            NSAttributedString * attr_str = (NSAttributedString *) aString;
+            str = [attr_str string];
+        }
+        if (str) {
+            if ([str length]) {
+                UT_UCS4String ucs4([str UTF8String], [str length]);
+
+                PT_DocPosition oldPos = pView->getPoint();
+
+                if (!pView->isSelectionEmpty())
+                    oldPos = pView->getSelectionAnchor();
+
+                ev_CocoaKeyboard * pCocoaKeyboard = static_cast<ev_CocoaKeyboard *>(m_pFrame->getKeyboard());
+                pCocoaKeyboard->insertTextEvent(pView, str);
+
+            //    pView->cmdCharInsert(ucs4.ucs4_str(), ucs4.length());
+                pView->cmdSelect(oldPos, pView->getPoint());
+            }
+        }
+    }
 }
 
-- (void)setMarkedText:(id)aString selectedRange:(NSRange)selRange
-{
-	[XAP_CocoaToolPalette setPreviewText:aString];
-
-	m_selectedRange = selRange;
-	m_hasMarkedText = (selRange.length != 0 ? YES : NO);
-
-	UT_DEBUGMSG(("range=(location=%u,length=%u) [aString length]=%u\n", selRange.location, selRange.length, [(NSString*)aString length]));
-	/*
-		Steal code from the selection handling code in XP land. We have the AV_View
-		so everything is here.
-	 */
-
-	if (FV_View * pView = static_cast<FV_View *>(m_pFrame->getCurrentView())) {
-		NSString * str = nil;
-
-		if ([aString isKindOfClass:[NSString class]]) {
-			str = (NSString *) aString;
-		}
-		else if ([aString isKindOfClass:[NSAttributedString class]]) {
-			NSAttributedString * attr_str = (NSAttributedString *) aString;
-			str = [attr_str string];
-		}
-		if (str) {
-			if ([str length]) {
-				UT_UCS4String ucs4([str UTF8String], [str length]);
-
-				PT_DocPosition oldPos = pView->getPoint();
-
-				if (!pView->isSelectionEmpty())
-					oldPos = pView->getSelectionAnchor();
-
-				ev_CocoaKeyboard * pCocoaKeyboard = static_cast<ev_CocoaKeyboard *>(m_pFrame->getKeyboard());
-				pCocoaKeyboard->insertTextEvent(pView, str);
-
-			//	pView->cmdCharInsert(ucs4.ucs4_str(), ucs4.length());
-				pView->cmdSelect(oldPos, pView->getPoint());
-			}
-		}
-	}
+- (void)unmarkText {
+    m_hasMarkedText = NO;
+    UT_DEBUGMSG(("Hub TODO: handle -[XAP_CocoaTextView unmarkText]\n"));
 }
 
-- (void)unmarkText
-{	
-	m_hasMarkedText = NO;
-	UT_DEBUGMSG(("Hub TODO: handle -[XAP_CocoaTextView unmarkText]\n"));
+- (nonnull NSArray<NSAttributedStringKey> *)validAttributesForMarkedText {
+    return [NSArray array];
 }
 
-- (NSArray*)validAttributesForMarkedText
-{
-	return [NSArray array];
+#if 0
+- (nullable id)animationForKey:(nonnull NSAnimatablePropertyKey)key {
+    <#code#>
 }
+
+- (nonnull instancetype)animator {
+    <#code#>
+}
+
++ (nullable id)defaultAnimationForKey:(nonnull NSAnimatablePropertyKey)key {
+    <#code#>
+}
+
+- (NSRect)accessibilityFrame {
+    <#code#>
+}
+
+- (nullable id)accessibilityParent {
+    <#code#>
+}
+
+- (nullable NSAttributedString *)accessibilityAttributedStringForRange:(NSRange)range {
+    <#code#>
+}
+
+- (nullable id)accessibilityCellForColumn:(NSInteger)column row:(NSInteger)row {
+    <#code#>
+}
+
+- (NSRect)accessibilityFrameForRange:(NSRange)range {
+    <#code#>
+}
+
+- (NSPoint)accessibilityLayoutPointForScreenPoint:(NSPoint)point {
+    <#code#>
+}
+
+- (NSSize)accessibilityLayoutSizeForScreenSize:(NSSize)size {
+    <#code#>
+}
+
+- (NSInteger)accessibilityLineForIndex:(NSInteger)index {
+    <#code#>
+}
+
+- (BOOL)accessibilityPerformCancel {
+    <#code#>
+}
+
+- (BOOL)accessibilityPerformConfirm {
+    <#code#>
+}
+
+- (BOOL)accessibilityPerformDecrement {
+    <#code#>
+}
+
+- (BOOL)accessibilityPerformDelete {
+    <#code#>
+}
+
+- (BOOL)accessibilityPerformIncrement {
+    <#code#>
+}
+
+- (BOOL)accessibilityPerformPick {
+    <#code#>
+}
+
+- (BOOL)accessibilityPerformPress {
+    <#code#>
+}
+
+- (BOOL)accessibilityPerformRaise {
+    <#code#>
+}
+
+- (BOOL)accessibilityPerformShowAlternateUI {
+    <#code#>
+}
+
+- (BOOL)accessibilityPerformShowDefaultUI {
+    <#code#>
+}
+
+- (BOOL)accessibilityPerformShowMenu {
+    <#code#>
+}
+
+- (nullable NSData *)accessibilityRTFForRange:(NSRange)range {
+    <#code#>
+}
+
+- (NSRange)accessibilityRangeForIndex:(NSInteger)index {
+    <#code#>
+}
+
+- (NSRange)accessibilityRangeForLine:(NSInteger)line {
+    <#code#>
+}
+
+- (NSRange)accessibilityRangeForPosition:(NSPoint)point {
+    <#code#>
+}
+
+- (NSPoint)accessibilityScreenPointForLayoutPoint:(NSPoint)point {
+    <#code#>
+}
+
+- (NSSize)accessibilityScreenSizeForLayoutSize:(NSSize)size {
+    <#code#>
+}
+
+- (nullable NSString *)accessibilityStringForRange:(NSRange)range {
+    <#code#>
+}
+
+- (NSRange)accessibilityStyleRangeForIndex:(NSInteger)index {
+    <#code#>
+}
+
+- (BOOL)isAccessibilitySelectorAllowed:(nonnull SEL)selector {
+    <#code#>
+}
+
+- (void)encodeWithCoder:(nonnull NSCoder *)coder {
+    <#code#>
+}
+#endif
 
 @end

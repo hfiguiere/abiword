@@ -2,7 +2,7 @@
 
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001-2002 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,9 +20,7 @@
  * 02110-1301 USA.
  */
 
-
-#ifndef XAP_COCOAFRAMEIMPL_H
-#define XAP_COCOAFRAMEIMPL_H
+#pragma once
 
 #import <Cocoa/Cocoa.h>
 #import "xap_CocoaDialogFactory.h"
@@ -35,18 +33,19 @@ class XAP_CocoaFrameImpl;
 
 @interface XAP_CocoaFrameController : NSWindowController
 {
-	XAP_CocoaFrameImpl *m_frame;
+	XAP_CocoaFrameImpl* m_frame;
     IBOutlet NSView *mainView;
     IBOutlet XAP_CocoaNSStatusBar *statusBar;
-	NSView <NSTextInput> *m_textView;
+	NSView<NSTextInputClient>* m_textView;
 }
+
+@property (readonly) XAP_CocoaFrameImpl* frameImpl;
+@property (assign) NSView<NSTextInputClient>* textView;
+
 + (XAP_CocoaFrameController*)createFrom:(XAP_CocoaFrameImpl *)frame;
 - (id)initWith:(XAP_CocoaFrameImpl *)frame;
 - (NSView *)getMainView;
 - (XAP_CocoaNSStatusBar *)getStatusBar;
-- (XAP_CocoaFrameImpl *)frameImpl;
-- (void)setTextView:(NSView <NSTextInput>*)tv;
-- (NSView <NSTextInput>*)textView;
 
 - (NSArray *)getToolbars;
 - (NSString *)getToolbarSummaryID;
@@ -132,6 +131,3 @@ private:
 
 	XAP_CocoaFrameController *		m_frameController;
 };
-
-
-#endif

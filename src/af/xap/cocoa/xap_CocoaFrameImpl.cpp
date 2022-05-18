@@ -2,7 +2,7 @@
 
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001-2004 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuière
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -482,6 +482,9 @@ void XAP_CocoaFrameImpl::setToolbarRect(const NSRect &r)
 
 @implementation XAP_CocoaFrameController
 
+@synthesize textView = m_textView;
+@synthesize frameImpl = m_frame;
+
 - (BOOL)windowShouldClose:(id)sender
 {
 	UT_UNUSED(sender);
@@ -601,21 +604,6 @@ void XAP_CocoaFrameImpl::setToolbarRect(const NSRect &r)
 - (XAP_CocoaNSStatusBar *)getStatusBar
 {
 	return statusBar;
-}
-
-- (XAP_CocoaFrameImpl *)frameImpl
-{
-	return m_frame;
-}
-
-- (void)setTextView:(NSView <NSTextInput>*)tv
-{
-	m_textView = tv;
-}
-
-- (NSView <NSTextInput>*)textView
-{
-	return m_textView;
 }
 
 - (NSArray*)getToolbars
