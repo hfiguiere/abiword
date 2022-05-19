@@ -137,9 +137,12 @@ AC_PROG_CXX
 AX_CXX_COMPILE_STDCXX_11(noext,mandatory)
 #AC_PROG_OBJC
 AC_PROG_INSTALL
-# For libtool 1.5.x compatability (AC_PROG_LIBTOOL is deprecated version of LT_INIT)
-m4_ifdef([LT_INIT], [LT_INIT([disable-static win32-dll])], [AC_LIBTOOL_WIN32_DLL])
-m4_ifdef([LT_INIT], [], [AC_PROG_LIBTOOL])
+# For libtool 1.5.x compatability (LT_INIT is deprecated version of LT_INIT)
+m4_ifdef([LT_INIT], [LT_INIT([disable-static win32-dll])], [AC_REQUIRE(AC_CANONICAL_HOST)_LT_SET_OPTION([LT_INIT],[win32-dll])
+m4_warn([obsolete],[AC_LIBTOOL_WIN32_DLL: Remove this warning and the call to _LT_SET_OPTION when you
+put the 'win32-dll' option into LT_INIT's first parameter.])
+])
+m4_ifdef([LT_INIT], [], [LT_INIT])
 AC_PROG_LN_S
 
 AC_CHECK_PROG(HAVE_PERL, perl, yes, no)
@@ -1122,8 +1125,7 @@ fi
 
 AM_CONDITIONAL(HAVE_INTROSPECTION, test "x$found_introspection" = "xyes")
 
-AC_OUTPUT(
-  libabiword.pc
+AC_CONFIG_FILES([libabiword.pc
   Makefile
   icons/Makefile
   po/Makefile
@@ -1200,7 +1202,8 @@ AC_OUTPUT(
   tools/cdump/Makefile
   tools/cdump/xp/Makefile
   com.abisource.AbiWord.appdata.xml
-)
+])
+AC_OUTPUT
 
 AC_OUTPUT(
   m4_include([m4/plugin-makefiles.m4])
