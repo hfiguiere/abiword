@@ -271,7 +271,7 @@ void AP_CocoaDialog_Spell::event_Cancel()
    [NSApp stopModal];
 }
 
-void AP_CocoaDialog_Spell::event_SuggestionSelected(int row, int /*column*/)
+void AP_CocoaDialog_Spell::event_SuggestionSelected(NSInteger row)
 {
 	if (!m_Suggestions->getItemCount()) {
 		return;
@@ -376,7 +376,7 @@ void AP_CocoaDialog_Spell::event_ReplacementChanged()
 - (void)suggestionSelected:(id)sender
 {
 	UT_UNUSED(sender);
-	_xap->event_SuggestionSelected([_suggestionList selectedRow], [_suggestionList selectedColumn]);
+	_xap->event_SuggestionSelected([_suggestionList selectedRow]);
 }
 
 - (void)setMisspelled:(NSAttributedString*)attr scroll:(float)offset

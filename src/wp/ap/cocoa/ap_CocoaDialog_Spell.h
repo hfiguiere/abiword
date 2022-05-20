@@ -38,19 +38,19 @@ public:
 	AP_CocoaDialog_Spell(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~AP_CocoaDialog_Spell(void);
 
-	virtual void runModal(XAP_Frame * pFrame) override;
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 
 	// callbacks can fire these events
-	virtual void event_Change(void);
-	virtual void event_ChangeAll(void);
-	virtual void event_Ignore(void);
-	virtual void event_IgnoreAll(void);
-	virtual void event_AddToDict(void);
-	virtual void event_Cancel(void);
-	virtual void event_SuggestionSelected(int row, int column);
-	virtual void event_ReplacementChanged(void);
+	void event_Change(void);
+	void event_ChangeAll(void);
+	void event_Ignore(void);
+	void event_IgnoreAll(void);
+	void event_AddToDict(void);
+	void event_Cancel(void);
+	void event_SuggestionSelected(NSInteger row);
+	void event_ReplacementChanged(void);
 
 private:
 	void	    _populateWindowData(void);
