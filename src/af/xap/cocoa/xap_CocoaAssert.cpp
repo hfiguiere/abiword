@@ -23,6 +23,7 @@ bool XAP_CocoaAssertMsg(const char* szMsg, const char* szFile, int iLine)
 {
     NSString* message = [NSString stringWithFormat:@"ASSERT %s raised at %s:%d", szMsg, szFile, iLine];
     NSLog(@"%@", message);
+    bool suppress = false;
 
     NSAlert* alert = [[NSAlert alloc] init];
     alert.messageText = @"Assertion failed";
@@ -32,8 +33,8 @@ bool XAP_CocoaAssertMsg(const char* szMsg, const char* szFile, int iLine)
 
     NSButton* button = alert.suppressionButton;
     if (button) {
-        return button.state == NSControlStateValueOn;
+        suppress = button.state == NSControlStateValueOn;
     }
-
-    return false;
+    [alert release];
+    return suppress;
 }
