@@ -385,7 +385,9 @@ void AP_CocoaDialog_Spell::event_ReplacementChanged()
 
 	if (attr) {
 		[_unknownData setEditable:YES];
-		[_unknownData insertText:attr];
+		[_unknownData.textStorage
+			replaceCharactersInRange:NSMakeRange(0, _unknownData.textStorage.length)
+			withAttributedString:attr];
 		[_unknownData setEditable:NO];
 
 		NSClipView * clipView = (NSClipView *) [_unknownData superview];

@@ -116,8 +116,19 @@ void XAP_CocoaDialog_About::event_URL(void)
 	[m_appName setStringValue:[NSString stringWithUTF8String:app->getApplicationName()]];
 	pSS->getValueUTF8(XAP_STRING_ID_DLG_ABOUT_Version, s);
 	[m_versionLabel setStringValue:[NSString stringWithFormat:[NSString stringWithUTF8String:s.c_str()], XAP_App::s_szBuild_Version]];
-	[m_licenseText insertText:[NSString stringWithFormat:@"%s\n\n%@", XAP_ABOUT_COPYRIGHT,
-					[NSString stringWithFormat:@XAP_ABOUT_GPL_LONG_LF, app->getApplicationName()]]];
+	// Text with the foreground colour
+	NSColor* textColour = NSColor.textColor;
+	NSAttributedString* aboutText =
+		[[NSAttributedString alloc]
+			initWithString:[NSString stringWithFormat:@"%s\n\n%@", XAP_ABOUT_COPYRIGHT,
+					[NSString stringWithFormat:@XAP_ABOUT_GPL_LONG_LF, app->getApplicationName()]]
+			attributes:[NSDictionary dictionaryWithObject:textColour
+												   forKey:NSForegroundColorAttributeName]
+		 ];
+	[m_licenseText.textStorage
+		replaceCharactersInRange:NSMakeRange(0, m_licenseText.textStorage.length)
+		withAttributedString:aboutText];
+	[aboutText release];
 	[m_licenseText setEditable:NO];
 
 	NSClipView * clipView = (NSClipView *) [m_licenseText superview];
