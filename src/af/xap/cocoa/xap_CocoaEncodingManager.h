@@ -1,5 +1,5 @@
 /* AbiSource Application Framework
- * Copyright (C) 2001 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,9 +17,7 @@
  * 02110-1301 USA.
  */
 
-
-#ifndef XAP_COCOAENCMGR_H
-#define XAP_COCOAENCMGR_H
+#pragma once
 
 #include "xap_EncodingManager.h"
 
@@ -30,16 +28,14 @@ protected:
     XAP_CocoaEncodingManager();
     virtual ~XAP_CocoaEncodingManager();
 
-    void 	initialize();
+    virtual void initialize() override;
 
 public:
-    const char* getNativeEncodingName() 	const;
-    const char* getNative8BitEncodingName()	const;
-    const char* getNativeUnicodeEncodingName() 	const;
-    const char* getLanguageISOName() 		const;
-    const char* getLanguageISOTerritory() 	const;
+    virtual const char* getNativeEncodingName() const override;
+    virtual const char* getNative8BitEncodingName() const override;
+    virtual const char* getNativeUnicodeEncodingName() const override;
+    virtual const char* getLanguageISOName() const override;
+    virtual const char* getLanguageISOTerritory() const override;
 
 	friend class XAP_EncodingManager;
 };
-
-#endif /* XAP_COCOAENCMGR_H */

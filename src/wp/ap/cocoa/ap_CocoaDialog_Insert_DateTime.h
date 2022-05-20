@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001, 2003 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOADIALOG_INSERT_DATETIME_H
-#define AP_COCOADIALOG_INSERT_DATETIME_H
+#pragma once
 
 #include "ap_Dialog_Insert_DateTime.h"
 #import "xap_Cocoa_NSTableUtils.h"
@@ -35,7 +34,7 @@ public:
 	AP_CocoaDialog_Insert_DateTime(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~AP_CocoaDialog_Insert_DateTime(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 
@@ -66,5 +65,3 @@ private:
 	XAP_StringListDataSource*	m_dataSource;
 	XAP_GenericListChooser_Controller*	m_dlg;
 };
-
-#endif /* AP_COCOADIALOG_INSERT_DATETIME_H */

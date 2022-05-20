@@ -2,8 +2,8 @@
 
 /* AbiSource Application Framework
  * Copyright (C) 2001 AbiSource, Inc.
- * Copyright (C) 2001, 2003, 2007 Hubert Figuiere
  * Copyright (C) 2004 Francis James Franklin
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,8 +21,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef XAP_COCOADIALOG_PLUGIN_MANAGER_H
-#define XAP_COCOADIALOG_PLUGIN_MANAGER_H
+#pragma once
 
 #include <Cocoa/Cocoa.h>
 
@@ -116,10 +115,8 @@ public:
 
 	virtual ~XAP_CocoaDialog_PluginManager(void);
 
-	virtual void	runModal (XAP_Frame * pFrame);
+	virtual void runModal (XAP_Frame* pFrame) override;
 
 private:
 	XAP_Frame *		m_pFrame;
 };
-
-#endif /* PLUGIN_MANAGER_H */

@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOATOOLBAR_FONTCOMBO_H
-#define AP_COCOATOOLBAR_FONTCOMBO_H
+#pragma once
 
 #import <Cocoa/Cocoa.h>
 
@@ -36,10 +35,5 @@ public:
 
 	static EV_Toolbar_Control * 	static_constructor(EV_Toolbar *, XAP_Toolbar_Id id);
 
-	virtual bool					populate(void);
-
-protected:
-
+	virtual bool populate(void) override;
 };
-
-#endif /* AP_COCOATOOLBAR_FONTCOMBO_H */

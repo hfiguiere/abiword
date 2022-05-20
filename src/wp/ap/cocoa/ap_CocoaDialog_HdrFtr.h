@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 2000 AbiSource, Inc.
- * Copyright (C) 2001, 2003 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOADIALOG_HDRFTR_H
-#define AP_COCOADIALOG_HDRFTR_H
+#pragma once
 
 #include <Cocoa/Cocoa.h>
 #include "ap_Dialog_HdrFtr.h"
@@ -35,7 +34,7 @@ public:
 	AP_CocoaDialog_HdrFtr(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~AP_CocoaDialog_HdrFtr(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 
@@ -76,7 +75,3 @@ private:
 - (IBAction)restartBtnAction:(id)sender;
 - (IBAction)restartStepperAction:(id)sender;
 @end
-
-#endif /* AP_COCOADIALOG_HDRFTR_H */
-
-

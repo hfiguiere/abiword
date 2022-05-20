@@ -1,6 +1,6 @@
 /* AbiSource Application Framework
  * Copyright (C) 1998-2000 AbiSource, Inc.
- * Copyright (C) 2009-2021 Hubert Figuiere
+ * Copyright (C) 2009-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -34,10 +34,10 @@ public:
   AP_CocoaPreview_Annotation(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~AP_CocoaPreview_Annotation(void);
 
-	virtual void			runModeless(XAP_Frame * pFrame);
-	virtual void			destroy(void);
-	virtual void			activate(void);
-	virtual void			notifyActiveFrame(XAP_Frame *pFrame);
+	virtual void runModeless(XAP_Frame* pFrame) override;
+	virtual void destroy(void) override;
+	virtual void activate(void) override;
+	virtual void notifyActiveFrame(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 	void					_constructWindow(void);

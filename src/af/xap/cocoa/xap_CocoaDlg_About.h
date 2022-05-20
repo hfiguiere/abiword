@@ -1,6 +1,6 @@
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001-2002 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,9 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef XAP_COCOADIALOG_ABOUT_H
-#define XAP_COCOADIALOG_ABOUT_H
-
+#pragma once
 
 #import <Cocoa/Cocoa.h>
 
@@ -54,7 +52,7 @@ public:
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	// callbacks can fire these events
 
@@ -63,6 +61,3 @@ public:
 private:
 	XAP_CocoaDlg_AboutController * m_dlg;
 };
-
-
-#endif /* XAP_COCOADIALOG_ABOUT_H */

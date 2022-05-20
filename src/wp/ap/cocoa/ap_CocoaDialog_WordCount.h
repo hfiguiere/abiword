@@ -2,7 +2,7 @@
 
 /* AbiWord
  * Copyright (C) 2000 AbiSource, Inc.
- * Copyright (C) 2001, 2003-2005 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,8 +20,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOADIALOG_WORDCOUNT_H
-#define AP_COCOADIALOG_WORDCOUNT_H
+#pragma once
 
 #import <Cocoa/Cocoa.h>
 
@@ -65,10 +64,10 @@ public:
 	AP_CocoaDialog_WordCount(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~AP_CocoaDialog_WordCount(void);
 
-	virtual void			runModeless(XAP_Frame * pFrame);
-	virtual void			destroy(void);
-	virtual void			activate(void);
-	virtual void			notifyActiveFrame(XAP_Frame *pFrame);
+	virtual void runModeless(XAP_Frame* pFrame) override;
+	virtual void destroy(void) override;
+	virtual void activate(void) override;
+	virtual void notifyActiveFrame(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 	static void			autoupdateWC(UT_Worker * pTimer);
@@ -77,7 +76,7 @@ public:
 	virtual void			event_Update(void);
 	void 					event_CloseWindow(void);
 protected:
-	virtual XAP_Widget *getWidget(xap_widget_id wid)
+	virtual XAP_Widget* getWidget(xap_widget_id wid) override
 	{
 		return [m_dlg getWidget:((int) wid)];
 	}
@@ -90,13 +89,3 @@ private:
 	bool m_bAutoUpdate_happening_now;
 	AP_CocoaDialog_WordCountController*	m_dlg;
 };
-
-#endif /* AP_COCOADIALOG_WORDCOUNT_H */
-
-
-
-
-
-
-
-

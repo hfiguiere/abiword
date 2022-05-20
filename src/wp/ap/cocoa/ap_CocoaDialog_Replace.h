@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001, 2003 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOADIALOG_REPLACE_H
-#define AP_COCOADIALOG_REPLACE_H
+#pragma once
 
 #include "ap_Dialog_Replace.h"
 
@@ -36,12 +35,12 @@ public:
 	virtual ~AP_CocoaDialog_Replace(void);
 
 
-	virtual void			runModal(XAP_Frame * /*pFrame*/){};
-	virtual void			runModeless(XAP_Frame * pFrame);
-	virtual void			notifyActiveFrame(XAP_Frame *pFrame);
-	virtual void			notifyCloseFrame(XAP_Frame */*pFrame*/){};
-	virtual void			destroy(void);
-	virtual void			activate(void);
+	virtual void runModal(XAP_Frame* /*pFrame*/) override {}
+	virtual void runModeless(XAP_Frame* pFrame) override;
+	virtual void notifyActiveFrame(XAP_Frame* pFrame) override;
+	virtual void notifyCloseFrame(XAP_Frame* /*pFrame*/) override {}
+	virtual void destroy(void) override;
+	virtual void activate(void) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 
@@ -56,7 +55,7 @@ public:
 	void					event_CloseWindow(void);
 
 private:
-	void			_updateLists();
+	virtual void _updateLists() override;
 	void 		_storeWindowData(void) {};
 	void		_populateWindowData(void);
 	AP_CocoaDialog_ReplaceController* m_dlg;
@@ -102,5 +101,3 @@ private:
 - (void)updateReplaceWith:(UT_GenericVector<UT_UCS4Char*>*)list;
 - (void)_updateCombo:(NSComboBox*)combo withList:(UT_GenericVector<UT_UCS4Char*>*)list;
 @end
-
-#endif /* AP_COCOADIALOG_REPLACE_H */

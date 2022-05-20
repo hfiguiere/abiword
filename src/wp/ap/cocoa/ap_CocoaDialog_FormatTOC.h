@@ -2,7 +2,7 @@
 
 /* AbiWord
  * Copyright (C) 2000 AbiSource, Inc.
- * Copyright (C) 2004 Hubert Figuiere
+ * Copyright (C) 2004-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,8 +20,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOADIALOG_FORMATTOC_H
-#define AP_COCOADIALOG_FORMATTOC_H
+#pragma once
 
 #include <Cocoa/Cocoa.h>
 
@@ -38,14 +37,14 @@ class AP_CocoaDialog_FormatTOC: public AP_Dialog_FormatTOC
 public:
 	AP_CocoaDialog_FormatTOC(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~AP_CocoaDialog_FormatTOC(void);
-	virtual void			runModeless(XAP_Frame * pFrame);
+	virtual void runModeless(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
-	virtual void            notifyActiveFrame(XAP_Frame * pFrame);
-	virtual void            setTOCPropsInGUI(void);
-    virtual void            setSensitivity(bool bSensitive);
-	virtual void            destroy(void);
-	virtual void            activate(void);
+	virtual void notifyActiveFrame(XAP_Frame* pFrame) override;
+	virtual void setTOCPropsInGUI(void) override;
+	virtual void setSensitivity(bool bSensitive) override;
+	virtual void destroy(void) override;
+	virtual void activate(void) override;
 private:
 	void			_populateWindowData(void);
 	AP_CocoaDialog_FormatTOC_Controller *m_dlg;
@@ -126,5 +125,3 @@ private:
 - (void)saveMainLevelSettings;
 - (void)saveDetailLevelSettings;
 @end
-
-#endif /* AP_COCOADIALOG_FORMATOC_H */

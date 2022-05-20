@@ -2,6 +2,7 @@
 
 /* AbiWord
  * Copyright (C) 2005 Martin Sevior
+ * Copyright (C) 2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,8 +20,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOADIALOG_LATEX_H
-#define AP_COCOADIALOG_LATEX_H
+#pragma once
 
 #import <Cocoa/Cocoa.h>
 
@@ -38,10 +38,10 @@ public:
 
 	virtual ~AP_CocoaDialog_Latex(void);
 
-	virtual void			runModeless(XAP_Frame * pFrame);
-	virtual void			destroy(void);
-	virtual void			activate(void);
-	virtual void			notifyActiveFrame(XAP_Frame * pFrame);
+	virtual void runModeless(XAP_Frame* pFrame) override;
+	virtual void destroy(void) override;
+	virtual void activate(void) override;
+	virtual void notifyActiveFrame(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 
@@ -51,8 +51,8 @@ public:
 	void			event_Close(void);
 	void			event_WindowDelete(void);
 
-	virtual void	setLatexInGUI(void);
-	virtual bool	getLatexFromGUI(void);
+	virtual void setLatexInGUI(void) override;
+	virtual bool getLatexFromGUI(void) override;
 
 protected:
 	AP_CocoaDialog_LatexController *	m_dlg;
@@ -85,5 +85,3 @@ protected:
 - (void)setEditorText:(NSString *)text;
 - (NSString *)editorText;
 @end
-
-#endif /* AP_COCOADIALOG_Latex_H */

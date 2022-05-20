@@ -76,40 +76,40 @@ public:
 										   const char * szToolbarLayoutsKey, const char * szToolbarLayoutsDefaultValue,
 										   const char * szToolbarLabelSetKey, const char * szToolbarLabelSetDefaultValue);
 */
-	virtual void _initialize();
-	virtual void                notifyViewChanged(AV_View * pView);
+	virtual void _initialize() override;
+	virtual void notifyViewChanged(AV_View * pView) override;
 //	virtual	XAP_Frame *			cloneFrame() = 0;
 //	virtual UT_Error   			loadDocument(const char * szFilename, int ieft) = 0;
 //	virtual UT_Error                        loadDocument(const char * szFilename, int ieft, bool createNew) = 0;
-	virtual bool				_close();
-	virtual bool				_raise();
-	virtual bool				_show();
-	virtual void 				_setFullScreen(bool /*isFullScreen*/ ) { UT_ASSERT(UT_NOT_IMPLEMENTED); }
-	virtual bool				_updateTitle();
+	virtual bool _close() override;
+	virtual bool _raise() override;
+	virtual bool _show() override;
+	virtual void _setFullScreen(bool /*isFullScreen*/ ) override { UT_ASSERT(UT_NOT_IMPLEMENTED); }
+	virtual bool _updateTitle() override;
 	virtual UT_sint32			_setInputMode(const char * szName);
-	virtual void _hideMenuScroll(bool /*bHideMenuScroll*/)
+	virtual void _hideMenuScroll(bool /*bHideMenuScroll*/) override
 		{ UT_ASSERT(UT_NOT_IMPLEMENTED); }
-	virtual void                _nullUpdate () const;
-	virtual void                _setCursor(GR_Graphics::Cursor /*c*/) { }
+	virtual void _nullUpdate() const override;
+	virtual void _setCursor(GR_Graphics::Cursor /*c*/) override { }
 
 	NSWindow *					getTopLevelWindow() const;
 	NSView *					getVBoxWidget() const;
-	virtual XAP_DialogFactory *	_getDialogFactory();
+	virtual XAP_DialogFactory* _getDialogFactory() override;
 //	virtual void				setXScrollRange() = 0;
 //	virtual void				setYScrollRange() = 0;
-	virtual bool				_runModalContextMenu(AV_View * pView, const char * szMenuName,
-													UT_sint32 x, UT_sint32 y);
+	virtual bool _runModalContextMenu(AV_View* pView, const char* szMenuName,
+                                      UT_sint32 x, UT_sint32 y) override;
 //	virtual void				translateDocumentToScreen(UT_sint32 &x, UT_sint32 &y) = 0;
 //	virtual void				setStatusMessage(const char * szMsg) = 0;
 
 	void						setTimeOfLastEvent(NSTimeInterval timestamp);
 
 //	virtual void				toggleRuler(bool bRulerOn) = 0;
-	virtual void				_queue_resize();
-	virtual EV_Menu*			_getMainMenu();
+	virtual void _queue_resize() override;
+	virtual EV_Menu* _getMainMenu() override;
 
-	virtual void                _rebuildMenus(void);
-    virtual void                _rebuildToolbar(UT_uint32 ibar);
+	virtual void _rebuildMenus(void) override;
+	virtual void _rebuildToolbar(UT_uint32 ibar) override;
 	void                        _setController (XAP_CocoaFrameController * ctrl);
 	XAP_CocoaFrameController *	_getController () { return m_frameController; };
 	virtual NSString *			_getNibName () = 0;
@@ -118,13 +118,13 @@ public:
 protected:
 	virtual void				_createDocumentWindow() = 0;
 	virtual void				_createStatusBarWindow(XAP_CocoaNSStatusBar *) = 0;
-	virtual void				_createTopLevelWindow();
+	virtual void  _createTopLevelWindow() override;
 	virtual void				_setWindowIcon() = 0;
 	virtual	void				_createDocView(GR_Graphics* &pG) = 0; /* Cocoa specific */
 
-	virtual EV_Toolbar *		_newToolbar(XAP_Frame *frame, const char *, const char *);
+	virtual EV_Toolbar* _newToolbar(XAP_Frame* frame, const char*, const char*) override;
 
-	virtual UT_RGBColor 		getColorSelBackground () const;
+	virtual UT_RGBColor getColorSelBackground() const override;
 private:
 	AP_CocoaDialogFactory		m_dialogFactory;
 	EV_CocoaMenuPopup *			m_pCocoaPopup; /* only valid while a context popup is up */

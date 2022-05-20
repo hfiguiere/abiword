@@ -2,7 +2,7 @@
 
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001, 2003 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,8 +20,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOADIALOG_FIELD_H
-#define AP_COCOADIALOG_FIELD_H
+#pragma once
 
 #include "ap_Dialog_Field.h"
 
@@ -41,7 +40,7 @@ public:
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *pFactory , XAP_Dialog_Id dlgid);
 	virtual ~AP_CocoaDialog_Field(void);
 
-	virtual void runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	void event_OK(void);
 	void event_Cancel(void);
@@ -83,11 +82,3 @@ private:
  */
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification;
 @end
-
-#endif /* AP_COCOADIALOG_FIELD_H */
-
-
-
-
-
-

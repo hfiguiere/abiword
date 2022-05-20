@@ -3,6 +3,7 @@
 /* AbiWord
  * Copyright (C) 2000 AbiSource, Inc.
  * Copyright (C) 2005 Francis James Franklin
+ * Copyright (C) 2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,8 +21,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOADIALOG_MAILMERGE_H
-#define AP_COCOADIALOG_MAILMERGE_H
+#pragma once
 
 #include <string>
 
@@ -44,16 +44,16 @@ public:
 
 	virtual ~AP_CocoaDialog_MailMerge(void);
 
-	virtual void			runModeless(XAP_Frame * pFrame);
+	virtual void runModeless(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id id);
 
-	virtual void			destroy(void);
-	virtual void			activate(void);
+	virtual void destroy(void) override;
+	virtual void activate(void) override;
 
 	void					eventInsert(NSString * field_name);
 
-	virtual void			setFieldList();
+	virtual void setFieldList() override;
 
 	UT_uint32 fieldCount() const
 	{
@@ -108,5 +108,3 @@ protected:
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification;
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex;
 @end
-
-#endif /* AP_COCOADIALOG_MAILMERGE_H */

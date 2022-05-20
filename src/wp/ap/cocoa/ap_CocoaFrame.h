@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001-2003 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOAFRAME_H
-#define AP_COCOAFRAME_H
+#pragma once
 
 #import <Cocoa/Cocoa.h>
 
@@ -36,8 +35,6 @@ class GR_Graphics;
 
 /*****************************************************************/
 
-
-
 class AP_CocoaFrame : public AP_Frame
 {
 public:
@@ -45,22 +42,22 @@ public:
 	AP_CocoaFrame(AP_CocoaFrame * f);
 	virtual ~AP_CocoaFrame(void);
 
-	virtual bool				initialize(XAP_FrameMode frameMode=XAP_NormalFrame);
-	virtual	XAP_Frame *			cloneFrame(void);
+	virtual bool initialize(XAP_FrameMode frameMode = XAP_NormalFrame) override;
+	virtual	XAP_Frame* cloneFrame(void) override;
 
-	virtual void				setXScrollRange(void);
-	virtual void				setYScrollRange(void);
+	virtual void setXScrollRange(void) override;
+	virtual void setYScrollRange(void) override;
 	virtual void				translateDocumentToScreen(UT_sint32 &x, UT_sint32 &y);
-	virtual void				setStatusMessage(const char * szMsg);
+	virtual void setStatusMessage(const char* szMsg) override;
 
-	virtual void				toggleRuler(bool bRulerOn);
-	virtual void                            toggleTopRuler(bool bRulerOn);
-	virtual void                            toggleLeftRuler(bool bRulerOn);
-	virtual void				toggleBar(UT_uint32 iBarNb, bool bBarOn);
-	virtual void				toggleStatusBar(bool bStatusBarOn);
+	virtual void toggleRuler(bool bRulerOn) override;
+	virtual void toggleTopRuler(bool bRulerOn) override;
+	virtual void toggleLeftRuler(bool bRulerOn) override;
+	virtual void toggleBar(UT_uint32 iBarNb, bool bBarOn) override;
+	virtual void toggleStatusBar(bool bStatusBarOn) override;
 
 protected:
-	virtual bool _createViewGraphics(GR_Graphics *& pG, UT_uint32 iZoom);
+	virtual bool _createViewGraphics(GR_Graphics*& pG, UT_uint32 iZoom) override;
 
 	static void					_scrollFuncX(void * pData, UT_sint32 xoff, UT_sint32 xlimit);
 	static void					_scrollFuncY(void * pData, UT_sint32 yoff, UT_sint32 ylimit);
@@ -68,18 +65,15 @@ protected:
 				       ap_ViewListener *& pViewListener,
 				       ap_Scrollbar_ViewListener *& pScrollbarViewListener,
 				       AV_ListenerId &lid,
-				       AV_ListenerId &lidScrollbarViewListener);
+				       AV_ListenerId &lidScrollbarViewListener) override;
 
-	virtual void _bindToolbars(AV_View *pView);
-	virtual void _setViewFocus(AV_View *pView);
+	virtual void _bindToolbars(AV_View *pView) override;
+	virtual void _setViewFocus(AV_View *pView) override;
 
-	virtual UT_sint32			_getDocumentAreaWidth();
-	virtual UT_sint32			_getDocumentAreaHeight();
+	virtual UT_sint32 _getDocumentAreaWidth() override;
+	virtual UT_sint32 _getDocumentAreaHeight() override;
 	void 						_getHScrollValues (UT_sint32 &min, UT_sint32 &max, UT_sint32 &current);
 	void 						_getVScrollValues (UT_sint32 &min, UT_sint32 &max, UT_sint32 &current);
 	void 						_setHScrollValues (UT_sint32 min, UT_sint32 max, UT_sint32 current);
 	void 						_setVScrollValues (UT_sint32 min, UT_sint32 max, UT_sint32 current);
 };
-
-#endif /* AP_COCOAFRAME_H */
-

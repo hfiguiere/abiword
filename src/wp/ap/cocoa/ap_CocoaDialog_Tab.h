@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001, 2003 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOADIALOG_TAB_H
-#define AP_COCOADIALOG_TAB_H
+#pragma once
 
 #include "ut_types.h"
 #include "ap_Dialog_Tab.h"
@@ -80,22 +79,22 @@ public:
 	AP_CocoaDialog_Tab(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~AP_CocoaDialog_Tab(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 	friend class AP_CocoaDialog_Tab_Proxy;
  protected:
-	virtual void _controlEnable( tControl ctlid, bool value );
+	virtual void _controlEnable(tControl ctlid, bool value) override;
 	// we implement these so the XP dialog can set/grab our data
-#define SET_GATHER(a,t) virtual t _gather##a(void);  \
- 					    virtual void    _set##a( t )
+#define SET_GATHER(a,t) virtual t _gather##a(void) override;  \
+ 			virtual void _set##a( t ) override
 	SET_GATHER			(Alignment,			eTabType);
 	SET_GATHER			(Leader,			eTabLeader);
 	SET_GATHER			(DefaultTabStop,	const gchar*);
 
 
 	// to populate the whole list
-	virtual void _setTabList(UT_uint32 count);
+	virtual void _setTabList(UT_uint32 count) override;
 
 	// get/set the selected tab
 	// the list of n tabs are index 0..(n-1)
@@ -106,7 +105,7 @@ public:
 	SET_GATHER			(TabEdit,			const char *);
 #undef SET_GATHER
 
-	virtual void _clearList();
+	virtual void _clearList() override;
 
 	// private construction functions
     void event_OK(void);
@@ -148,8 +147,3 @@ public:
 private:
 	AP_CocoaDialog_Tab*	m_dlg;
 };
-
-#endif /* AP_COCOADIALOG_TAB_H */
-
-
-

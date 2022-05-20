@@ -2,7 +2,7 @@
 
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001-2021 Hubert Figuière
+ * Copyright (C) 2001-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -44,7 +44,7 @@ public:
 	virtual ~AP_CocoaLeftRuler(void);
 
 	XAP_CocoaNSView *		createWidget(void);
-	virtual void	setView(AV_View * pView);
+	virtual void setView(AV_View* pView) override;
 
 	// cheats for the callbacks
 	void				getWidgetPosition(int * x, int * y);

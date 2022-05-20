@@ -1,7 +1,7 @@
 /* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
 /* AbiWord
  * Copyright (C) 2001 Dom Lachowicz
- * Copyright (C) 2001, 2003, 2009 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,8 +19,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef XAP_COCOADIALOG_IMAGE_H
-#define XAP_COCOADIALOG_IMAGE_H
+#pragma once
 
 #include "xap_Dlg_Image.h"
 
@@ -36,7 +35,7 @@ public:
 
 	virtual ~XAP_CocoaDialog_Image(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 
@@ -61,5 +60,3 @@ private:
 
 	XAP_CocoaDialog_ImageController *m_dlg;
 };
-
-#endif /* XAP_COCOADIALOG_IMAGE_H */

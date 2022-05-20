@@ -2,7 +2,7 @@
 
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001, 2003-2021 Hubert Figuière
+ * Copyright (C) 2001, 2003-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -40,8 +40,8 @@ public:
 	AP_CocoaDialog_Columns(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~AP_CocoaDialog_Columns(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
-	virtual void			enableLineBetweenControl(bool bState = true);
+	virtual void runModal(XAP_Frame * pFrame) override;
+	virtual void enableLineBetweenControl(bool bState = true) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 

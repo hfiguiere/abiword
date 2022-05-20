@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001 - 2003 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOASTATUSBAR_H
-#define AP_COCOASTATUSBAR_H
+#pragma once
 
 // Class for dealing with the status bar at the bottom of
 // the frame window.
@@ -52,11 +51,11 @@ public:
 	AP_CocoaStatusBar(XAP_Frame * pFrame);
 	virtual ~AP_CocoaStatusBar(void);
 
-	virtual void		setView(AV_View * pView);
+	virtual void setView(AV_View* pView) override;
 	XAP_CocoaNSStatusBar*	createWidget(void);
 
-	virtual void		show(void);
-	virtual void		hide(void);
+	virtual void show(void) override;
+	virtual void hide(void) override;
 
 	void _repositionFields(NSArray *fields);
 
@@ -68,5 +67,3 @@ private:
 	float				m_requestedWidth;
 	int					m_numMaxWidth;
 };
-
-#endif /* AP_COCOASTATUSBAR_H */

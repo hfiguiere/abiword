@@ -101,7 +101,7 @@ private:
 	NSMenu *				MenuStack_pop();
 
 protected:
-	virtual bool			_doAddMenuItem(UT_uint32 layout_pos); // does nothing, returns false
+	virtual bool _doAddMenuItem(UT_uint32 layout_pos) override; // does nothing, returns false
 
 private:
 	char *					m_buffer;

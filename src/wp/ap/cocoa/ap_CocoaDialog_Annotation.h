@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 2002 Dom Lachowicz
- * Copyright (C) 2009 Hubert Figuiere
+ * Copyright (C) 2009-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOADIALOG_ANNOTATION_H
-#define AP_COCOADIALOG_ANNOTATION_H
+#pragma once
 
 #include <Cocoa/Cocoa.h>
 
@@ -60,12 +59,10 @@ class AP_CocoaDialog_Annotation
 	AP_CocoaDialog_Annotation(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id id);
 	virtual ~AP_CocoaDialog_Annotation(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id id);
 
 private:
 	AP_CocoaDialog_AnnotationController * m_dlg;
 };
-
-#endif /* AP_COCOADIALOG_ANNOTATION_H */

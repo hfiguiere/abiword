@@ -2,7 +2,7 @@
 
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2003 Hubert Figuiere
+ * Copyright (C) 2003-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,8 +20,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOADIALOG_INSERTTABLE_H
-#define AP_COCOADIALOG_INSERTTABLE_H
+#pragma once
 
 #import <Cocoa/Cocoa.h>
 
@@ -38,7 +37,7 @@ public:
 	AP_CocoaDialog_InsertTable(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~AP_CocoaDialog_InsertTable(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 
@@ -89,6 +88,3 @@ private:
 - (float)colWidth;
 - (AP_Dialog_InsertTable::columnType)autoSizeType;
 @end
-
-
-#endif /* AP_COCOADIALOG_INSERTTABLE_H */

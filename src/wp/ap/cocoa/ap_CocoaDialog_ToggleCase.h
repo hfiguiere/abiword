@@ -2,8 +2,8 @@
 
 /* AbiWord
  * Copyright (C) 2000 AbiSource, Inc.
- * Copyright (C) 2001, 2003 Hubert Figuiere
  * Copyright (C) 2003 Mark Pazolli
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,8 +21,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOADIALOG_ToggleCase_H
-#define AP_COCOADIALOG_ToggleCase_H
+#pragma once
 
 #include <Cocoa/Cocoa.h>
 
@@ -58,11 +57,9 @@ class AP_CocoaDialog_ToggleCase: public AP_Dialog_ToggleCase
 	AP_CocoaDialog_ToggleCase(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~AP_CocoaDialog_ToggleCase(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 private:
 	AP_CocoaDialog_ToggleCaseController*	m_dlg;
 };
-
-#endif /* AP_COCOADIALOG_ToggleCase_H */

@@ -2,7 +2,7 @@
 
 /* AbiSource Program Utilities
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001-2021 Hubert Figuière
+ * Copyright (C) 2001-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -50,15 +50,15 @@ public:
 	virtual ~EV_CocoaToolbar(void);
 
 	bool toolbarEvent(XAP_Toolbar_Id tlbrid, const UT_UCSChar * pData, UT_uint32 dataLength);
-	virtual bool synthesize(void);
+	virtual bool synthesize(void) override;
 	bool bindListenerToView(AV_View * pView);
 	virtual bool refreshToolbar(AV_View * pView, AV_ChangeMask mask);
-	virtual bool repopulateStyles(void);
+	virtual bool repopulateStyles(void) override;
 	UT_sint32 destroy(void);
 	void      rebuildToolbar(UT_sint32 oldpos);
 	AP_CocoaFrame * getFrame(void);
-	virtual void show(void);
-	virtual void hide(void);
+	virtual void show(void) override;
+	virtual void hide(void) override;
 
 	static	CGFloat	getButtonWidth (void)
 		{ return 28.0f; };

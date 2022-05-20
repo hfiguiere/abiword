@@ -45,7 +45,7 @@ public:
 	AP_CocoaDialog_Styles(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~AP_CocoaDialog_Styles(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 
@@ -94,13 +94,13 @@ private:
 	void				_populateWindowData(void);
 	void                            _populateCList(void);
 	void 				_storeWindowData(void) const;
-	virtual const char * getCurrentStyle (void) const;
-	virtual void setDescription (const char * desc) const;
+	virtual const char* getCurrentStyle (void) const override;
+	virtual void setDescription (const char* desc) const override;
 
 	GR_CocoaGraphics* m_pParaPreviewWidget;
 	GR_CocoaGraphics* m_pCharPreviewWidget;
 
-	virtual void setModifyDescription( const char * desc);
+	virtual void setModifyDescription( const char * desc) override;
 	bool        _populateModify(void);
 
 	gchar    m_newStyleName[40];

@@ -1,5 +1,5 @@
 /* AbiWord
- * Copyright (C) 2003 Hubert Figuiere
+ * Copyright (C) 2003-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,9 +17,7 @@
  * 02110-1301 USA.
  */
 
-
-#ifndef __AP_PRINTING_DELEGATE__
-#define __AP_PRINTING_DELEGATE__
+#pragma once
 
 #include "xap_PrintingDelegate.h"
 
@@ -30,13 +28,9 @@ class AP_PrintingDelegate
 {
 public:
 	AP_PrintingDelegate(FV_View* pView);
-	virtual int getPageCount(void);
-	virtual void printPage(int pageNum);
+	virtual int getPageCount(void) override;
+	virtual void printPage(int pageNum) override;
 
 private:
 	FV_View* m_pView;
 };
-
-#endif
-
-

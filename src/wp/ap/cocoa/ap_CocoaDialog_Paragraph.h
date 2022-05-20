@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001,2003-2021 Hubert Figuière
+ * Copyright (C) 2001,2003-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -81,7 +81,7 @@ public:
 	AP_CocoaDialog_Paragraph(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id id);
 	virtual ~AP_CocoaDialog_Paragraph(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id id);
 
@@ -118,7 +118,7 @@ void 	_deleteGC(void);
 
 	void                 _populateWindowData(void);
 
-	virtual void         _syncControls(tControl changed, bool bAll = false);
+	virtual void _syncControls(tControl changed, bool bAll = false) override;
 private:
 	int _tCheckStateToNS(AP_CocoaDialog_Paragraph::tCheckState x);
 	id _getWidget(AP_Dialog_Paragraph::tControl widget)

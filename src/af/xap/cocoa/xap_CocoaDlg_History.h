@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 2000 AbiSource, Inc.
- * Copyright (C) 2004, 2009 Hubert Figuiere
+ * Copyright (C) 2004-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef XAP_COCOADIALOG_HISTORY_H
-#define XAP_COCOADIALOG_HISTORY_H
+#pragma once
 
 #include "xap_Dlg_History.h"
 
@@ -35,7 +34,7 @@ public:
 	XAP_CocoaDialog_History(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~XAP_CocoaDialog_History(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 	void event_OK();
@@ -80,5 +79,3 @@ private:
     row:(int)rowIndex;
 - (int)numberOfRowsInTableView:(NSTableView *)aTableView;
 @end
-
-#endif /* XAP_COCOADIALOG_HISTORY_H */

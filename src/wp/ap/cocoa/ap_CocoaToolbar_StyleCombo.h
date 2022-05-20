@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOATOOLBAR_STYLECOMBO_H
-#define AP_COCOATOOLBAR_STYLECOMBO_H
+#pragma once
 
 #include "xap_Types.h"
 #include "ev_Toolbar_Control.h"
@@ -36,7 +35,7 @@ public:
 	AP_CocoaToolbar_StyleCombo(EV_Toolbar * pToolbar, XAP_Toolbar_Id tlbrid);
 	virtual ~AP_CocoaToolbar_StyleCombo(void);
 
-	virtual bool		populate(void);
+	virtual bool populate(void) override;
 	bool                repopulate(void);
 	static EV_Toolbar_Control *		static_constructor(EV_Toolbar *, XAP_Toolbar_Id tlbrid);
 
@@ -45,11 +44,3 @@ protected:
     PD_Document * m_pDocument;
 	AP_CocoaFrame * m_pFrame;
 };
-
-#endif /* AP_COCOATOOLBAR_STYLECOMBO_H */
-
-
-
-
-
-

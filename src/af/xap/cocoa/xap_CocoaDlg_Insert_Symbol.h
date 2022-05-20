@@ -2,7 +2,7 @@
 
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001,2003 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  * Copyright (C) 2004 Francis James Franklin
  *
  * This program is free software; you can redistribute it and/or
@@ -21,8 +21,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef XAP_COCOADIALOG_INSERT_SYMBOL_H
-#define XAP_COCOADIALOG_INSERT_SYMBOL_H
+#pragma once
 
 #import <Cocoa/Cocoa.h>
 
@@ -101,12 +100,12 @@ public:
 
 	virtual ~XAP_CocoaDialog_Insert_Symbol(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
-	virtual void			runModeless(XAP_Frame * pFrame);
-	virtual void			notifyActiveFrame(XAP_Frame * pFrame);
-	virtual void			notifyCloseFrame(XAP_Frame * ) { };
-	virtual void			activate(void);
-	virtual void			destroy(void);
+	virtual void runModal(XAP_Frame* pFrame) override;
+	virtual void runModeless(XAP_Frame* pFrame) override;
+	virtual void notifyActiveFrame(XAP_Frame* pFrame) override;
+	virtual void notifyCloseFrame(XAP_Frame* ) override { };
+	virtual void activate(void) override;
+	virtual void destroy(void) override;
 
 	void					insertSymbol(const char * fontFamilyName, UT_UCS4Char symbol);
 	void					windowClosed(void);
@@ -114,5 +113,3 @@ public:
 private:
 	XAP_CocoaDlg_Insert_SymbolController *	m_dlg;
 };
-
-#endif /* XAP_COCOADIALOG_INSERT_SYMBOL_H */

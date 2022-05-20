@@ -27,8 +27,7 @@
 ******************************************************************
 *****************************************************************/
 
-#ifndef AP_COCOAAPP_H
-#define AP_COCOAAPP_H
+#pragma once
 
 #include "ut_types.h"
 #include "ap_App.h"
@@ -50,50 +49,50 @@ public:
 
 	virtual ~AP_CocoaApp();
 
-	virtual bool					initialize(void);
-	virtual void					rebuildMenus(void);
-	virtual XAP_Frame *				newFrame(void);
-	virtual bool					forgetFrame(XAP_Frame * pFrame);
+	virtual bool initialize(void) override;
+	virtual void rebuildMenus(void) override;
+	virtual XAP_Frame* newFrame(void) override;
+	virtual bool forgetFrame(XAP_Frame* pFrame) override;
 	virtual bool					shutdown(void);
 	virtual bool getPrefsValueDirectory(bool bAppSpecific, const gchar * szKey, std::string& alue) const;
-	virtual const XAP_StringSet *	getStringSet(void) const;
-	virtual const char *			getAbiSuiteAppDir(void) const;
-	virtual void					copyToClipboard(PD_DocumentRange * pDocRange, bool bUseClipboard = true);
-	virtual void					pasteFromClipboard(PD_DocumentRange * pDocRange, bool bUseClipboard, bool bHonorFormatting = true);
-	virtual bool canPasteFromClipboard(void) const;
+	virtual const XAP_StringSet* getStringSet(void) const override;
+	virtual const char* getAbiSuiteAppDir(void) const override;
+	virtual void copyToClipboard(PD_DocumentRange* pDocRange, bool bUseClipboard = true) override;
+	virtual void pasteFromClipboard(PD_DocumentRange* pDocRange, bool bUseClipboard, bool bHonorFormatting = true) override;
+	virtual bool canPasteFromClipboard(void) const override;
 
-	virtual void					setSelectionStatus(AV_View * pView);
+	virtual void setSelectionStatus(AV_View* pView) override;
 
 	/*!
 	  Sets the view selection
 	  \param pView The veiw the selection view is to be set to.
 	*/
-	inline virtual void                             setViewSelection( AV_View * pView)
+	inline virtual void setViewSelection(AV_View* pView) override
 	{ m_pViewSelection = pView; }
 
 	/*!
 	  Gets the View Selection
 	  \return The View currently selected.
 	*/
-	inline virtual AV_View* getViewSelection(void) const
+	inline virtual AV_View* getViewSelection(void) const override
 	{ return m_pViewSelection; }
-	virtual void					clearSelection(void);
-	virtual bool					getCurrentSelection(const char** formatList,
-														void ** ppData, UT_uint32 * pLen,
-														const char **pszFormatFound);
-	virtual void					cacheCurrentSelection(AV_View *);
+	virtual void clearSelection(void) override;
+	virtual bool getCurrentSelection(const char** formatList,
+                                     void** ppData, UT_uint32* pLen,
+                                     const char** pszFormatFound) override;
+	virtual void cacheCurrentSelection(AV_View *) override;
 
 	static int main (const char * szAppName, int argc, char ** argv);
 
-	void							catchSignals(int sig_num) ABI_NORETURN;
+	virtual void catchSignals(int sig_num) override ABI_NORETURN;
 
 	void loadAllPlugins ();
 
-	virtual void errorMsgBadFile(XAP_Frame * pFrame, const char * file,
-								 UT_Error error);
-	virtual bool doWindowlessArgs (const AP_Args *, bool & bSuccess);
-	virtual GR_Graphics * newDefaultScreenGraphics() const
-		{ UT_ASSERT(UT_NOT_IMPLEMENTED); return nullptr; };
+	virtual void errorMsgBadFile(XAP_Frame* pFrame, const char* file,
+								 UT_Error error) override;
+	virtual bool doWindowlessArgs(const AP_Args*, bool & bSuccess) override;
+	virtual GR_Graphics* newDefaultScreenGraphics() const override
+		{ UT_ASSERT(UT_NOT_IMPLEMENTED); return nullptr; }
 
 private:	// JCA: Why in the hell we have so many (any) protected variables?
 	XAP_StringSet *			m_pStringSet;
@@ -114,5 +113,3 @@ private:	// JCA: Why in the hell we have so many (any) protected variables?
 // however, what the C++ FAQ reccommends.
 
 void signalWrapper(int) ABI_NORETURN;
-
-#endif /* AP_COCOAAPP_H */

@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,10 +18,7 @@
  * 02110-1301 USA.
  */
 
-
-
-#ifndef AP_COCOAVIEWLISTENER_H
-#define AP_COCOAVIEWLISTENER_H
+#pragma once
 
 #include "xap_ViewListener.h"
 
@@ -29,7 +26,5 @@ class ap_CocoaViewListener : public ap_ViewListener
 {
 public:
 	ap_CocoaViewListener(XAP_Frame * pFrame);
-	virtual bool		notify(AV_View * pView, const AV_ChangeMask mask);
+	virtual bool notify(AV_View* pView, const AV_ChangeMask mask) override;
 };
-
-#endif /* AP_COCOAVIEWLISTENER_H */

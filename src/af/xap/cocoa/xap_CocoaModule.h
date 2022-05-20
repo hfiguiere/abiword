@@ -2,7 +2,7 @@
 
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  * Copyright (C) 2004 Francis James Franklin
  *
  * This program is free software; you can redistribute it and/or
@@ -21,8 +21,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef XAP_COCOAMODULE_H
-#define XAP_COCOAMODULE_H
+#pragma once
 
 #include <string>
 #include "xap_Module.h"
@@ -38,13 +37,13 @@ protected:
 
 	virtual ~XAP_CocoaModule (void);
 
-	virtual bool	load (const char * name);
-	virtual bool	unload (void);
+	virtual bool load(const char * name) override;
+	virtual bool unload(void) override;
 
 public:
-	virtual bool	resolveSymbol (const char * symbol_name, void ** symbol);
-	virtual bool	getModuleName (char ** dest) const;
-	virtual bool	getErrorMsg (char ** dest) const;
+	virtual bool resolveSymbol(const char* symbol_name, void** symbol) override;
+	virtual bool getModuleName(char** dest) const override;
+	virtual bool getErrorMsg(char** dest) const override;
 
 	static void		loadAllPlugins (); // called on start-up, and *only* then
 
@@ -61,5 +60,3 @@ private:
 
 	bool			m_bLoaded;
 };
-
-#endif /* XAP_COCOAMODULE_H */

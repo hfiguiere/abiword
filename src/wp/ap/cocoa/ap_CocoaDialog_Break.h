@@ -2,7 +2,7 @@
 
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001, 2003, 2009 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,8 +20,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOADIALOG_BREAK_H
-#define AP_COCOADIALOG_BREAK_H
+#pragma once
 
 #import <Cocoa/Cocoa.h>
 
@@ -60,7 +59,7 @@ public:
 	AP_CocoaDialog_Break(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id id);
 	virtual ~AP_CocoaDialog_Break(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id id);
 
@@ -78,5 +77,3 @@ private:
 	AP_CocoaDialog_BreakController *	m_dlg;
 	AP_Dialog_Break::breakType			m_breakType;
 };
-
-#endif /* AP_COCOADIALOG_BREAK_H */

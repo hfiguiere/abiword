@@ -2,7 +2,7 @@
 
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001, 2003-2004, 2009-2021 Hubert Figuière
+ * Copyright (C) 2001, 2003-2004, 2009-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -50,24 +50,16 @@ public:
     XAP_CocoaApp(const char* szAppName, const char* app_id);
     virtual ~XAP_CocoaApp();
 
-    virtual const char* getDefaultEncoding() const;
+    virtual const char* getDefaultEncoding() const override;
 
-    virtual bool initialize(const char* szKeyBindingsKey, const char* szKeyBindingsDefaultValue);
-    virtual XAP_Frame* newFrame() = 0;
-    virtual void reallyExit();
-    virtual void notifyFrameCountChange();
+    virtual bool initialize(const char* szKeyBindingsKey, const char* szKeyBindingsDefaultValue) override;
+    virtual void reallyExit() override;
+    virtual void notifyFrameCountChange() override;
 
-    virtual XAP_DialogFactory* getDialogFactory() const;
-    virtual XAP_Toolbar_ControlFactory* getControlFactory() const;
-    virtual const XAP_StringSet* getStringSet() const = 0;
-    virtual const char* getAbiSuiteAppDir() const = 0;
-    virtual void copyToClipboard(PD_DocumentRange* pDocRange, bool bUseClipboard = true) = 0;
-    virtual void pasteFromClipboard(PD_DocumentRange* pDocRange, bool bUseClipboard, bool bHonorFormatting = true) = 0;
-    virtual bool canPasteFromClipboard() const = 0;
-    virtual const char* getUserPrivateDirectory() const;
+    virtual const char* getUserPrivateDirectory() const override;
     virtual bool findAbiSuiteBundleFile(std::string& path, const char* filename, const char* subdir = nullptr) const; // checks only bundle
-    virtual bool findAbiSuiteLibFile(std::string& path, const char* filename, const char* subdir = nullptr) const;
-    virtual bool findAbiSuiteAppFile(std::string& path, const char* filename, const char* subdir = nullptr) const; // doesn't check user-dir
+    virtual bool findAbiSuiteLibFile(std::string& path, const char* filename, const char* subdir = nullptr) const override;
+    virtual bool findAbiSuiteAppFile(std::string& path, const char* filename, const char* subdir = nullptr) const override; // doesn't check user-dir
 
     virtual void setSelectionStatus(AV_View* pView) = 0;
     virtual void clearSelection() = 0;
@@ -75,7 +67,6 @@ public:
         void** ppData, UT_uint32* pLen,
         const char** pszFormatFound)
         = 0;
-    virtual void cacheCurrentSelection(AV_View*) = 0;
 
     typedef enum {
         GEOMETRY_FLAG_POS = 1 << 0,
@@ -95,10 +86,12 @@ public:
 
     void setTimeOfLastEvent(NSTimeInterval eventTime);
     NSTimeInterval getTimeOfLastEvent() const { return m_eventTime; };
-    virtual BidiSupportType theOSHasBidiSupport() const;
+    virtual BidiSupportType theOSHasBidiSupport() const override;
     EV_CocoaMenuBar* getCocoaMenuBar(void) const { return m_pCocoaMenu; };
     XAP_Frame* _getFrontFrame(void);
     XAP_CocoaToolbar_Icons* getToolbarIcons() const { return m_pCocoaToolbarIcons; }
+    virtual XAP_DialogFactory* getDialogFactory() const override;
+    virtual XAP_Toolbar_ControlFactory* getControlFactory() const override;
 
 protected:
     virtual const char* _findNearestFont(const char* pszFontFamily,

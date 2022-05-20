@@ -1,7 +1,7 @@
 /* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode:nil; -*- */
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001-2003, 2009-2021 Hubert Figuière
+ * Copyright (C) 2001-2003, 2009-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -55,7 +55,7 @@ public:
     XAP_CocoaDialog_FileOpenSaveAs(XAP_DialogFactory* pDlgFactory, XAP_Dialog_Id dlgid);
     virtual ~XAP_CocoaDialog_FileOpenSaveAs(void);
 
-    virtual void runModal(XAP_Frame* pFrame);
+    virtual void runModal(XAP_Frame* pFrame) override;
 
     static XAP_Dialog* static_constructor(XAP_DialogFactory*, XAP_Dialog_Id dlgid);
 

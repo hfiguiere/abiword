@@ -1,7 +1,7 @@
 /* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode:nil; -*- */
 /* AbiWord
  * Copyright (C) 2001 AbiSource, Inc.
- * Copyright (C) 2001, 2003-2021 Hubert Figuière
+ * Copyright (C) 2001, 2003-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -66,7 +66,7 @@ public:
 
 	virtual ~AP_CocoaDialog_PageSetup();
 
-	virtual void runModal(XAP_Frame *pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 private:
 	bool _validate(AP_CocoaDialog_PageSetup_Controller* ctrl, NSPrintInfo * printInfo);

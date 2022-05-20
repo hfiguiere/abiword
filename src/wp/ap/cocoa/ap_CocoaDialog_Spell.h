@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998,1999 AbiSource, Inc.
- * Copyright (C) 2001, 2003 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOADIALOG_SPELL_H
-#define AP_COCOADIALOG_SPELL_H
+#pragma once
 
 #ifdef ENABLE_SPELL
 
@@ -39,7 +38,7 @@ public:
 	AP_CocoaDialog_Spell(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~AP_CocoaDialog_Spell(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame * pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 
@@ -97,5 +96,3 @@ private:
 @end
 
 #endif
-
-#endif /* AP_COCOADIALOG_SPELL_H */

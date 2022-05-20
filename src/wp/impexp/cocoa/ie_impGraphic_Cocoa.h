@@ -2,7 +2,7 @@
 
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001, 2003 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * Portions from Nisus Software and Apple documentation
  *
@@ -22,8 +22,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef __IE_IMPGRAPHIC_COCOA_H__
-#define __IE_IMPGRAPHIC_COCOA_H__
+#pragma once
 
 // WARNING: this file should conform to C++
 
@@ -33,27 +32,24 @@
 class IE_ImpGraphicCocoa_Sniffer : public IE_ImpGraphicSniffer
 {
  public:
-	virtual UT_Confidence_t recognizeContents (const char * szBuf,
-					UT_uint32 iNumbytes);
-	virtual const IE_SuffixConfidence * getSuffixConfidence ();
-	virtual const IE_MimeConfidence * getMimeConfidence ();
-	virtual bool getDlgLabels (const char ** szDesc,
-				   const char ** szSuffixList,
-				   IEGraphicFileType * ft);
-	virtual UT_Error constructImporter (IE_ImpGraphic ** ppieg);
+	virtual UT_Confidence_t recognizeContents(const char * szBuf,
+											  UT_uint32 iNumbytes) override;
+	virtual const IE_SuffixConfidence* getSuffixConfidence() override;
+	virtual const IE_MimeConfidence* getMimeConfidence() override;
+	virtual bool getDlgLabels(const char** szDesc,
+							  const char** szSuffixList,
+							  IEGraphicFileType* ft) override;
+	virtual UT_Error constructImporter(IE_ImpGraphic** ppieg) override;
 };
 
 class IE_ImpGraphic_Cocoa : public IE_ImpGraphic
 {
 public:
-	virtual UT_Error    importGraphic(const UT_ConstByteBufPtr & pBB,
-                                          FG_ConstGraphicPtr & pfg);
-	virtual UT_Error    convertGraphic(const UT_ConstByteBufPtr & pBB,
-                                       UT_ConstByteBufPtr & ppBB);
+	virtual UT_Error importGraphic(const UT_ConstByteBufPtr& pBB,
+								   FG_ConstGraphicPtr& pfg) override;
  private:
+	UT_Error convertGraphic(const UT_ConstByteBufPtr& pBB,
+							UT_ConstByteBufPtr& ppBB);
 	UT_Error _convertGraphic(const UT_ConstByteBufPtr & pBB);
-	UT_ConstByteBufPtr  m_pPngBB; 		// pBB Converted to PNG
+	UT_ConstByteBufPtr m_pPngBB; 		// pBB Converted to PNG
 };
-
-#endif
-

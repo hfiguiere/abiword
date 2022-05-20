@@ -2,7 +2,7 @@
 
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2003 Hubert Figuiere
+ * Copyright (C) 2003-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,8 +20,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_CocoaDIALOG_MERGECELLS_H
-#define AP_CocoaDIALOG_MERGECELLS_H
+#pragma once
 
 #import <Cocoa/Cocoa.h>
 
@@ -39,16 +38,16 @@ public:
 	AP_CocoaDialog_MergeCells(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~AP_CocoaDialog_MergeCells(void);
 
-	virtual void			runModeless(XAP_Frame * pFrame);
+	virtual void runModeless(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 
 	// callbacks can fire these events
 	void			event_Close(void);
-	virtual void            setSensitivity(AP_Dialog_MergeCells::mergeWithCell mergeThis, bool bsens);
-	virtual void            destroy(void);
-	virtual void            activate(void);
-	virtual void            notifyActiveFrame(XAP_Frame * pFrame);
+	virtual void setSensitivity(AP_Dialog_MergeCells::mergeWithCell mergeThis, bool bsens) override;
+	virtual void destroy(void) override;
+	virtual void activate(void) override;
+	virtual void notifyActiveFrame(XAP_Frame* pFrame) override;
 	const char* getWindowName() { return m_WindowName; };
 private:
 	void _populateWindowData(void);
@@ -72,5 +71,3 @@ private:
 - (void)setEnableButton:(AP_Dialog_MergeCells::mergeWithCell)btn to:(bool)val;
 
 @end
-
-#endif /* AP_CocoaDIALOG_MERGECELLS_H */

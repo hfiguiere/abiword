@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001-2003, 2005-2021 Hubert Figuiere
+ * Copyright (C) 2001-2003, 2005-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -53,9 +53,9 @@ class AP_CocoaFrameImpl : public XAP_CocoaFrameImpl
 {
  public:
 	AP_CocoaFrameImpl(AP_CocoaFrame *pCocoaFrame);
-	virtual XAP_FrameImpl * createInstance(XAP_Frame *pFrame);
+	virtual XAP_FrameImpl* createInstance(XAP_Frame* pFrame) override;
 
-	virtual NSString *			_getNibName (); /* must be public to be called from Obj-C */
+	virtual NSString* _getNibName() override; /* must be public to be called from Obj-C */
 
 	UT_sint32 _getHScrollValue()	{ return m_HCurrentScroll; };
 	UT_sint32 _getHScrollMin()	{ return m_HMinScroll; };
@@ -86,19 +86,19 @@ class AP_CocoaFrameImpl : public XAP_CocoaFrameImpl
 	void _showOrHideStatusbar(void);
 
 	void _showOrHideToolbars(void);
-	virtual void _refillToolbarsInFrameData();
+	virtual void _refillToolbarsInFrameData() override;
 	void _bindToolbars(AV_View * pView);
 
-	virtual void _createDocumentWindow();
-	virtual void _createStatusBarWindow(XAP_CocoaNSStatusBar *);
+	virtual void _createDocumentWindow() override;
+	virtual void _createStatusBarWindow(XAP_CocoaNSStatusBar*) override;
 
 	friend class AP_CocoaFrame;
-	virtual void _setWindowIcon();
+	virtual void _setWindowIcon() override;
 	/* Cocoa specific stuff */
-	virtual XAP_CocoaFrameController *_createController();
-	virtual	void	_createDocView(GR_Graphics* &pG);
+	virtual XAP_CocoaFrameController* _createController() override;
+	virtual	void _createDocView(GR_Graphics* &pG) override;
 
-	virtual void _hideMenuScroll(bool /*bHideMenuScroll*/) { UT_ASSERT_HARMLESS(UT_NOT_IMPLEMENTED); }
+	virtual void _hideMenuScroll(bool /*bHideMenuScroll*/) override { UT_ASSERT_HARMLESS(UT_NOT_IMPLEMENTED); }
 
 	void giveFocus();
 private:

@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOAPREFS_H
-#define AP_COCOAPREFS_H
+#pragma once
 
 #include "ap_Prefs.h"
 
@@ -28,10 +27,8 @@ class AP_CocoaPrefs : public AP_Prefs
 public:
 	AP_CocoaPrefs();
 
-	virtual void			overlayEnvironmentPrefs(void);
+	virtual void overlayEnvironmentPrefs(void) override;
 
 protected:
-	virtual const char *	_getPrefsPathname(void) const;
+	virtual const char* _getPrefsPathname(void) const override;
 };
-
-#endif /* AP_COCOAPREFS_H */

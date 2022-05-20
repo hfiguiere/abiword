@@ -1,5 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (C) 2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_UNIXTOOLBAR_SIZECOMBO_H
-#define AP_UNIXTOOLBAR_SIZECOMBO_H
+#pragma once
 
 #include "xap_Types.h"
 #include "ev_Toolbar_Control.h"
@@ -32,11 +32,7 @@ public:
 	AP_CocoaToolbar_SizeCombo(EV_Toolbar * pToolbar, XAP_Toolbar_Id id);
 	virtual ~AP_CocoaToolbar_SizeCombo(void);
 
-	virtual bool		populate(void);
+	virtual bool populate(void) override;
 
 	static EV_Toolbar_Control *		static_constructor(EV_Toolbar *, XAP_Toolbar_Id id);
-
-protected:
 };
-
-#endif /* AP_UNIXTOOLBAR_SIZECOMBO_H */

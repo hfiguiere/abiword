@@ -3,7 +3,7 @@
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
  * Copyright (c) 2005 Francis James Franklin
- * Copyright (C) 2001, 2009 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -40,7 +40,7 @@ public:
 
 	virtual ~XAP_CocoaDialog_Language(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	const char * getNthLanguage (UT_uint32 n) const
 	{

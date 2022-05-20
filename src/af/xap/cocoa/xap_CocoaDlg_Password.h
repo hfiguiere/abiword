@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 2000 AbiSource, Inc.
- * Copyright (C) 2001, 2003 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef XAP_COCOADIALOG_PASSWORD_H
-#define XAP_COCOADIALOG_PASSWORD_H
+#pragma once
 
 #include <Cocoa/Cocoa.h>
 #include "xap_Dlg_Password.h"
@@ -35,7 +34,7 @@ public:
 	XAP_CocoaDialog_Password(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~XAP_CocoaDialog_Password(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 
@@ -57,4 +56,3 @@ private:
 - (IBAction)cancelAction:(id)sender;
 - (IBAction)okAction:(id)sender;
 @end
-#endif /* XAP_COCOADIALOG_PASSWORD_H */

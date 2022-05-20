@@ -2,7 +2,7 @@
 
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001-2003, 2009 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,8 +20,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_COCOADIALOG_OPTIONS_H
-#define AP_COCOADIALOG_OPTIONS_H
+#pragma once
 
 #import <Cocoa/Cocoa.h>
 
@@ -113,7 +112,7 @@ public:
 
 	virtual ~AP_CocoaDialog_Options();
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 
@@ -129,14 +128,14 @@ public:
 			return m_reinit;
 		}
 
-	virtual void _populateWindowData(void);
+	virtual void _populateWindowData(void) override;
 protected:
 
-	virtual void _controlEnable( tControl cid, bool value );
+	virtual void _controlEnable(tControl cid, bool value) override;
 
 	// we implement these so the XP dialog can set/grab our data
-#define SET_GATHER(a,t) virtual t _gather##a(void);  \
-		virtual void _set##a(t)
+#define SET_GATHER(a,t) virtual t _gather##a(void) override;  \
+		virtual void _set##a(t) override
 
 
 	SET_GATHER			(NotebookPageNum,		int);
@@ -152,8 +151,8 @@ protected:
 	SET_GATHER (ViewRulerUnits,	 UT_Dimension);
 
 	// not implemented
-	virtual bool _gatherViewCursorBlink(void) { return true; }
-	virtual void _setViewCursorBlink(const bool) {}
+	virtual bool _gatherViewCursorBlink(void) override { return true; }
+	virtual void _setViewCursorBlink(const bool) override {}
 
 	// Application Startup
 
@@ -164,10 +163,10 @@ protected:
 	// AutoSave
 
 	SET_GATHER (AutoSaveFile,	      bool);
-	virtual void _gatherAutoSaveFilePeriod (      UT_String &stRetVal);
-	virtual void _setAutoSaveFilePeriod    (const UT_String &stPeriod);
-	virtual void _gatherAutoSaveFileExt    (      UT_String &stRetVal);
-	virtual void _setAutoSaveFileExt       (const UT_String &stExt);
+	virtual void _gatherAutoSaveFilePeriod(UT_String &stRetVal) override;
+	virtual void _setAutoSaveFilePeriod(const UT_String &stPeriod) override;
+	virtual void _gatherAutoSaveFileExt(UT_String &stRetVal) override;
+	virtual void _setAutoSaveFileExt(const UT_String &stExt) override;
 
 	// RTL Text Layout
 
@@ -209,12 +208,11 @@ protected:
 	SET_GATHER			(ViewAll,			bool);
 	SET_GATHER			(ViewHiddenText,		bool);
 	SET_GATHER			(ViewUnprintable,		bool);
-	SET_GATHER			(EnableSmoothScrolling,		bool);
 	SET_GATHER          (EnableOverwrite,       bool);
 
 #undef SET_GATHER
 
-	virtual void addPage(const XAP_NotebookDialog::Page*)
+	virtual void addPage(const XAP_NotebookDialog::Page*) override
 		{
 			UT_ASSERT(UT_SHOULD_NOT_HAPPEN);
 		}
@@ -223,7 +221,6 @@ private:
 	bool m_reinit;
 	//
 	//
-	bool m_boolEnableSmoothScrolling;
 	bool m_boolPrefsAutoSave;
 	bool m_boolViewAll;
 	bool m_boolViewHiddenText;
@@ -231,5 +228,3 @@ private:
 	bool m_boolViewShowStatusBar;
 	bool m_boolViewUnprintable;
 };
-
-#endif /* AP_COCOADIALOG_OPTIONS_H */

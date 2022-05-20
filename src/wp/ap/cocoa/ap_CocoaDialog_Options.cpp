@@ -52,7 +52,6 @@ AP_CocoaDialog_Options::AP_CocoaDialog_Options(XAP_DialogFactory * pDlgFactory, 
 	: AP_Dialog_Options(pDlgFactory, dlgid)
 	, ctrl(nil)
 	, m_reinit(false)
-	, m_boolEnableSmoothScrolling(false)
 	, m_boolPrefsAutoSave(false)
 	, m_boolViewAll(false)
 	, m_boolViewHiddenText(false)
@@ -292,7 +291,6 @@ DEFINE_GET_SET_BOOL ( EnableOverwrite )
         m_bool##Bool = b;     \
     }
 
-DEFINE_GET_SET_BOOL_DUMMY ( EnableSmoothScrolling )
 DEFINE_GET_SET_BOOL_DUMMY ( PrefsAutoSave )
 DEFINE_GET_SET_BOOL_DUMMY ( ViewAll )
 DEFINE_GET_SET_BOOL_DUMMY ( ViewHiddenText )

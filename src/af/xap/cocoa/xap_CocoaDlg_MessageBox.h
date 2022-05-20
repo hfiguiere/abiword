@@ -1,6 +1,6 @@
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001-2003 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,17 +18,14 @@
  * 02110-1301 USA.
  */
 
-#ifndef XAP_COCOADIALOG_MESSAGEBOX_H
-#define XAP_COCOADIALOG_MESSAGEBOX_H
+#pragma once
 
 #import <Cocoa/Cocoa.h>
 
 #include "xap_CocoaFrame.h"
 #include "xap_Dlg_MessageBox.h"
 
-
 class XAP_CocoaDialog_MessageBox;
-
 
 /*****************************************************************/
 
@@ -38,10 +35,8 @@ public:
 	XAP_CocoaDialog_MessageBox(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id dlgid);
 	virtual ~XAP_CocoaDialog_MessageBox(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id dlgid);
 
 };
-
-#endif /* XAP_COCOADIALOG_MESSAGEBOX_H */

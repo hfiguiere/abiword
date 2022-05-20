@@ -1,5 +1,5 @@
 /* AbiSource Application Framework
- * Copyright (C) 2004 Hubert Figuiere
+ * Copyright (C) 2004-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,8 +17,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef _XAP_COCOAAPPIMPL_H_
-#define _XAP_COCOAAPPIMPL_H_
+#pragma once
 
 #include "xap_AppImpl.h"
 
@@ -26,7 +25,5 @@ class XAP_CocoaAppImpl
 	: public XAP_AppImpl
 {
 protected:
-	virtual bool openURL(const char * url);
+	virtual bool openURL(const char* url) override;
 };
-
-#endif

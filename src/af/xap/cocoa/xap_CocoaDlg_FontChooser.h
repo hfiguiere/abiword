@@ -2,7 +2,7 @@
 
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2001-2003, 2009 Hubert Figuiere
+ * Copyright (C) 2001-2022 Hubert Figuiere
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,8 +20,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef XAP_COCOADIALOG_FONTCHOOSER_H
-#define XAP_COCOADIALOG_FONTCHOOSER_H
+#pragma once
 
 #import <Cocoa/Cocoa.h>
 #include "xap_App.h"
@@ -114,7 +113,7 @@ public:
 	XAP_CocoaDialog_FontChooser(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id id);
 	virtual ~XAP_CocoaDialog_FontChooser(void);
 
-	virtual void			runModal(XAP_Frame * pFrame);
+	virtual void runModal(XAP_Frame* pFrame) override;
 
 	static XAP_Dialog *		static_constructor(XAP_DialogFactory *, XAP_Dialog_Id id);
 	void                    underlineChanged(bool);
@@ -151,6 +150,3 @@ private:
 	gchar *	m_currentFamily;
 	XAP_CocoaDialog_FontChooserController*	m_dlg;
 };
-
-
-#endif /* XAP_COCOADIALOG_FONTCHOOSER_H */
